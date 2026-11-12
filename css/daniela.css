@@ -1,0 +1,151 @@
+.daniela {
+  --d-papel: #FDF6E2;
+  --d-madeira: #2C221E;
+  --d-tomate: #D9534F;
+  --d-latao: #E6B800;
+  --d-escuro: #1a110d;
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  left: var(--d-esq, 3vw);
+  bottom: var(--d-base, 24px);
+  width: var(--d-larg, 94vw);
+  max-width: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--d-madeira);
+  overflow: visible;
+  font-family: 'VT323', monospace;
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+
+.daniela::backdrop { background: rgba(26, 17, 13, .35); }
+
+.daniela[open] {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  animation: d-entra .25s ease-out;
+}
+
+.daniela-rato {
+  width: clamp(64px, calc(var(--d-larg, 800px) * .13), 140px);
+  height: auto;
+  image-rendering: pixelated;
+  flex: none;
+  filter: drop-shadow(4px 4px 0 rgba(0, 0, 0, .5));
+}
+
+.daniela-balao {
+  position: relative;
+  flex: 1;
+  padding: 12px 16px;
+  background: var(--d-papel);
+  border: 4px solid var(--d-madeira);
+  border-left: 12px solid var(--d-tomate);
+  box-shadow: 6px 6px 0 0 rgba(0, 0, 0, .55);
+}
+
+.daniela-balao::before {
+  content: "";
+  position: absolute;
+  left: -26px;
+  bottom: 20px;
+  border: 8px solid transparent;
+  border-right-color: var(--d-tomate);
+}
+
+.daniela-nome {
+  font-family: 'Press Start 2P', monospace;
+  font-size: .6rem;
+  color: var(--d-tomate);
+  margin-bottom: 6px;
+}
+
+.daniela-fala { min-height: 2.4em; }
+
+.daniela-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  justify-content: flex-end;
+}
+
+.daniela-acoes button {
+  font-family: 'Press Start 2P', monospace;
+  font-size: .55rem;
+  line-height: 1.4;
+  padding: 9px 11px;
+  cursor: pointer;
+  background: var(--d-tomate);
+  color: var(--d-papel);
+  border: 3px solid var(--d-escuro);
+  box-shadow:
+    inset -3px -3px 0 rgba(0, 0, 0, .3),
+    inset 3px 3px 0 rgba(255, 255, 255, .25),
+    4px 4px 0 var(--d-escuro);
+}
+
+.daniela-acoes button:hover,
+.daniela-acoes button:focus-visible {
+  background: var(--d-latao);
+  color: var(--d-escuro);
+  outline: 4px solid var(--d-latao);
+  outline-offset: 3px;
+}
+
+.daniela-acoes button:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+.daniela-ajuda {
+  position: fixed;
+  top: 72px;
+  right: 12px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px 12px 6px 6px;
+  background: #1a110d;
+  color: #E6B800;
+  border: 4px solid #E6B800;
+  font-family: 'Press Start 2P', monospace;
+  font-size: .55rem;
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, .6);
+}
+
+.daniela-ajuda img {
+  width: 38px;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.daniela-ajuda:hover,
+.daniela-ajuda:focus-visible {
+  background: #E6B800;
+  color: #1a110d;
+  outline: 4px solid #E6B800;
+  outline-offset: 3px;
+}
+
+@keyframes d-entra {
+  from { transform: translateY(16px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@media (max-width: 560px) {
+  .daniela { font-size: 1.1rem; }
+  .daniela-balao { padding: 8px 10px; border-left-width: 8px; }
+  .daniela-balao::before { display: none; }
+  .daniela-ajuda span { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .daniela[open] { animation: none; }
+}

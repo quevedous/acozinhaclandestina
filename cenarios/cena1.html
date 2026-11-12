@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/cena1.css">
+<link rel="stylesheet" href="../css/daniela.css">
+<title>Cenário 1 · A Despensa Trancada</title>
+</head>
+<body>
+
+<header id="header-bar">
+  <a class="voltar" href="../index.html">← Menu</a>
+  <span class="cenario">1 · A Despensa Trancada</span>
+  <span id="cronometro" aria-label="Tempo restante">15:00</span>
+</header>
+
+<main id="game-stage">
+  <div class="cena" id="cena">
+    <img src="../img/cenario1.jpg" alt="Despensa escura com prateleiras, potes de tempero, sacos de farinha e uma porta pesada com teclado eletrônico" draggable="false">
+
+    <button class="interactive-node r-meio" id="no-porta" type="button" data-nome="Porta da despensa" aria-label="Porta da despensa"></button>
+    <button class="interactive-node r-baixo" id="no-teclado" type="button" data-nome="Teclado eletrônico" aria-label="Teclado eletrônico da porta"><span class="luz"></span></button>
+    <button class="interactive-node r-baixo" id="no-fechadura" type="button" data-nome="Fechadura antiga" aria-label="Fechadura antiga"></button>
+    <button class="interactive-node" id="no-mapa" type="button" data-nome="Papel no caixote" aria-label="Papel dobrado no caixote"></button>
+    <button class="interactive-node r-esq r-baixo" id="no-bilhete" type="button" data-nome="Bilhete na parede" aria-label="Bilhete rasgado na parede"></button>
+    <button class="interactive-node" id="no-potes" type="button" data-nome="Potes trancados" aria-label="Potes de tempero da prateleira de cima"></button>
+    <button class="interactive-node luz" id="no-farinha" type="button" data-nome="Sacos de farinha e trigo" aria-label="Sacos de farinha e trigo"></button>
+    <button class="interactive-node" id="no-caixote" type="button" data-nome="Caixote de madeira" aria-label="Caixote de madeira"></button>
+    <button class="interactive-node" id="no-potes-esq" type="button" data-nome="Potes de tempero" aria-label="Potes de tempero da bancada"></button>
+    <button class="interactive-node r-baixo" id="no-janela" type="button" data-nome="Janela" aria-label="Janela com grades"></button>
+    <button class="interactive-node" id="no-barril" type="button" data-nome="Barril de metal" aria-label="Barril de metal"></button>
+  </div>
+</main>
+
+<div id="mensagem" aria-live="polite"></div>
+<footer id="inventory-bar" aria-label="Inventário"></footer>
+
+<div id="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-topo">
+      <h2 id="modal-titulo"></h2>
+      <button id="modal-fechar" type="button" aria-label="Fechar">X</button>
+    </div>
+    <div id="modal-corpo"></div>
+  </div>
+</div>
+
+<script src="../js/cena1.js"></script>
+<script src="../js/daniela.js"></script>
+</body>
+</html>

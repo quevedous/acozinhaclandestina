@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/cena3.css">
+<link rel="stylesheet" href="../css/daniela.css">
+<title>Cenário 3 · A Câmara Fria</title>
+</head>
+<body>
+
+<header id="header-bar">
+  <div class="grupo-esq">
+    <a class="voltar" href="../index.html">← Menu</a>
+    <a class="voltar" href="cena2.html">← Confeitaria</a>
+  </div>
+  <span class="cenario">3 · A Câmara Fria</span>
+  <span id="cronometro" aria-label="Tempo restante">15:00</span>
+</header>
+
+<main id="game-stage">
+  <div class="cena" id="cena">
+    <img src="../img/cenario3.jpg" alt="Câmara fria com geladeiras industriais, porta de metal com teclado de segurança, cartaz com o enigma das densidades e prateleiras com recipientes e um freezer trancado" draggable="false" onerror="this.parentNode.classList.add('sem-imagem')">
+
+    <button class="interactive-node r-esq" id="no-armario" type="button" data-nome="Armário congelado" aria-label="Armário de inox congelado"></button>
+    <button class="interactive-node r-meio" id="no-geladeira-esq" type="button" data-nome="Geladeira industrial" aria-label="Geladeira industrial de portas de vidro"></button>
+    <button class="interactive-node r-meio" id="no-porta" type="button" data-nome="Porta do freezer" aria-label="Porta de metal do freezer"></button>
+    <button class="interactive-node r-baixo" id="no-teclado" type="button" data-nome="Bloqueio de segurança" aria-label="Teclado do bloqueio de segurança"><span class="luz"></span></button>
+    <button class="interactive-node r-baixo" id="no-termostato" type="button" data-nome="Painel do termostato" aria-label="Painel do termostato"></button>
+    <button class="interactive-node" id="no-geladeira-meio" type="button" data-nome="Geladeira de vidro" aria-label="Geladeira do meio"></button>
+    <button class="interactive-node" id="no-caixas-esq" type="button" data-nome="Caixas empilhadas" aria-label="Caixas empilhadas"></button>
+    <button class="interactive-node r-baixo" id="no-poster" type="button" data-nome="Cartaz das densidades" aria-label="Cartaz do enigma das densidades"></button>
+    <button class="interactive-node r-baixo" id="no-lampada" type="button" data-nome="Lâmpada" aria-label="Lâmpada pendurada"></button>
+    <button class="interactive-node r-meio" id="no-gelo" type="button" data-nome="Poças de gelo" aria-label="Poças de gelo no chão"></button>
+    <button class="interactive-node r-baixo" id="no-caixas-dir" type="button" data-nome="Caixas congeladas" aria-label="Caixas congeladas no alto da prateleira"></button>
+    <button class="interactive-node r-baixo" id="no-pote3a" type="button" data-nome="Recipiente #3" aria-label="Recipiente número 3"></button>
+    <button class="interactive-node r-baixo" id="no-pote3b" type="button" data-nome="Recipiente #3" aria-label="Outro recipiente número 3"></button>
+    <button class="interactive-node r-baixo r-dir" id="no-pote11" type="button" data-nome="Recipiente #11" aria-label="Recipiente número 11"></button>
+    <button class="interactive-node" id="no-potes-med" type="button" data-nome="Recipientes apagados" aria-label="Recipientes com etiquetas apagadas"></button>
+    <button class="interactive-node r-dir" id="no-misturador" type="button" data-nome="Painel do misturador" aria-label="Painel do misturador de emulsão"></button>
+    <button class="interactive-node r-dir" id="no-caixa" type="button" data-nome="Freezer de frutas raras" aria-label="Freezer de frutas raras, trancado"><span class="luz"></span></button>
+    <button class="interactive-node r-dir" id="no-recip-baixo" type="button" data-nome="Recipientes de baixo" aria-label="Recipientes na prateleira de baixo"></button>
+  </div>
+</main>
+
+<div id="mensagem" aria-live="polite"></div>
+<footer id="inventory-bar" aria-label="Inventário"></footer>
+
+<div id="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-topo">
+      <h2 id="modal-titulo"></h2>
+      <button id="modal-fechar" type="button" aria-label="Fechar">X</button>
+    </div>
+    <div id="modal-corpo"></div>
+  </div>
+</div>
+
+<script src="../js/cena3.js"></script>
+<script src="../js/daniela.js"></script>
+</body>
+</html>

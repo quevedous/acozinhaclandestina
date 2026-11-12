@@ -1,0 +1,194 @@
+ @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap");
+
+      :root {
+        --escuro: #1a110d;
+        --madeira: #4a3428;
+        --papel: #fdf6e2;
+        --tinta: #2c221e;
+        --tomate: #d9534f;
+        --latao: #e6b800;
+        --suave: #7a6652;
+        --titulo: "Press Start 2P", monospace;
+        --texto: "VT323", monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        min-height: 100vh;
+        background-color: var(--madeira);
+        background-image:
+          repeating-linear-gradient(
+            0deg,
+            transparent 0 60px,
+            var(--escuro) 60px 64px
+          ),
+          repeating-linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.1) 0 4px,
+            transparent 4px 20px
+          ),
+          repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.04) 0 8px,
+            transparent 8px 36px
+          );
+        color: var(--papel);
+        font-family: var(--texto);
+        font-size: 1.4rem;
+        line-height: 1.3;
+        image-rendering: pixelated;
+      }
+      a {
+        color: inherit;
+      }
+      :focus-visible {
+        outline: 4px solid var(--latao);
+        outline-offset: 4px;
+      }
+
+      .home {
+        display: grid;
+        place-items: center;
+        padding: 40px 16px;
+      }
+      .cardapio {
+        width: min(600px, 100%);
+        background: var(--papel);
+        color: var(--tinta);
+        padding: 44px 36px 36px;
+        border: 4px solid var(--latao);
+        box-shadow:
+          0 -4px 0 0 var(--escuro),
+          0 4px 0 0 var(--escuro),
+          -4px 0 0 0 var(--escuro),
+          4px 0 0 0 var(--escuro),
+          16px 16px 0 0 rgba(0, 0, 0, 0.55);
+        text-align: center;
+      }
+      .cardapio .selo {
+        font-size: 2.6rem;
+        line-height: 1;
+      }
+      .cardapio h1 {
+        font-family: var(--titulo);
+        font-weight: 400;
+        font-size: clamp(1.1rem, 4.2vw, 1.7rem);
+        line-height: 1.6;
+        margin: 18px 0 10px;
+        text-shadow: 3px 3px 0 var(--latao);
+      }
+      .cardapio .subtitulo {
+        color: var(--suave);
+        font-size: 1.6rem;
+        margin-bottom: 30px;
+      }
+      .cardapio .subtitulo::after {
+        content: "_";
+        animation: piscar 1s steps(1) infinite;
+      }
+
+      .menu {
+        list-style: none;
+        text-align: left;
+      }
+      .menu li + li {
+        margin-top: 10px;
+      }
+      .menu a {
+        display: block;
+        padding: 14px;
+        text-decoration: none;
+        border: 4px solid transparent;
+      }
+      .menu .linha {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+      }
+      .menu .nome {
+        font-family: var(--titulo);
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+      .menu .pontilhado {
+        flex: 1;
+        border-bottom: 4px dashed var(--suave);
+        transform: translateY(-4px);
+      }
+      .menu .pagina {
+        font-size: 1.2rem;
+        color: var(--suave);
+      }
+      .menu .desc {
+        display: block;
+        font-size: 1.25rem;
+        color: var(--suave);
+        margin-top: 6px;
+      }
+
+      .menu a:hover,
+      .menu a:focus-visible {
+        background: var(--tomate);
+        color: var(--papel);
+        border-color: var(--escuro);
+        box-shadow: 6px 6px 0 0 var(--escuro);
+        transform: translate(-3px, -3px);
+      }
+      .menu a:active {
+        transform: translate(3px, 3px);
+        box-shadow: none;
+      }
+      .menu a:hover .nome::before,
+      .menu a:focus-visible .nome::before {
+        content: "▶ ";
+        color: var(--latao);
+      }
+      .menu a:hover .pontilhado,
+      .menu a:focus-visible .pontilhado {
+        border-color: var(--papel);
+      }
+      .menu a:hover .pagina,
+      .menu a:hover .desc,
+      .menu a:focus-visible .pagina,
+      .menu a:focus-visible .desc {
+        color: var(--papel);
+      }
+      .menu .destaque .nome::after {
+        content: " ★";
+        color: var(--latao);
+      }
+
+      .rodape-cardapio {
+        margin-top: 28px;
+        font-size: 1.2rem;
+        color: var(--suave);
+      }
+
+      @keyframes piscar {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .cardapio {
+          padding: 36px 18px 28px;
+        }
+        .menu .pagina {
+          display: none;
+        }
+        .menu .nome {
+          font-size: 0.8rem;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+        }
+        .cardapio .subtitulo::after {
+          animation: none;
+        }
+      }

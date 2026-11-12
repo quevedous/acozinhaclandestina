@@ -1,0 +1,185 @@
+ @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap");
+
+      :root {
+        --escuro: #1a110d;
+        --madeira: #4a3428;
+        --madeira-escura: #2c221e;
+        --papel: #fdf6e2;
+        --tinta: #2c221e;
+        --tomate: #d9534f;
+        --latao: #e6b800;
+        --suave: #7a6652;
+        --titulo: "Press Start 2P", monospace;
+        --texto: "VT323", monospace;
+      }
+      
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        min-height: 100vh;
+        background-color: var(--madeira);
+        background-image:
+          repeating-linear-gradient(
+            0deg,
+            transparent 0 60px,
+            var(--escuro) 60px 64px
+          ),
+          repeating-linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.1) 0 4px,
+            transparent 4px 20px
+          ),
+          repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.04) 0 8px,
+            transparent 8px 36px
+          );
+        color: var(--papel);
+        font-family: var(--texto);
+        font-size: 1.4rem;
+        line-height: 1.3;
+        image-rendering: pixelated;
+      }
+      a {
+        color: inherit;
+      }
+      :focus-visible {
+        outline: 4px solid var(--latao);
+        outline-offset: 4px;
+      }
+
+      .interna {
+        padding: 32px 16px 70px;
+      }
+      .topo {
+        width: min(920px, 100%);
+        margin: 0 auto 28px;
+      }
+
+      .voltar {
+        display: inline-block;
+        padding: 12px 16px;
+        background: var(--escuro);
+        border: 4px solid var(--latao);
+        color: var(--latao);
+        text-decoration: none;
+        font-family: var(--titulo);
+        font-size: 0.65rem;
+        line-height: 1.4;
+        box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.6);
+      }
+      .voltar:hover {
+        background: var(--latao);
+        color: var(--escuro);
+      }
+      .voltar:active {
+        transform: translate(4px, 4px);
+        box-shadow: none;
+      }
+
+      .folha {
+        width: min(920px, 100%);
+        margin: 0 auto;
+        background: var(--papel);
+        color: var(--tinta);
+        padding: 44px clamp(20px, 5vw, 56px);
+        border: 4px solid var(--madeira-escura);
+        border-left: 16px solid var(--tomate);
+        box-shadow:
+          0 -4px 0 0 var(--escuro),
+          0 4px 0 0 var(--escuro),
+          -4px 0 0 0 var(--escuro),
+          4px 0 0 0 var(--escuro),
+          16px 16px 0 0 rgba(0, 0, 0, 0.55);
+      }
+      .folha h1 {
+        font-family: var(--titulo);
+        font-weight: 400;
+        font-size: clamp(1.2rem, 4.5vw, 1.9rem);
+        line-height: 1.5;
+        margin-bottom: 14px;
+        text-shadow: 3px 3px 0 var(--latao);
+      }
+      .folha .intro {
+        color: var(--suave);
+        margin-bottom: 32px;
+        max-width: 60ch;
+        font-size: 1.5rem;
+      }
+      .folha h2 {
+        font-family: var(--titulo);
+        font-weight: 400;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin: 34px 0 12px;
+        color: var(--tomate);
+      }
+      .folha p,
+      .folha li {
+        max-width: 64ch;
+      }
+      .folha ul,
+      .folha ol {
+        padding-left: 26px;
+        margin-top: 8px;
+      }
+      .folha li + li {
+        margin-top: 8px;
+      }
+      .folha ul li::marker {
+        content: "■ ";
+        color: var(--tomate);
+      }
+
+      .passos {
+        list-style: none;
+        padding: 0 !important;
+        counter-reset: passo;
+      }
+      .passos li {
+        counter-increment: passo;
+        position: relative;
+        padding: 16px 16px 16px 76px;
+        background: #f3e7c4;
+        border: 4px solid var(--madeira-escura);
+        max-width: none;
+      }
+      .passos li + li {
+        margin-top: 12px;
+      }
+      .passos li::before {
+        content: counter(passo);
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 44px;
+        height: 44px;
+        background: var(--tomate);
+        color: var(--papel);
+        border: 4px solid var(--escuro);
+        display: grid;
+        place-items: center;
+        font-family: var(--titulo);
+        font-size: 0.85rem;
+        box-shadow: 4px 4px 0 0 var(--escuro);
+      }
+
+      .dica {
+        margin-top: 32px;
+        padding: 18px 20px;
+        background: var(--madeira-escura);
+        color: var(--papel);
+        border: 4px solid var(--latao);
+        box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.5);
+        max-width: none !important;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+        }
+      }

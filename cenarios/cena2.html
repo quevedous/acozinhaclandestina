@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/cena2.css">
+<link rel="stylesheet" href="../css/daniela.css">
+<title>Cenário 2 · A Estação de Confeitaria</title>
+</head>
+<body>
+
+<header id="header-bar">
+  <a class="voltar" href="../index.html">← Menu</a>
+  <span class="cenario">2 · A Estação de Confeitaria</span>
+  <span id="cronometro" aria-label="Tempo restante">15:00</span>
+</header>
+
+<main id="game-stage">
+  <div class="cena" id="cena">
+    <img src="../img/cenario2.jpg" alt="Estação de confeitaria com porta de madeira à esquerda, janela com grades, alambique, mesa de mármore com batedeira e papéis, e quatro fornos digitais à direita" draggable="false" onerror="this.parentNode.classList.add('sem-imagem')">
+
+    <button class="interactive-node r-baixo" id="no-janela" type="button" data-nome="Janela" aria-label="Janela com grades"></button>
+    <button class="interactive-node" id="no-frasco" type="button" data-nome="Alambique de vidro" aria-label="Alambique de vidro"></button>
+    <button class="interactive-node" id="no-extrato" type="button" data-nome="Extrato de merengue" aria-label="Garrafa de extrato de merengue"></button>
+    <button class="interactive-node" id="no-yuzu" type="button" data-nome="Pote de yuzu" aria-label="Pote com etiqueta Yuzu Congelada"></button>
+    <button class="interactive-node" id="no-barril" type="button" data-nome="Barril de metal" aria-label="Barril de metal"></button>
+    <button class="interactive-node" id="no-caixote" type="button" data-nome="Caixote com potes" aria-label="Caixote com potes de barro"></button>
+    <button class="interactive-node r-meio" id="no-marmore" type="button" data-nome="Bancada de mármore" aria-label="Bancada de mármore"></button>
+    <button class="interactive-node" id="no-potes-meio" type="button" data-nome="Potes de ingredientes" aria-label="Potes de farinha, açúcar e temperos"></button>
+    <button class="interactive-node" id="no-prateleira" type="button" data-nome="Prateleira de ingredientes" aria-label="Prateleira de ingredientes"></button>
+    <button class="interactive-node" id="no-panelas" type="button" data-nome="Panelas" aria-label="Panelas empilhadas"></button>
+    <button class="interactive-node" id="no-poster" type="button" data-nome="Cartaz do merengue" aria-label="Cartaz do merengue na parede"></button>
+    <button class="interactive-node" id="no-calda" type="button" data-nome="Frasco de calda" aria-label="Frasco de calda sobre o fogareiro"></button>
+    <button class="interactive-node" id="no-bicos" type="button" data-nome="Bicos de confeitar" aria-label="Bicos de confeitar"></button>
+    <button class="interactive-node" id="no-batedeira" type="button" data-nome="Batedeira industrial" aria-label="Batedeira industrial"></button>
+    <button class="interactive-node" id="no-receita" type="button" data-nome="Receita" aria-label="Papel de receitas"></button>
+    <button class="interactive-node" id="no-tabela" type="button" data-nome="Pistas de conversão" aria-label="Papel de pistas de conversão de temperatura"></button>
+    <button class="interactive-node" id="no-prancheta" type="button" data-nome="Prancheta do Chef" aria-label="Prancheta do Chef"></button>
+    <button class="interactive-node r-dir" id="no-forno" type="button" data-nome="Forno do merengue" aria-label="Forno de cima, com o merengue"><span class="luz"></span></button>
+    <button class="interactive-node r-dir" id="no-forno2" type="button" data-nome="Forno" aria-label="Segundo forno"></button>
+    <button class="interactive-node r-dir" id="no-forno3" type="button" data-nome="Forno" aria-label="Terceiro forno"></button>
+    <button class="interactive-node r-dir" id="no-forno4" type="button" data-nome="Forno" aria-label="Quarto forno"></button>
+    <button class="interactive-node r-meio" id="no-porta" type="button" data-nome="Porta da Câmara Fria" aria-label="Porta da Câmara Fria"></button>
+  </div>
+</main>
+
+<div id="mensagem" aria-live="polite"></div>
+<footer id="inventory-bar" aria-label="Inventário"></footer>
+
+<div id="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-topo">
+      <h2 id="modal-titulo"></h2>
+      <button id="modal-fechar" type="button" aria-label="Fechar">X</button>
+    </div>
+    <div id="modal-corpo"></div>
+  </div>
+</div>
+
+<script src="../js/cena2.js"></script>
+<script src="../js/daniela.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/cena4.css">
+<script src="../js/cena4.js" defer></script>
+<title>Cenário 4 · O Escritório do Chef</title>
+</head>
+<body>
+
+<header id="header-bar">
+  <div class="grupo-esq">
+    <a class="voltar" href="../index.html">← Menu</a>
+    <a class="voltar" href="cena3.html">← Câmara Fria</a>
+  </div>
+  <span class="cenario">4 · O Escritório do Chef</span>
+  <span id="cronometro" aria-label="Tempo restante">15:00</span>
+</header>
+
+<main id="game-stage">
+  <div class="cena" id="cena">
+    <img src="../img/cenario4.jpg" alt="Escritório do Chef com mesa de carvalho, troféus, estante de livros, quadro de avisos de cortiça, barril e porta de madeira" draggable="false" onerror="this.parentNode.classList.add('sem-imagem')">
+
+    <button class="interactive-node r-esq r-baixo" id="no-poster-esq" type="button" data-nome="Cartaz na parede" aria-label="Cartaz na parede esquerda"></button>
+    <button class="interactive-node" id="no-barril" type="button" data-nome="Barril com pistas" aria-label="Barril com cartaz de pistas"></button>
+    <button class="interactive-node r-baixo" id="no-estante" type="button" data-nome="Estante de livros" aria-label="Estante de livros de receitas"></button>
+    <button class="interactive-node" id="no-armario" type="button" data-nome="Armário de especiarias" aria-label="Armário de especiarias, trancado"></button>
+    <button class="interactive-node" id="no-livro" type="button" data-nome="Livro de receitas rasgado" aria-label="Livro de receitas com páginas arrancadas"></button>
+    <button class="interactive-node r-baixo" id="no-poster-centro" type="button" data-nome="Cartaz da parede" aria-label="Cartaz no centro da parede"></button>
+    <button class="interactive-node r-meio" id="no-mesa" type="button" data-nome="Mesa de carvalho" aria-label="Mesa de carvalho do Chef"></button>
+    <button class="interactive-node" id="no-gaveta" type="button" data-nome="Gaveta secreta" aria-label="Gaveta secreta da mesa"></button>
+    <button class="interactive-node" id="no-trofeus-chapeu" type="button" data-nome="Troféus de chapéu" aria-label="Troféus de chapéu de chef"></button>
+    <button class="interactive-node" id="no-trofeus-panela" type="button" data-nome="Troféus de panela" aria-label="Troféus de panela de cobre"></button>
+    <button class="interactive-node" id="no-cupula" type="button" data-nome="Redoma de vidro" aria-label="Redoma de vidro com planta"></button>
+    <button class="interactive-node" id="no-timer" type="button" data-nome="Timer digital" aria-label="Timer digital"></button>
+    <button class="interactive-node" id="no-baunilha" type="button" data-nome="Garrafa de baunilha" aria-label="Garrafa de extrato de baunilha"></button>
+    <button class="interactive-node r-baixo" id="no-quadro" type="button" data-nome="Quadro de avisos" aria-label="Quadro de avisos: erros de estagiários"></button>
+    <button class="interactive-node r-baixo" id="no-esboco" type="button" data-nome="Desenho do livro" aria-label="Desenho de um livro aberto no quadro"></button>
+    <button class="interactive-node" id="no-notamaster" type="button" data-nome="Bilhete da master key" aria-label="Bilhete: master key está no livro"></button>
+    <button class="interactive-node r-baixo" id="no-chave-quadro" type="button" data-nome="Chave dourada" aria-label="Chave dourada presa no quadro"></button>
+    <button class="interactive-node r-baixo" id="no-bilhetes" type="button" data-nome="Bilhetes 176 °F" aria-label="Bilhetes com 176 graus Fahrenheit"></button>
+    <button class="interactive-node r-meio" id="no-porta" type="button" data-nome="Porta de saída" aria-label="Porta de saída do escritório"></button>
+    <button class="interactive-node r-dir r-baixo" id="no-fechadura" type="button" data-nome="Fechadura" aria-label="Fechadura da porta"></button>
+  </div>
+</main>
+
+<div id="mensagem" aria-live="polite"></div>
+<footer id="inventory-bar" aria-label="Inventário"></footer>
+
+<div id="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-topo">
+      <h2 id="modal-titulo"></h2>
+      <button id="modal-fechar" type="button" aria-label="Fechar">X</button>
+    </div>
+    <div id="modal-corpo"></div>
+  </div>
+</div>
+
+</body>
+</html>
