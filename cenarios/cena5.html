@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/cena5.css">
+<link rel="stylesheet" href="../css/daniela.css">
+<title>Cenário 5 · A Pista Principal</title>
+</head>
+<body>
+
+<header id="header-bar">
+  <a class="voltar" href="../index.html">← Menu</a>
+  <span class="cenario">5 · A Pista Principal</span>
+  <span id="cronometro" aria-label="Tempo restante">15:00</span>
+</header>
+
+<main id="game-stage">
+  <div class="cena" id="cena">
+    <canvas id="pista" width="1100" height="600" role="img" aria-label="Pista de corrida vista de cima, com quatro faixas, carros e obstáculos pelo caminho, doces coloridos e a bancada de entrega no final"></canvas>
+
+    <div id="inicio">
+      <h2>CORRIDA ATÉ A BANCADA</h2>
+      <p>Chegue à bancada em até 15 segundos.</p>
+      <ul class="comandos">
+        <li>↑ ↓ (ou W S): mudar de faixa</li>
+        <li>← (ou A): frear</li>
+        <li>→ (ou D): acelerar</li>
+      </ul>
+      <button class="btn-pixel" id="btn-comecar" type="button">COMEÇAR</button>
+    </div>
+  </div>
+</main>
+
+<div id="mensagem" aria-live="polite"></div>
+<footer id="inventory-bar" aria-label="Inventário"></footer>
+
+<div id="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-topo">
+      <h2 id="modal-titulo"></h2>
+      <button id="modal-fechar" type="button" aria-label="Fechar">X</button>
+    </div>
+    <div id="modal-corpo"></div>
+  </div>
+</div>
+
+<div id="transicao" hidden>
+  <h2>VOCÊ CHEGOU!</h2>
+  <p>hora de entregar o prato...</p>
+  <a class="btn-pixel" href="cena6.html">Continuar →</a>
+</div>
+
+<script src="../js/cena5.js"></script>
+<script src="../js/daniela.js"></script>
+</body>
+</html>

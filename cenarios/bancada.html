@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/bancada.css">
+<title>Cenário 2 · A Bancada e Frascos</title>
+</head>
+<body>
+
+<header id="header-bar">
+  <a class="voltar" href="../index.html">← Menu</a>
+  <span class="cenario">2 · A Despensa Trancada</span>
+  <span id="cronometro" aria-label="Tempo restante">15:00</span>
+</header>
+
+<main id="game-stage">
+  <div class="cena" id="cena">
+    <img src="../img/bancada.png" alt="Despensa com bancada de madeira, porta à esquerda e prateleiras" draggable="false" onerror="this.parentNode.classList.add('sem-imagem')">
+
+    <button class="interactive-node" id="no-papel" type="button" data-nome="Bilhete Enigma" aria-label="Bilhete escondido"></button>
+    <button class="interactive-node r-baixo" id="no-frascos-bancada" type="button" data-nome="Frascos de Reagentes" aria-label="Frascos coloridos na bancada"></button>
+    <button class="interactive-node r-meio" id="no-porta" type="button" data-nome="Porta da Despensa" aria-label="Porta pesada de madeira"></button>
+  </div>
+</main>
+
+<div id="mensagem" aria-live="polite">Investigue a bancada e encontre o bilhete secreto.</div>
+<footer id="inventory-bar" aria-label="Inventário"></footer>
+
+<div id="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-topo">
+      <h2 id="modal-titulo"></h2>
+      <button id="modal-fechar" type="button" aria-label="Fechar">X</button>
+    </div>
+    <div id="modal-corpo"></div>
+  </div>
+</div>
+
+<script src="../js/bancada.js"></script>
+</body>
+</html>

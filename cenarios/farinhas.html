@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/farinhas.css">
+<title>Inspeção · Bancada de Farinhas</title>
+</head>
+<body>
+
+<header id="header-bar">
+  <a class="voltar" href="cena2.html">← Voltar para a Confeitaria</a>
+  <span class="cenario">Inspeção · Entre os Potes</span>
+  <span id="cronometro" aria-label="Tempo restante">15:00</span>
+</header>
+
+<main id="game-stage">
+  <div class="escopo" id="escopo">
+    <div class="cena-zoom" id="cena">
+      <img src="../img/zoom_farinhas.jpg" alt="Visão aproximada entre os potes de farinha" draggable="false" onerror="this.parentNode.classList.add('sem-imagem')">
+
+      <button class="interactive-node" id="no-papel-escondido" type="button" data-nome="Papel Enigma" aria-label="Papel dobrado escondido"></button>
+    </div>
+  </div>
+</main>
+
+<div id="mensagem" aria-live="polite">Passe o mouse pela escuridão para procurar pistas com a lanterna.</div>
+<footer id="inventory-bar" aria-label="Inventário"></footer>
+
+<div id="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-topo">
+      <h2 id="modal-titulo"></h2>
+      <button id="modal-fechar" type="button" aria-label="Fechar">X</button>
+    </div>
+    <div id="modal-corpo"></div>
+  </div>
+</div>
+
+<script src="../js/farinhas.js"></script>
+</body>
+</html>
