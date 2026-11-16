@@ -1,3 +1,5 @@
+'use strict';
+
 const CHAVE_ESTADO = 'cozinha_estado';
 const DURACAO = 15 * 60;
 const TEMPO_ESTAGIO = 5000;
@@ -6,8 +8,6 @@ const ESTAGIOS = {
   1: { min: 18, max: 34, nome: 'secar', corNome: 'Azul-Ciano (Chama Branda)', hex: '#2563eb' },
   2: { min: 64, max: 80, nome: 'dourar', corNome: 'Âmbar Dourado (Chama Média-Alta)', hex: '#d97706' }
 };
-
-const CODIGO_SECRETO = "741";
 
 const CALDA = { min: 100, max: 140, alvo: 118, tol: 3, vel: 28 };
 
@@ -26,6 +26,7 @@ const ITENS = {
 const PADRAO = {
   fim: Date.now() + DURACAO * 1000,
   inventario: [],
+  itemSelecionado: null,
   erros: 0,
   acertos: 0,
   chavePega: false,
@@ -54,10 +55,28 @@ const overlay = $('#modal-overlay');
 const modalTitulo = $('#modal-titulo');
 const modalCorpo = $('#modal-corpo');
 let travado = false;
-let selecionado = null;
+let selecionado = estado.itemSelecionado || null;
 let aoFechar = null;
 
-function fala(texto) { $('#mensagem').textContent = texto; }
+function sincronizarEstado() {
+  const atual = carregarEstado();
+  if (atual) {
+    estado = Object.assign({}, estado, atual);
+    selecionado = estado.itemSelecionado || null;
+  }
+}
+
+window.addEventListener('message', (e) => {
+  if (e.data?.tipo === 'ITEM_SELECIONADO') {
+    selecionado = e.data.id;
+    estado.itemSelecionado = e.data.id;
+  }
+});
+
+function fala(texto) {
+  const el = $('#mensagem');
+  if (el) el.textContent = texto;
+}
 
 function abrirModal(titulo, html) {
   if (aoFechar) { aoFechar(); aoFechar = null; }
@@ -80,7 +99,7 @@ document.addEventListener('keydown', e => {
 
 function renderInventario() {
   const barra = $('#inventory-bar');
-  if(!barra) return;
+  if (!barra) return;
   barra.innerHTML = '';
   for (let i = 0; i < 8; i++) {
     const id = estado.inventario[i];
@@ -100,42 +119,52 @@ function renderInventario() {
     }
   }
 }
+
 function addItem(id) {
+  sincronizarEstado();
   if (!estado.inventario.includes(id)) estado.inventario.push(id);
   salvar();
   renderInventario();
 }
+
 function removerItem(id) {
+  sincronizarEstado();
   estado.inventario = estado.inventario.filter(i => i !== id);
+  if (selecionado === id) {
+    selecionado = null;
+    estado.itemSelecionado = null;
+  }
   salvar();
   renderInventario();
 }
+
 function clicarItem(id) {
   if (id === 'mapa') {
     selecionado = null;
+    estado.itemSelecionado = null;
+    salvar();
     renderInventario();
     abrirMapa();
     return;
   }
-  if (id === 'papel_dica') {
-    selecionado = null;
-    renderInventario();
-    abrirEnigmaPapel();
-    return;
-  }
   if (selecionado === id) {
     selecionado = null;
+    estado.itemSelecionado = null;
     fala('Item guardado.');
   } else {
     selecionado = id;
+    estado.itemSelecionado = id;
     fala(ITENS[id].nome + ': ' + ITENS[id].desc);
   }
+  salvar();
   renderInventario();
 }
+
 function ligar(id, alvo, fn, usos) {
   const el = $(id);
-  if(el) {
+  if (el) {
     el.addEventListener('click', () => {
+      sincronizarEstado();
       if (selecionado) {
         if (usos && usos[selecionado]) { usos[selecionado](); return; }
         fala(ITENS[selecionado].nome + ' não funciona em: ' + alvo + '. Clique no item de novo para guardá-lo.');
@@ -253,6 +282,7 @@ function abrirPainel(n) {
 }
 
 function abrirForno() {
+  sincronizarEstado();
   const et = estado.fornoEtapa;
   if (et === 0) { abrirPainel(1); return; }
   if (et === 2) { abrirPainel(2); return; }
@@ -275,7 +305,7 @@ function abrirForno() {
 
 function atualizarForno() {
   const f = $('#no-forno');
-  if(!f) return;
+  if (!f) return;
   const agora = Date.now();
   if (estado.fornoEtapa === 1 && agora >= estado.assadoEm) {
     estado.fornoEtapa = 2;
@@ -296,6 +326,8 @@ function abrirCalda() {
     return;
   }
   selecionado = null;
+  estado.itemSelecionado = null;
+  salvar();
   renderInventario();
   const span = CALDA.max - CALDA.min;
   const zonaEsq = ((CALDA.alvo - CALDA.tol - CALDA.min) / span) * 100;
@@ -319,8 +351,8 @@ function abrirCalda() {
     const d = ((agora - t0) / 1000) * CALDA.vel;
     const m = d % (2 * span);
     temp = CALDA.min + (m <= span ? m : 2 * span - m);
-    if(agulha) agulha.style.left = (((temp - CALDA.min) / span) * 100) + '%';
-    if(leitura) leitura.textContent = temp.toFixed(1) + ' °C';
+    if (agulha) agulha.style.left = (((temp - CALDA.min) / span) * 100) + '%';
+    if (leitura) leitura.textContent = temp.toFixed(1) + ' °C';
     raf = requestAnimationFrame(quadro);
   };
   raf = requestAnimationFrame(quadro);
@@ -344,6 +376,21 @@ function abrirCalda() {
   });
 }
 
+function abrirPortaCena3() {
+  sincronizarEstado();
+  if (!estado.merengue) {
+    fala('Você precisa assar e pegar o merengue no forno antes de abrir a porta para a Cena 3!');
+    return;
+  }
+  selecionado = null;
+  estado.itemSelecionado = null;
+  salvar();
+  fala('Você usou a chave e abriu a porta para a cena 3!');
+  setTimeout(() => {
+    window.location.href = 'cena3.html';
+  }, 1000);
+}
+
 ligar('#no-receita', 'Receita', abrirReceita);
 ligar('#no-poster', 'Cartaz', abrirPoster);
 ligar('#no-tabela', 'Guia de Chamas', abrirTabela);
@@ -353,16 +400,15 @@ ligar('#no-potes-meio', 'Potes de farinha', () => {
   window.location.href = 'farinhas.html';
 });
 
-// Lógica da porta na Cena 2: Com a chave selecionada vai para a cena 3, sem a chave vai para a bancada
 ligar('#no-porta', 'Porta', () => {
-  if (selecionado === 'chave_porta') {
-    fala('Você usou a chave e abriu a porta para a cena 3!');
-    setTimeout(() => {
-      window.location.href = 'cena3.html';
-    }, 1000);
+  sincronizarEstado();
+  if (selecionado === 'chave_porta' || estado.inventario.includes('chave_porta') || estado.chaveColetada) {
+    abrirPortaCena3();
   } else {
     window.location.href = 'bancada.html';
   }
+}, {
+  chave_porta: abrirPortaCena3
 });
 
 ligar('#no-calda', 'Frasco de calda', () => {
@@ -380,10 +426,8 @@ ligar('#no-marmore', 'Bancada', () => {
 }, {
   yuzu: () => {
     removerItem('yuzu');
-    selecionado = null;
     estado.yuzuUsado = true;
     salvar();
-    renderInventario();
     fala('Você deixou o yuzu sobre o mármore frio para descongelar.');
   }
 });
@@ -403,6 +447,7 @@ ligar('#no-prateleira', 'Prateleira', () => fala('Potes de ingredientes.'));
 ligar('#no-panelas', 'Panelas', () => fala('Panelas empilhadas.'));
 ligar('#no-bicos', 'Bicos', () => fala('Bicos de confeitar.'));
 ligar('#no-batedeira', 'Batedeira', () => fala('Batedeira industrial.'));
+ligar('#no-prancheta', 'Prancheta', () => fala('Prancheta com anotações de produção.'));
 
 function formatar(seg) {
   const m = String(Math.floor(seg / 60)).padStart(2, '0');
@@ -421,7 +466,7 @@ function fimDeJogo() {
 function tick() {
   const restante = Math.max(0, Math.ceil((estado.fim - Date.now()) / 1000));
   const cron = $('#cronometro');
-  if(cron) {
+  if (cron) {
     cron.textContent = formatar(restante);
     cron.classList.toggle('urgente', restante <= 60);
   }
