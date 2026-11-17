@@ -353,15 +353,21 @@ ligar('#no-potes-meio', 'Potes de farinha', () => {
   window.location.href = 'farinhas.html';
 });
 
-// Lógica da porta na Cena 2: Com a chave selecionada vai para a cena 3, sem a chave vai para a bancada
 ligar('#no-porta', 'Porta', () => {
-  if (selecionado === 'chave_porta') {
-    fala('Você usou a chave e abriu a porta para a cena 3!');
-    setTimeout(() => {
-      window.location.href = 'cena3.html';
-    }, 1000);
-  } else {
-    window.location.href = 'bancada.html';
+  if (estado.camaraAberta) {
+    fala('Você atravessa a porta da Câmara Fria.');
+    setTimeout(() => { window.location.href = 'cena3.html'; }, 800);
+    return;
+  }
+  window.location.href = 'bancada.html';
+}, {
+  chave_porta: () => {
+    estado.camaraAberta = true;
+    selecionado = null;
+    salvar();
+    renderInventario();
+    fala('Você usou a chave na trava elétrica. A porta da Câmara Fria se abriu!');
+    setTimeout(() => { window.location.href = 'cena3.html'; }, 1000);
   }
 });
 

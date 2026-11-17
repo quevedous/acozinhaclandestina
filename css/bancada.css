@@ -103,7 +103,7 @@ body{
 }
 .interactive-node:hover::after,.interactive-node:focus-visible::after{opacity:1}
 
-#no-papel{left:48%;top:65%;width:6%;height:8%}
+#no-papel{left:48%;top:65%;width:6%;height:8%;z-index:3}
 #no-frascos-bancada{left:35%;top:52%;width:30%;height:18%}
 #no-porta{left:2%;top:15%;width:12%;height:75%}
 

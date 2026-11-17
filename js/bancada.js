@@ -203,16 +203,14 @@ function abrirInterfaceFrascos() {
 }
 
 const btnPorta = $('#no-porta');
-if(btnPorta) {
+if (btnPorta) {
   btnPorta.addEventListener('click', () => {
-    if(selecionado === 'chave_porta') {
-      fala('Você usou a chave e abriu a porta para a cena 3!');
-      setTimeout(() => {
-        window.location.href = 'cena3.html';
-      }, 1000);
-    } else {
-      window.location.href = 'cena2.html';
+    if (selecionado === 'chave_porta') {
+      fala('Essa chave serve na porta da Câmara Fria, lá na Confeitaria. Voltando para lá...');
+      setTimeout(() => { window.location.href = 'cena2.html'; }, 1200);
+      return;
     }
+    window.location.href = 'cena2.html';
   });
 }
 
