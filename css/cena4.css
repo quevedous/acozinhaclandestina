@@ -92,34 +92,29 @@ body{
   z-index:2;
 }
 .interactive-node::after{
-  content:attr(data-nome);
+  content:"";
   position:absolute;
   left:50%;
-  bottom:calc(100% + 8px);
-  transform:translateX(-50%);
-  white-space:nowrap;
-  background:var(--escuro);
-  color:var(--papel);
-  border:3px solid var(--latao);
-  padding:2px 10px;
-  font-family:var(--texto);
-  font-size:1.2rem;
+  top:50%;
+  width:clamp(56px,7.2vw,104px);
+  aspect-ratio:96/124;
+  background:url('../img/seta.png') center/contain no-repeat;
+  image-rendering:pixelated;
+  transform:translate(-50%,-100%);
   opacity:0;
   pointer-events:none;
   z-index:5;
 }
-.interactive-node.r-baixo::after{bottom:auto;top:calc(100% + 8px)}
-.interactive-node.r-esq::after{left:0;transform:none}
-.interactive-node.r-dir::after{left:auto;right:0;transform:none}
-.interactive-node.r-meio::after{bottom:auto;top:14px;left:14px;transform:none}
-.interactive-node:hover,.interactive-node:focus-visible{
-  z-index:4;
-  background:rgba(255,255,255,.22);
-  outline:none;
+.interactive-node:hover,.interactive-node:focus-visible{z-index:6;outline:none}
+.interactive-node:hover::after,.interactive-node:focus-visible::after{
+  opacity:1;
+  animation:seta-pula .6s ease-in-out infinite;
 }
-.interactive-node:hover::after,.interactive-node:focus-visible::after{opacity:1}
+@keyframes seta-pula{
+  0%,100%{transform:translate(-50%,-100%)}
+  50%{transform:translate(-50%,-140%)}
+}
 .cena.debug .interactive-node{background:rgba(0,255,120,.18);outline:2px solid #00ff78}
-.cena.debug .interactive-node::after{opacity:1}
 
 #no-poster-esq{left:2.5%;top:5.9%;width:18.5%;height:55%}
 #no-barril{left:7.7%;top:61.8%;width:16.5%;height:38.2%}

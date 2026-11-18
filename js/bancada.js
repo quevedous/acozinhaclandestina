@@ -12,7 +12,7 @@ const ITENS = {
   chave_porta: {
     nome: 'Chave da Câmara Fria',
     icone: '🔑',
-    desc: 'Chave obtida ao resolver o enigma dos frascos na bancada. Selecione-a para abrir a porta.'
+    desc: 'Chave obtida ao resolver o enigma dos frascos na bancada. Selecione-a e use no alçapão do chão.'
   }
 };
 
@@ -203,14 +203,29 @@ function abrirInterfaceFrascos() {
 }
 
 const btnPorta = $('#no-porta');
-if (btnPorta) {
+if(btnPorta) {
   btnPorta.addEventListener('click', () => {
-    if (selecionado === 'chave_porta') {
-      fala('Essa chave serve na porta da Câmara Fria, lá na Confeitaria. Voltando para lá...');
-      setTimeout(() => { window.location.href = 'cena2.html'; }, 1200);
+    if(selecionado === 'chave_porta') {
+      fala('A chave não serve na porta. Talvez o alçapão no chão esteja trancado...');
       return;
     }
     window.location.href = 'cena2.html';
+  });
+}
+
+const btnAlcapao = $('#no-alcapao');
+if(btnAlcapao) {
+  btnAlcapao.addEventListener('click', () => {
+    if(selecionado === 'chave_porta') {
+      fala('Você usou a chave no alçapão e ele se abriu! Descendo para a Câmara Fria...');
+      setTimeout(() => {
+        window.location.href = 'cena3.html';
+      }, 1000);
+    } else if(estado.chaveColetada) {
+      fala('O alçapão está trancado. Selecione a chave no inventário e clique nele.');
+    } else {
+      fala('Há um alçapão no chão, mas está trancado. Você precisa de uma chave.');
+    }
   });
 }
 

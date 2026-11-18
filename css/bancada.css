@@ -80,32 +80,34 @@ body{
   z-index:2;
 }
 .interactive-node::after{
-  content:attr(data-nome);
+  content:"";
   position:absolute;
   left:50%;
-  bottom:calc(100% + 8px);
-  transform:translateX(-50%);
-  white-space:nowrap;
-  background:var(--escuro);
-  color:var(--papel);
-  border:3px solid var(--latao);
-  padding:2px 10px;
-  font-family:var(--texto);
-  font-size:1.2rem;
+  top:50%;
+width:clamp(56px,7.2vw,104px);
+  aspect-ratio:96/124;
+  background:url('../img/seta.png') center/contain no-repeat;
+  image-rendering:pixelated;
+  transform:translate(-50%,-100%);
   opacity:0;
   pointer-events:none;
   z-index:5;
 }
-.interactive-node:hover,.interactive-node:focus-visible{
-  z-index:4;
-  background:rgba(255,255,255,.22);
-  outline:none;
+.interactive-node:hover,.interactive-node:focus-visible{z-index:6;outline:none}
+.interactive-node:hover::after,.interactive-node:focus-visible::after{
+  opacity:1;
+  animation:seta-pula .6s ease-in-out infinite;
 }
-.interactive-node:hover::after,.interactive-node:focus-visible::after{opacity:1}
+@keyframes seta-pula{
+  0%,100%{transform:translate(-50%,-100%)}
+  50%{transform:translate(-50%,-140%)}
+}
 
-#no-papel{left:48%;top:65%;width:6%;height:8%;z-index:3}
-#no-frascos-bancada{left:35%;top:52%;width:30%;height:18%}
-#no-porta{left:2%;top:15%;width:12%;height:75%}
+#no-papel{left:71.2%;top:57.5%;width:7%;height:5.5%}
+#no-frascos-bancada{left:49.4%;top:37.5%;width:34.6%;height:20%}
+#no-porta{left:14%;top:11%;width:22%;height:62%;z-index:3}
+#no-alcapao{left:0;top:60%;width:34.5%;height:34%}
+#no-alcapao::after{left:61%;top:65%}
 
 #mensagem{
   min-height:3.2rem;
