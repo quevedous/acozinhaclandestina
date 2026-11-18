@@ -144,10 +144,10 @@ if(btnFrascosBancada) {
 
 function abrirInterfaceFrascos() {
   const imagensFrascos = {
-    azul: '../img/azul.png',
-    verde: '../img/verde.png',
-    laranja: '../img/laranja.png',
-    vermelho: '../img/vermelho.png'
+    azul: new URL('../img/azul.png', document.baseURI).href,
+    verde: new URL('../img/verde.png', document.baseURI).href,
+    laranja: new URL('../img/laranja.png', document.baseURI).href,
+    vermelho: new URL('../img/vermelho.png', document.baseURI).href
   };
 
   let htmlFrascos = `
@@ -155,7 +155,7 @@ function abrirInterfaceFrascos() {
     <div class="grid-frascos" id="grid-frascos">
       ${estado.frascosAtuais.map((cor, index) => `
         <button type="button" class="slot-frasco ${index === indexSelecionadoFrasco ? 'selecionado' : ''}" data-index="${index}">
-          <img src="${imagensFrascos[cor]}" alt="Frasco ${cor}">
+          <img src="${imagensFrascos[cor]}" alt="Frasco ${cor}" loading="eager" decoding="sync" draggable="false">
           <span>${cor.toUpperCase()}</span>
         </button>
       `).join('')}
