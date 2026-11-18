@@ -43,19 +43,36 @@ salvar();
 const $ = (s) => document.querySelector(s);
 const iframe = $('#palco-cena');
 
+/* Grava só os campos informados, mesclando com o que as cenas já salvaram.
+   Assim o HUD nunca apaga o inventário (ou qualquer outro dado) das cenas. */
+function salvarCampos(campos) {
+  const atual = carregarEstado() || {};
+  Object.assign(atual, campos);
+  try { sessionStorage.setItem(CHAVE_ESTADO, JSON.stringify(atual)); } catch (e) {}
+  Object.assign(estado, campos);   // só os campos do HUD; o inventário é sincronizado pelo intervalo abaixo
+}
+
+let timerMensagem = null;
+function mostrarMensagem(texto) {
+  const el = $('#mensagem');
+  el.textContent = texto;
+  el.classList.add('visivel');
+  clearTimeout(timerMensagem);
+  timerMensagem = setTimeout(() => el.classList.remove('visivel'), 9000);
+}
+
 function atualizarDica(texto) {
   if (!texto) return;
-  estado.dicaAtual = texto;
-  salvar();
-  $('#mensagem').textContent = texto;
+  salvarCampos({ dicaAtual: texto });
+  mostrarMensagem(texto);
 }
 
 function registrarDiario(anotacao) {
   if (!anotacao) return;
-  estado.diario = estado.diario || [];
-  if (!estado.diario.includes(anotacao)) {
-    estado.diario.push(anotacao);
-    salvar();
+  const diario = (estado.diario || []).slice();
+  if (!diario.includes(anotacao)) {
+    diario.push(anotacao);
+    salvarCampos({ diario });
   }
 }
 
@@ -76,9 +93,7 @@ function renderInventario() {
       btn.addEventListener('click', () => {
         const atual = carregarEstado() || estado;
         const novoSel = atual.itemSelecionado === id ? null : id;
-        atual.itemSelecionado = novoSel;
-        estado = Object.assign({}, estado, atual);
-        salvar();
+        salvarCampos({ itemSelecionado: novoSel });
         renderInventario();
         atualizarDica(
           novoSel
@@ -144,6 +159,7 @@ iframe.addEventListener('load', () => {
       body { display: block !important; width: 100vw !important; height: 100vh !important; overflow: hidden !important; }
       #game-stage { display: block !important; padding: 0 !important; width: 100vw !important; height: 100vh !important; }
       .cena { width: 100vw !important; height: 100vh !important; max-width: none !important; max-height: none !important; border: 0 !important; box-shadow: none !important; }
+      .escopo { width: 100vw !important; height: 100vh !important; max-width: none !important; max-height: none !important; border: 0 !important; box-shadow: none !important; }
     `;
     doc.head.appendChild(estiloEmbed);
 
@@ -171,12 +187,21 @@ setInterval(() => {
   const mudouSel = atual.itemSelecionado !== estado.itemSelecionado;
 
   if (mudouInv || mudouSel) {
-    if (mudouInv) {
-      const novos = atual.inventario.filter((id) => !estado.inventario.includes(id));
-      novos.forEach((id) => registrarDiario(`Coletou: ${ITENS[id]?.nome || id}`));
-    }
-    estado = Object.assign({}, estado, atual);
+    const novos = mudouInv
+      ? (atual.inventario || []).filter((id) => !(estado.inventario || []).includes(id))
+      : [];
+    const meuDiario = estado.diario;
+    const minhaDica = estado.dicaAtual;
+    // primeiro sincroniza com o que a cena salvou (o diário e a dica continuam sendo do HUD)...
+    estado = Object.assign({}, estado, atual, { diario: meuDiario, dicaAtual: minhaDica });
     renderInventario();
+    // ...depois anota
+    novos.forEach((id) => registrarDiario(`Coletou: ${ITENS[id]?.nome || id}`));
+  }
+
+  // as cenas às vezes regravam o estado sem o diário: o HUD restaura o dele
+  if (JSON.stringify(atual.diario) !== JSON.stringify(estado.diario)) {
+    salvarCampos({ diario: estado.diario, dicaAtual: estado.dicaAtual });
   }
 }, 300);
 

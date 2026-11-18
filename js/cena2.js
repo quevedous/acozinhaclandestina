@@ -139,6 +139,15 @@ function removerItem(id) {
 }
 
 function clicarItem(id) {
+  if (id === 'papel_dica') {
+    selecionado = null;
+    estado.itemSelecionado = null;
+    salvar();
+    renderInventario();
+    abrirEnigmaPapel();
+    return;
+  }
+
   if (id === 'mapa') {
     selecionado = null;
     estado.itemSelecionado = null;
@@ -147,6 +156,7 @@ function clicarItem(id) {
     abrirMapa();
     return;
   }
+
   if (selecionado === id) {
     selecionado = null;
     estado.itemSelecionado = null;
@@ -156,8 +166,23 @@ function clicarItem(id) {
     estado.itemSelecionado = id;
     fala(ITENS[id].nome + ': ' + ITENS[id].desc);
   }
+
   salvar();
   renderInventario();
+}
+
+function abrirEnigmaPapel() {
+  abrirModal('Bilhete Enigma · Anotações', `
+    <div class="papel">
+      <p><strong>Anotações encontradas na despensa:</strong></p>
+      <p>Os reagentes foram identificados apenas por suas composições de cor.</p>
+      <p><strong>RGB (37, 99, 235)</strong></p>
+      <p><strong>RGB (16, 185, 129)</strong></p>
+      <p><strong>RGB (217, 119, 6)</strong></p>
+      <p><strong>RGB (220, 38, 38)</strong></p>
+      <p class="dica-modal">"A ordem correta está escondida nas cores."</p>
+    </div>
+  `);
 }
 
 function ligar(id, alvo, fn, usos) {

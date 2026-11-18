@@ -11,6 +11,8 @@
   --suave: #7a6652;
   --titulo: 'Press Start 2P', monospace;
   --texto: 'VT323', monospace;
+    --barra: 60px;      
+  --slot: 38px;  
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -19,11 +21,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 html, body { height: 100%; }
 
 body {
-  display: grid;
-  grid-template-rows: auto 1fr auto auto;
-  height: 100vh;
+  position: relative;
   overflow: hidden;
-  background-color: var(--escuro);
+  background-color: #000;
   color: var(--papel);
   font-family: var(--texto);
   font-size: 1.4rem;
@@ -31,112 +31,199 @@ body {
   image-rendering: pixelated;
 }
 
-#header-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  background: var(--escuro);
-  border-bottom: 4px solid var(--latao);
+/* O jogo tem SEMPRE 1280 x 758 e é escalado (--escala) para caber na janela */
+#jogo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1280px;
+  height: 758px;
+  transform: translate(-50%, -50%) scale(var(--escala, 1));
+  transform-origin: center center;
+  display: grid;
+  grid-template-rows: var(--barra) 698px;
+  overflow: hidden;
+  background: #000;
 }
 
-.voltar, .btn-hud {
+:focus-visible { outline: 3px solid var(--latao); outline-offset: 2px; }
+
+/* ---------- BARRA PRETA DO TOPO ---------- */
+#top-bar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: var(--barra);
+  padding: 0 12px;
+  background: #000;
+  border-bottom: 3px solid var(--latao);
+}
+
+.abas {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.aba, .btn-hud {
   display: inline-block;
-  padding: 8px 12px;
-  background: var(--madeira-escura);
-  border: 4px solid var(--latao);
-  color: var(--latao);
+  padding: 10px 14px;
+  background: transparent;
+  border: 3px solid transparent;
+  color: var(--papel);
   text-decoration: none;
   font-family: var(--titulo);
   font-size: .6rem;
   line-height: 1.4;
-  box-shadow: 4px 4px 0 0 rgba(0, 0, 0, .6);
   white-space: nowrap;
 }
-.voltar:hover, .btn-hud:hover { background: var(--latao); color: var(--escuro); }
+.aba:hover, .btn-hud:hover { border-color: var(--latao); color: var(--latao); }
+.aba.ativa { background: var(--latao); border-color: var(--latao); color: var(--escuro); }
+.aba-menu { color: var(--latao); margin-right: 6px; }
+
+.btn-hud {
+  background: var(--madeira-escura);
+  border-color: var(--latao);
+  color: var(--latao);
+}
+.btn-hud:hover { background: var(--latao); color: var(--escuro); }
+.btn-hud { display: inline-flex; align-items: center; height: 40px; }
+.btn-hud svg { display: block; }
 
 .hud-controles {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex: 0 0 auto;
 }
 
-#header-bar .cenario {
+#top-bar .cenario {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-family: var(--titulo);
-  font-size: .65rem;
+  font-size: .55rem;
   line-height: 1.5;
   text-align: center;
+  color: var(--suave);
 }
 
 #cronometro {
   font-family: var(--titulo);
-  font-size: .9rem;
+  font-size: .85rem;
   color: var(--latao);
   background: var(--madeira-escura);
-  border: 4px solid var(--latao);
-  padding: 7px 10px;
+  border: 3px solid var(--latao);
+  padding: 8px 10px;
 }
 #cronometro.urgente { color: var(--tomate); border-color: var(--tomate); }
 
+/* ---------- CENÁRIO (quase tela cheia) ---------- */
 #game-stage {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
+  display: grid;
+  place-items: center;
   min-height: 0;
   min-width: 0;
-  background: #0d0806;
+  overflow: hidden;
+  background: #000;
+}
+
+#palco {
+  position: relative;
+  width: 1280px;
+  height: 698px;
 }
 
 #palco-cena {
+  display: block;
   width: 100%;
   height: 100%;
-  max-width: calc((100vh - 220px) * 1.7778);
-  max-height: calc((100vw - 20px) / 1.7778);
-  border: 6px solid var(--escuro);
-  box-shadow: 0 0 0 4px var(--latao), 12px 12px 0 4px rgba(0, 0, 0, .6);
+  border: 0;
   background: var(--madeira-escura);
 }
 
+/* ---------- MENSAGEM E INVENTÁRIO POR CIMA DO CENÁRIO ---------- */
 #mensagem {
-  min-height: 3.1rem;
-  padding: 8px 16px;
-  background: var(--madeira-escura);
-  border-top: 4px solid var(--latao);
-  font-size: 1.45rem;
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  transform: translateX(-50%);
+  z-index: 5;
+  width: max-content;
+  max-width: min(64%, 900px);
+  padding: 6px 16px;
+  background: rgba(26, 17, 13, .9);
+  border: 3px solid var(--latao);
+  font-size: clamp(1rem, 1.4vw, 1.4rem);
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .4s;
 }
+#mensagem.visivel { opacity: 1; }
+#mensagem:empty { display: none; }
 
+/* inventário dentro da barra preta, no centro */
 #inventory-bar {
+  flex: 1 1 auto;
+  min-width: 0;
   display: flex;
   justify-content: center;
-  gap: 10px;
-  padding: 10px 16px;
-  background: var(--escuro);
-  border-top: 4px solid var(--latao);
-  overflow-x: auto;
+  gap: 6px;
 }
 
+@media (max-width: 1250px) {
+  .aba, .btn-hud { padding: 8px 10px; font-size: .52rem; }
+  .abas { gap: 2px; }
+}
+@media (max-width: 1000px) {
+  :root { --slot: 26px; }
+  #inventory-bar { gap: 3px; }
+  .aba-menu { margin-right: 0; }
+}
+@media (max-width: 800px) {
+  :root { --barra: 52px; }
+  .aba, .btn-hud { padding: 6px 6px; font-size: .45rem; }
+  #cronometro { font-size: .7rem; padding: 6px 8px; }
+}
 .slot {
-  flex: 0 0 58px;
-  height: 58px;
+  flex: 0 0 var(--slot);
+  height: var(--slot);
   display: grid;
   place-items: center;
-  font-size: 1.8rem;
-  border: 4px dashed var(--suave);
+  font-size: calc(var(--slot) * .55);
+  border: 3px dashed var(--suave);
   background: var(--madeira);
-  box-shadow: inset 4px 4px 0 0 rgba(0, 0, 0, .35);
+  box-shadow: inset 3px 3px 0 0 rgba(0, 0, 0, .35);
 }
 .slot.cheio {
   border-style: solid;
   border-color: var(--latao);
   background: var(--madeira-escura);
   cursor: pointer;
+  pointer-events: auto;
 }
 .slot.ativo {
   background: var(--latao);
-  transform: translate(-3px, -3px);
-  box-shadow: 5px 5px 0 0 var(--escuro);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 0 var(--escuro);
+}
+
+/* ---------- RESPONSIVO ---------- */
+@media (max-width: 1100px) {
+  #top-bar .cenario { display: none; }
+}
+@media (max-width: 800px) {
+  :root { --barra: 52px; }
+  .aba, .btn-hud { padding: 8px 8px; font-size: .5rem; }
+  #cronometro { font-size: .7rem; padding: 6px 8px; }
+  .aba-menu { margin-right: 0; }
 }
 
 #modal-diario {
@@ -222,4 +309,49 @@ body {
   font-family: var(--titulo);
   font-size: .7rem;
   text-decoration: none;
+}
+
+/* ---------- JANELA DAS ABAS (Como jogar / História / Desenvolvedores) ---------- */
+#modal-aba {
+  position: fixed;
+  inset: var(--barra) 0 0 0;   /* deixa a barra de abas livre */
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(10, 6, 4, .85);
+}
+#aba-titulo { font-family: var(--titulo); font-size: .85rem; line-height: 1.7; }
+#aba-fechar {
+  width: 36px;
+  height: 36px;
+  background: var(--tomate);
+  color: var(--papel);
+  border: 4px solid var(--escuro);
+  font-family: var(--titulo);
+  font-size: .8rem;
+}
+.conteudo-aba { font-size: 1.45rem; }
+.conteudo-aba .intro { margin-bottom: 12px; }
+.conteudo-aba h3 {
+  font-family: var(--titulo);
+  font-size: .65rem;
+  color: var(--tomate);
+  margin: 16px 0 8px;
+}
+.conteudo-aba p { margin-bottom: 10px; }
+.conteudo-aba ol, .conteudo-aba ul { padding-left: 26px; margin-bottom: 10px; }
+.conteudo-aba li { margin-bottom: 6px; }
+.conteudo-aba .dica {
+  background: #fffbe9;
+  border: 3px dashed var(--suave);
+  padding: 10px 12px;
+  margin-top: 14px;
+}
+.conteudo-aba a { color: var(--tomate); }
+.conteudo-aba .equipe { list-style: none; padding-left: 0; }
+.conteudo-aba .equipe li {
+  background: #fffbe9;
+  border: 3px solid var(--escuro);
+  padding: 10px 12px;
 }

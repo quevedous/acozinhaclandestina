@@ -8,21 +8,31 @@
 </head>
 <body>
 
-<header id="header-bar">
-  <a class="voltar" href="index.html">← Menu</a>
-  <span class="cenario" id="titulo-cenario">1 · A Cozinha Clandestina</span>
+<header id="top-bar">
+  <nav class="abas" aria-label="Menu do jogo">
+    <a class="aba aba-menu" href="index.html">← Menu</a>
+    <button class="aba" type="button" data-aba="como-jogar">Como jogar</button>
+    <button class="aba" type="button" data-aba="historia">História</button>
+    <button class="aba" type="button" data-aba="desenvolvedores">Desenvolvedores</button>
+  </nav>
+
+  <span class="cenario" id="titulo-cenario" hidden>1 · A Cozinha Clandestina</span>
+
+  <footer id="inventory-bar" aria-label="Inventário"></footer>
+
   <div class="hud-controles">
     <button class="btn-hud" id="btn-diario" type="button">📖 Diário</button>
+    <button class="btn-hud" id="btn-tela-cheia" type="button" title="Tela cheia" aria-label="Tela cheia"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M1 6V1h5M10 1h5v5M15 10v5h-5M6 15H1v-5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
     <span id="cronometro" aria-label="Tempo restante">15:00</span>
   </div>
 </header>
 
 <main id="game-stage">
-  <iframe id="palco-cena" src="cenarios/cena1.html" title="Cenário do jogo"></iframe>
+  <div id="palco">
+    <iframe id="palco-cena" src="cenarios/cena1.html" title="Cenário do jogo"></iframe>
+    <div id="mensagem" aria-live="polite">Explore o cenário e encontre os ingredientes.</div>
+  </div>
 </main>
-
-<div id="mensagem" aria-live="polite">Explore o cenário e encontre os ingredientes.</div>
-<footer id="inventory-bar" aria-label="Inventário"></footer>
 
 <div id="modal-diario" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="diario-titulo">
@@ -34,6 +44,17 @@
   </div>
 </div>
 
+<div id="modal-aba" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="aba-titulo">
+    <div class="modal-topo">
+      <h2 id="aba-titulo"></h2>
+      <button id="aba-fechar" type="button" aria-label="Fechar">X</button>
+    </div>
+    <div id="aba-corpo" class="conteudo-aba"></div>
+  </div>
+</div>
+
 <script src="js/hud.js"></script>
+<script src="js/abas.js"></script>
 </body>
 </html>
