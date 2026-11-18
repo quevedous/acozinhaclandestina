@@ -139,6 +139,14 @@ function removerItem(id) {
 }
 
 function clicarItem(id) {
+  if (id === 'papel_dica') {
+    selecionado = null;
+    estado.itemSelecionado = null;
+    salvar();
+    renderInventario();
+    abrirEnigmaPapel();
+    return;
+  }
   if (id === 'mapa') {
     selecionado = null;
     estado.itemSelecionado = null;
@@ -185,6 +193,19 @@ function abrirMapa() {
       <div class="sala">5 · Pista Principal</div>
     </div>
     <p class="dica-modal">A porta de madeira à esquerda leva à Despensa. De lá, um alçapão leva à Câmara Fria.</p>
+  `);
+}
+
+function abrirEnigmaPapel() {
+  abrirModal('Bilhete Enigma · Cores RGBA', `
+    <div class="papel">
+      <p><strong>Ordem Sequencial dos Frascos:</strong></p>
+      <p>1. rgba(37, 99, 235, 0.85)</p>
+      <p>2. rgba(16, 185, 129, 0.85)</p>
+      <p>3. rgba(217, 119, 6, 0.85)</p>
+      <p>4. rgba(220, 38, 38, 0.85)</p>
+      <p class="dica-modal" style="margin-top:10px;">Vá até a porta da Câmara Fria e ordene os frascos conforme esta sequência exata.</p>
+    </div>
   `);
 }
 
