@@ -195,9 +195,11 @@ width:clamp(56px,7.2vw,104px);
 .btn-pixel:active{transform:translate(4px,4px);box-shadow:none}
 
 .grid-frascos{
-  display:flex;
-  justify-content:center;
-  gap:20px;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  justify-items:center;
+  align-items:start;
+  gap:12px;
   margin:20px 0;
 }
 .slot-frasco{
@@ -216,10 +218,14 @@ width:clamp(56px,7.2vw,104px);
   filter:drop-shadow(0 0 8px var(--latao));
 }
 .slot-frasco img{
-  width:90px;
+  display:block;
+  width:100%;
+  max-width:90px;
   height:120px;
   object-fit:contain;
   image-rendering:pixelated;
+  visibility:visible;
+  opacity:1;
   transition:transform 0.2s;
 }
 .slot-frasco span{

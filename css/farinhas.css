@@ -126,7 +126,7 @@ body{
 }
 .interactive-node.iluminado:hover::after, .interactive-node.iluminado:focus-visible::after{opacity:1}
 
-#no-papel-escondido{left:41%;top:46%;width:12%;height:22%}
+#no-papel-escondido{left:78%;top:70%;width:12%;height:20%}
 
 #mensagem{
   min-height:3.2rem;
