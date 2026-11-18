@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/cena6.css">
+<link rel="stylesheet" href="../css/daniela.css">
+<title>Cenário 6 · A Bancada dos Jurados</title>
+</head>
+<body>
+
+<header id="header-bar">
+  <a class="voltar" href="../index.html">← Menu</a>
+  <span class="cenario" id="titulo-fase">6 · A Bancada dos Jurados</span>
+  <span id="cronometro" aria-label="Tempo restante">15:00</span>
+</header>
+
+<main id="game-stage">
+  <div class="cena" id="cena">
+    <img class="fundo-cena" id="img-cenario" src="../img/cena6.png" alt="Bancada dos jurados com boleira vazia" draggable="false">
+
+    <div class="preview-boleira-cena" id="preview-boleira-cena"></div>
+
+    <button class="interactive-node" id="no-boleira" type="button" data-nome="Boleira de Montagem" aria-label="Clicar na boleira para montar o bolo"></button>
+
+    <div class="hud-avaliacao" id="hud-avaliacao" hidden>
+      <div class="placar-jurados">
+        <div class="card-jurado" id="jurado-1">
+          <span class="j-nome">JURADA 1</span>
+          <span class="j-nota" id="nota-1">?</span>
+        </div>
+        <div class="card-jurado" id="jurado-2">
+          <span class="j-nome">CHEF CENTRAL</span>
+          <span class="j-nota" id="nota-2">?</span>
+        </div>
+        <div class="card-jurado" id="jurado-3">
+          <span class="j-nome">JURADA 3</span>
+          <span class="j-nota" id="nota-3">?</span>
+        </div>
+      </div>
+      <button class="btn-pixel btn-servir" id="btn-servir" type="button">SERVIR AOS JURADOS</button>
+    </div>
+  </div>
+</main>
+
+<div id="mensagem" aria-live="polite">Clique na boleira no centro da bancada para começar a montar o bolo!</div>
+<footer id="inventory-bar" aria-label="Inventário"></footer>
+
+<div id="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-topo">
+      <h2 id="modal-titulo"></h2>
+      <button id="modal-fechar" type="button" aria-label="Fechar">X</button>
+    </div>
+    <div id="modal-corpo"></div>
+  </div>
+</div>
+
+<script src="../js/cena6.js"></script>
+<script src="../js/daniela.js"></script>
+</body>
+</html>
