@@ -12,6 +12,7 @@ const ESTAGIOS = {
 const CALDA = { min: 100, max: 140, alvo: 118, tol: 3, vel: 28 };
 
 const ITENS = {
+    fragmentos: { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro no Escritório do Chef.' },
   chave:       { nome: 'Chave de Fenda de Confeiteiro', icone: '🪛', desc: 'Vai servir para abrir um painel na Câmara Fria.' },
   mapa:        { nome: 'Mapa do Restaurante', icone: '🗺️', desc: 'Mostra o caminho entre as cozinhas. Clique de novo para abrir.' },
   baunilha:    { nome: 'Extrato de Baunilha Rara', icone: '🌿', desc: 'Ingrediente obrigatório para a nota máxima no prato final.' },
@@ -167,10 +168,10 @@ function abrirEnigmaPapel() {
     <div class="papel">
       <p><strong>Anotações encontradas na despensa:</strong></p>
       <p>Os reagentes foram identificados apenas por suas composições de cor.</p>
-      <p><strong>RGB (37, 99, 235)</strong></p>
-      <p><strong>RGB (16, 185, 129)</strong></p>
-      <p><strong>RGB (217, 119, 6)</strong></p>
-      <p><strong>RGB (220, 38, 38)</strong></p>
+      <p><strong>RGB (0, 0, 255)</strong></p>
+      <p><strong>RGB (0, 255, 0)</strong></p>
+      <p><strong>RGB (255, 165, 0)</strong></p>
+      <p><strong>RGB (255, 0, 0)</strong></p>
       <p class="dica-modal">"A ordem correta está escondida nas cores."</p>
     </div>
   `);
@@ -201,19 +202,6 @@ function abrirMapa() {
       <div class="sala">5 · Pista Principal</div>
     </div>
     <p class="dica-modal">A porta de madeira à esquerda leva à Despensa. De lá, um alçapão leva à Câmara Fria.</p>
-  `);
-}
-
-function abrirEnigmaPapel() {
-  abrirModal('Bilhete Enigma · Cores RGBA', `
-    <div class="papel">
-      <p><strong>Ordem Sequencial dos Frascos:</strong></p>
-      <p>1. rgba(37, 99, 235, 0.85)</p>
-      <p>2. rgba(16, 185, 129, 0.85)</p>
-      <p>3. rgba(217, 119, 6, 0.85)</p>
-      <p>4. rgba(220, 38, 38, 0.85)</p>
-      <p class="dica-modal" style="margin-top:10px;">Vá até a porta da Câmara Fria e ordene os frascos conforme esta sequência exata.</p>
-    </div>
   `);
 }
 

@@ -1,10 +1,10 @@
-
 const CHAVE_ESTADO = 'cozinha_estado';
 const DURACAO = 15 * 60;
 
 const ORDEM_CORRETA = ['azul', 'verde', 'laranja', 'vermelho'];
 
 const ITENS = {
+    fragmentos: { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro no Escritório do Chef.' },
   papel_dica: {
     nome: 'Bilhete Enigma',
     icone: '📜',
@@ -34,6 +34,17 @@ function carregarEstado() {
 }
 
 let estado = Object.assign({}, PADRAO, carregarEstado() || {});
+
+// Garante que a ordem salva só tenha nomes válidos (azul/verde/laranja/vermelho).
+// Estados antigos podiam guardar strings "rgba(...)" e impediam o enigma de fechar.
+(function validarFrascos() {
+  const validos = ORDEM_CORRETA.slice().sort().join();
+  const atuais = Array.isArray(estado.frascosAtuais) ? estado.frascosAtuais.slice().sort().join() : '';
+
+  if (atuais !== validos) {
+    estado.frascosAtuais = PADRAO.frascosAtuais.slice();
+  }
+})();
 
 function salvar() {
   try {
@@ -166,10 +177,10 @@ function abrirEnigmaPapel() {
     <div class="papel">
       <p><strong>Anotações encontradas na despensa:</strong></p>
       <p>Os reagentes foram identificados apenas por suas composições de cor.</p>
-      <p><strong>RGB (37, 99, 235)</strong></p>
-      <p><strong>RGB (16, 185, 129)</strong></p>
-      <p><strong>RGB (217, 119, 6)</strong></p>
-      <p><strong>RGB (220, 38, 38)</strong></p>
+      <p><strong>RGB (0, 0, 255)</strong></p>
+      <p><strong>RGB (0, 255, 0)</strong></p>
+      <p><strong>RGB (255, 165, 0)</strong></p>
+      <p><strong>RGB (255, 0, 0)</strong></p>
       <p class="dica-modal">"A ordem correta está escondida nas cores."</p>
     </div>
   `);

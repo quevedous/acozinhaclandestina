@@ -1,10 +1,9 @@
-'use strict';
-
 /* ------------------------------------------------------------------
-   ABAS DO TOPO (Como jogar · História · Desenvolvedores) + TELA CHEIA
-   Para editar os textos, mexa só no objeto ABAS logo abaixo.
+   TEXTOS DAS ABAS (Como jogar · História · Desenvolvedores)
+   Para editar os textos, mexa só no objeto HUD_ABAS logo abaixo.
+   Quem desenha as abas é o js/hud.js (cenas) e o js/capa.js (capa).
 ------------------------------------------------------------------- */
-const ABAS = {
+window.HUD_ABAS = {
   'como-jogar': {
     titulo: 'COMO JOGAR',
     html: `
@@ -74,63 +73,3 @@ const ABAS = {
     `
   }
 };
-
-const $a = (s) => document.querySelector(s);
-const modalAba = $a('#modal-aba');
-const botoesAba = document.querySelectorAll('.aba[data-aba]');
-
-function marcarAba(id) {
-  botoesAba.forEach((b) => b.classList.toggle('ativa', b.dataset.aba === id));
-}
-
-function abrirAba(id) {
-  const aba = ABAS[id];
-  if (!aba) return;
-  $a('#aba-titulo').textContent = aba.titulo;
-  $a('#aba-corpo').innerHTML = aba.html;
-  $a('#aba-corpo').scrollTop = 0;
-  modalAba.hidden = false;
-  marcarAba(id);
-}
-
-function fecharAba() {
-  modalAba.hidden = true;
-  marcarAba(null);
-}
-
-botoesAba.forEach((b) => {
-  b.addEventListener('click', () => {
-    if (!modalAba.hidden && b.classList.contains('ativa')) { fecharAba(); return; }
-    const diario = $a('#modal-diario');
-    if (diario) diario.hidden = true;
-    abrirAba(b.dataset.aba);
-  });
-});
-
-$a('#aba-fechar').addEventListener('click', fecharAba);
-modalAba.addEventListener('click', (e) => { if (e.target === modalAba) fecharAba(); });
-
-document.addEventListener('keydown', (e) => {
-  if (e.key !== 'Escape') return;
-  if (!modalAba.hidden) fecharAba();
-  const diario = $a('#modal-diario');
-  if (diario && !diario.hidden) diario.hidden = true;
-});
-
-/* Abrir o Diário fecha a aba aberta (um modal por vez) */
-$a('#btn-diario').addEventListener('click', () => { if (!modalAba.hidden) fecharAba(); });
-
-/* Tela cheia */
-const btnTelaCheia = $a('#btn-tela-cheia');
-btnTelaCheia.addEventListener('click', () => {
-  if (document.fullscreenElement) {
-    document.exitFullscreen();
-  } else if (document.documentElement.requestFullscreen) {
-    document.documentElement.requestFullscreen().catch(() => {});
-  }
-});
-document.addEventListener('fullscreenchange', () => {
-  const cheia = !!document.fullscreenElement;
-  btnTelaCheia.title = cheia ? 'Sair da tela cheia' : 'Tela cheia';
-  btnTelaCheia.setAttribute('aria-label', btnTelaCheia.title);
-});

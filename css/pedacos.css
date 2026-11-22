@@ -1,0 +1,114 @@
+/* ==================================================================
+   PEDAÇOS DO LIVRO + QUEBRA-CABEÇA DA CENA 4
+   Carregado nas cenas 1, 2, 3 e 4 (junto com js/pedacos.js).
+   A imagem do livro é img/livro_quebra-cabeca.png, dividida em 2x2.
+================================================================== */
+
+/* ---------- pedaço de papel jogado no cenário ---------- */
+.pedaco-papel {
+  position: absolute;
+  z-index: 3;
+  width: 5.2%;
+  aspect-ratio: 898 / 868;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transform: translate(-50%, -50%) rotate(var(--giro, -8deg));
+}
+.pedaco-papel.coletado { display: none; }
+
+.pedaco-papel .pedaco-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 5px rgba(230, 184, 0, .85));
+  animation: pedaco-brilho 1.8s ease-in-out infinite;
+}
+@keyframes pedaco-brilho {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(230, 184, 0, .5)); }
+  50%      { filter: drop-shadow(0 0 9px rgba(230, 184, 0, 1)); }
+}
+
+/* a imagem do livro, mostrando só 1 dos 4 quadrantes (--px / --py) */
+.pedaco-img {
+  background-image: url('../img/livro_quebra-cabeca.png');
+  background-repeat: no-repeat;
+  background-size: 200% 200%;
+  background-position: var(--px, 0%) var(--py, 0%);
+  image-rendering: pixelated;
+}
+/* bordas "rasgadas" só no pedaço solto no cenário */
+.pedaco-papel .pedaco-img {
+  clip-path: polygon(3% 8%, 22% 0, 41% 6%, 60% 0, 82% 5%, 100% 2%, 97% 28%, 100% 52%, 95% 76%, 100% 100%,
+                     76% 95%, 54% 100%, 33% 94%, 14% 100%, 0 96%, 5% 70%, 0 46%, 4% 24%);
+}
+
+/* ---------- janela do livro: progresso e quebra-cabeça ---------- */
+.puzzle-area {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 16px;
+  margin: 12px 0;
+}
+.puzzle, .puzzle-progresso {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  width: min(300px, 62vw);
+  padding: 4px;
+  background: #2C221E;
+  border: 4px solid #1a110d;
+}
+.puzzle-peca, .puzzle-vazia {
+  position: relative;
+  display: block;
+  padding: 0;
+  aspect-ratio: 898 / 868;
+  background: #5a3f30;
+  border: 3px solid transparent;
+  cursor: pointer;
+}
+.puzzle-peca .pedaco-img { display: block; width: 100%; height: 100%; }
+.puzzle-peca:hover { border-color: #E6B800; }
+.puzzle-peca.escolhida {
+  border-color: #E6B800;
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 0 #1a110d;
+}
+.puzzle-peca[disabled] { cursor: default; }
+
+.puzzle-vazia {
+  display: grid;
+  place-items: center;
+  border: 3px dashed #7a6652;
+  background: #2C221E;
+  color: #7a6652;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.1rem;
+  cursor: default;
+}
+
+.puzzle-modelo {
+  width: min(110px, 22vw);
+  text-align: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: .5rem;
+  line-height: 1.6;
+}
+.puzzle-modelo img {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  background: #fffbe9;
+  border: 4px solid #1a110d;
+  image-rendering: pixelated;
+}
+
+.puzzle-lista { margin: 8px 0 0 22px; }
+.puzzle-lista li { margin-bottom: 4px; }
+.puzzle-lista .ok { text-decoration: line-through; opacity: .6; }
+
+.ref img { display: block; width: 100%; background: #fffbe9; image-rendering: pixelated; }
+.puzzle-vazia .pedaco-img { display: block; width: 100%; height: 100%; }

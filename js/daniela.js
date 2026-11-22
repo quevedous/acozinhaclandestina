@@ -30,17 +30,25 @@
     ],
   };
 
+  const faltaPedaco = (id) => Boolean(window.Pedacos) && !window.Pedacos.tem(id);
+
   const BAUNILHA = ['o Extrato de Baunilha Rara', 'fica nos potes trancados da Despensa e sem ele não dá para tirar a nota máxima'];
 
   const FALTAS = {
     1: () => [
       !estado.chavePega && ['a Chave de Fenda de Confeiteiro', 'ela está escondida nos sacos de farinha'],
       !estado.potesAbertos && BAUNILHA,
+      faltaPedaco(0) && ['um pedaço de papel rasgado do livro de receitas', 'está brilhando no chão da despensa'],
+    ],
+    2: () => [
+      faltaPedaco(1) && ['um pedaço de papel rasgado do livro de receitas', 'está em cima do barril, perto da bancada'],
     ],
     3: () => [
+      faltaPedaco(2) && ['um pedaço de papel rasgado do livro de receitas', 'está brilhando no chão gelado'],
       !estado.emulsaoPronta && ['o creme em emulsão', 'faça no misturador de emulsão, porque ele será usado no prato final'],
     ],
     4: () => [
+      !estado.livroRestaurado && window.Pedacos && window.Pedacos.lista().length < window.Pedacos.total && ['os pedaços do livro de receitas', 'faltam alguns, e um deles está na gaveta secreta da mesa'],
       !estado.potesAbertos && BAUNILHA,
       !estado.inventario.includes('especiarias') && ['as Especiarias Raras', 'ficam dentro do armário de especiarias'],
     ],
@@ -56,6 +64,7 @@
         [!e.mapaPego, 'Tem um papel dobrado dentro do caixote. Pode ser o mapa do restaurante.'],
         [!e.chavePega, 'Já mexeu nos sacos de farinha? Às vezes tem algo escondido.'],
         [!e.potesAbertos, 'Os potes trancados pedem uma ordem, do mais suave ao mais forte. O diário do caixote pode ajudar.'],
+        [faltaPedaco(0), 'Tem um pedaço de papel rasgado brilhando no chão da despensa. Ele é parte de um livro de receitas que você vai montar no Escritório do Chef.'],
       ],
       2: [
         [e.fornoEtapa === 0, 'Clique no forno de cima. O painel pede a temperatura em °C, e o visor mostra em °F. O papel de conversão e a receita ajudam.'],
@@ -65,6 +74,7 @@
         [!e.merengue, 'A porta da Câmara Fria só abre quando o merengue sair do forno.'],
         [e.merengue && !e.caldaPronta, 'A calda precisa de um termômetro, e ele está na Câmara Fria. Depois selecione o termômetro e clique no frasco de calda.'],
         [e.merengue && !e.yuzuUsado, 'Quando tiver o yuzu congelado, deixe-o sobre a bancada de mármore para descongelar.'],
+        [faltaPedaco(1), 'Tem um pedaço de papel rasgado brilhando em cima do barril, ao lado da bancada. Ele é parte de um livro de receitas.'],
       ],
       3: [
         [!e.termostatoAberto, 'O painel do termostato está preso por parafusos. Selecione a chave de fenda no inventário e clique no painel. Atrás dele tem algo que a Confeitaria precisa.'],
@@ -72,9 +82,11 @@
         [!e.segurancaAberta, 'O teclado de segurança pede a temperatura do freezer em °C. O visor mostra 14 °F, e o cartaz da parede explica como converter.'],
         [!e.emulsaoPronta, 'O misturador de emulsão não é obrigatório para sair, mas o creme vai ser usado no prato final. Mantenha o indicador na zona verde.'],
         [!e.caldaPronta || !e.yuzuUsado, 'Volte à Confeitaria: use o termômetro no frasco de calda e deixe o yuzu descongelando no mármore. Só depois a porta do freezer abre.'],
+        [faltaPedaco(2), 'Tem um pedaço de papel rasgado brilhando no chão gelado, à direita. Ele é parte de um livro de receitas.'],
       ],
       4: [
-        [!e.chaveMestraPega, 'O quadro de avisos diz onde está a chave mestra.'],
+        [!e.chaveMestraPega && window.Pedacos && window.Pedacos.lista().length < window.Pedacos.total, 'Para restaurar o livro da estante você precisa dos 4 pedaços de papel: despensa, confeitaria, câmara fria e a gaveta secreta da mesa. Se esqueceu algum, volte pela barra do topo.'],
+        [!e.chaveMestraPega, 'O quadro de avisos diz onde está a chave mestra. Ela está no livro rasgado da estante: monte o quebra-cabeça com os 4 pedaços.'],
         [!e.armarioAberto, 'Use a chave mestra no armário de especiarias antes de sair.'],
       ],
     };

@@ -9,35 +9,6 @@ const VINHOS = [
 ];
 const ORDEM_VINHOS = ['B', 'C', 'A', 'D'];
 
-const CENA_SVG = `
-<rect x="0" y="0" width="200" height="200" fill="#f3e7c4"/>
-<rect x="0" y="172" width="200" height="28" fill="#4a3428"/>
-<rect x="0" y="184" width="200" height="3" fill="#2C221E"/>
-<rect x="98" y="0" width="4" height="22" fill="#2C221E"/>
-<rect x="88" y="22" width="24" height="12" fill="#ffe88a" stroke="#2C221E" stroke-width="3"/>
-<rect x="92" y="52" width="16" height="12" fill="#e6b800" stroke="#2C221E" stroke-width="3"/>
-<rect x="108" y="50" width="12" height="7" fill="#4caf50" stroke="#2C221E" stroke-width="2"/>
-<rect x="94" y="64" width="12" height="16" fill="#fffbe9" stroke="#2C221E" stroke-width="3"/>
-<rect x="82" y="80" width="36" height="16" fill="#fffbe9" stroke="#2C221E" stroke-width="3"/>
-<rect x="70" y="96" width="60" height="18" fill="#fffbe9" stroke="#2C221E" stroke-width="3"/>
-<rect x="58" y="114" width="84" height="28" fill="#fffbe9" stroke="#2C221E" stroke-width="3"/>
-<rect x="61" y="131" width="78" height="8" fill="#e8c37a"/>
-<rect x="44" y="142" width="112" height="8" fill="#d9534f" stroke="#2C221E" stroke-width="2"/>
-<rect x="24" y="150" width="152" height="14" fill="#ffffff" stroke="#2C221E" stroke-width="3"/>
-<rect x="30" y="164" width="140" height="8" fill="#cfd8dc"/>
-<rect x="10" y="128" width="6" height="44" fill="#8a7a6c" stroke="#2C221E" stroke-width="2"/>
-<rect x="5" y="118" width="16" height="12" fill="#cfd8dc" stroke="#2C221E" stroke-width="2"/>
-<rect x="172" y="144" width="20" height="28" fill="#a23b3b" stroke="#2C221E" stroke-width="3"/>
-<rect x="170" y="138" width="24" height="8" fill="#d9c8a0" stroke="#2C221E" stroke-width="2"/>
-`;
-const PECAS = [[0, 0], [100, 0], [0, 100], [100, 100]];
-function svgPeca(x, y) {
-  return '<svg viewBox="' + x + ' ' + y + ' 100 100" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">' + CENA_SVG + '</svg>';
-}
-function svgInteiro() {
-  return '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">' + CENA_SVG + '</svg>';
-}
-
 const ITENS = {
   chave:        { nome: 'Chave de Fenda de Confeiteiro', icone: '🪛', desc: 'Já serviu para abrir o termostato.' },
   mapa:         { nome: 'Mapa do Restaurante', icone: '🗺️', desc: 'Mostra o caminho entre as cozinhas. Clique de novo para abrir.' },
@@ -46,7 +17,7 @@ const ITENS = {
   yuzu:         { nome: 'Fruta de Yuzu Congelada', icone: '🍋', desc: 'Precisa descongelar no mármore frio da Confeitaria.' },
   merengue:     { nome: 'Merengue Assado', icone: '🍥', desc: 'Assado no ponto exato. Será usado no prato final.' },
   calda:        { nome: 'Calda no Ponto', icone: '🍯', desc: 'Calda de açúcar no ponto de bola mole, 118 °C.' },
-  fragmentos:   { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de uma página arrancada. Clique no livro rasgado da estante.' },
+  fragmentos:   { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro rasgado da estante.' },
   livro:        { nome: 'Livro Restaurado', icone: '📖', desc: 'Mostra a ordem original da receita. Clique para ler.' },
   chavemestra:  { nome: 'Chave Mestra', icone: '🗝️', desc: 'Clique no armário de especiarias ou na porta de saída.' },
   especiarias:  { nome: 'Especiarias Raras', icone: '🧂', desc: 'Servem para decorar o prato final.' }
@@ -58,6 +29,7 @@ const PADRAO = {
   erros: 0,
   acertos: 0,
   gavetaAberta: false,
+  pedacos: [],
   livroRestaurado: false,
   chaveMestraPega: false,
   armarioAberto: false
@@ -66,6 +38,7 @@ function carregarEstado() {
   try { return JSON.parse(sessionStorage.getItem(CHAVE_ESTADO)); } catch (e) { return null; }
 }
 let estado = Object.assign({}, PADRAO, carregarEstado() || {});
+if (!Array.isArray(estado.pedacos)) estado.pedacos = [];
 function salvar() {
   try { sessionStorage.setItem(CHAVE_ESTADO, JSON.stringify(estado)); } catch (e) {}
 }
@@ -199,10 +172,10 @@ function abrirNotaMaster() {
 }
 
 function abrirEsboco() {
-  abrirModal('Desenho do livro aberto', `
+  abrirModal('Desenho do livro', `
     <div class="papel">
-      <p>Um desenho a lápis de um livro aberto. As páginas arrancadas mostravam a sobremesa final, vista de lado:</p>
-      <p>no alto, uma lâmpada; depois uma fatia de yuzu com folha de hortelã; o merengue dourado; a calda vermelha; o prato; e, embaixo, a mesa de madeira.</p>
+      <p>Um desenho a lápis de um livro de receitas fechado: capa cor de vinho, com uma estrela dourada no meio, detalhes dourados nos cantos e uma fita vermelha marcando a página.</p>
+      <p>Era assim o livro da estante antes de ser rasgado.</p>
     </div>
   `);
 }
@@ -211,9 +184,9 @@ function abrirBarril() {
   abrirModal('Pistas (para o livro)', `
     <div class="papel">
       <p><strong>PISTAS PARA O LIVRO</strong></p>
-      <p>Foto da página original, antes de ser rasgada:</p>
-      <div class="ref">${svgInteiro()}</div>
-      <p>"Quando juntar os fragmentos, as quatro peças devem formar esta imagem."</p>
+      <p>Foto do livro de receitas original, antes de ser rasgado:</p>
+      <div class="ref"><img src="../img/livro_quebra-cabeca.png" alt="Livro de receitas de capa vinho com uma estrela dourada e uma fita vermelha"></div>
+      <p>"O Chef rasgou a capa em 4 pedaços e escondeu pela cozinha: um na despensa, um na confeitaria, um na câmara fria e um aqui, na gaveta secreta da mesa. Juntando os 4, as peças formam esta imagem."</p>
     </div>
   `);
 }
@@ -259,9 +232,12 @@ function abrirGaveta() {
       estado.gavetaAberta = true;
       estado.acertos++;
       salvar();
-      addItem('fragmentos');
       fecharModal();
-      fala('Clique! A gaveta abriu e dentro havia fragmentos de uma página arrancada. Leve-os ao livro rasgado da estante.');
+      Pedacos.coletar(3);
+      const tenho = Pedacos.lista().length;
+      fala(tenho >= Pedacos.total
+        ? 'Clique! A gaveta abriu e dentro havia o último pedaço do livro! Agora você tem os 4: clique no livro rasgado da estante para montar.'
+        : 'Clique! A gaveta abriu e dentro havia um pedaço do livro de receitas. Você tem ' + tenho + ' de ' + Pedacos.total + ': os outros estão nas cenas anteriores.');
     } else {
       estado.erros++;
       salvar();
@@ -288,38 +264,90 @@ function abrirPaginaLivro(novo) {
   `);
 }
 
+function embaralhar(lista) {
+  const a = lista.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const k = Math.floor(Math.random() * (i + 1));
+    [a[i], a[k]] = [a[k], a[i]];
+  }
+  return a;
+}
+
+const estaPronto = (ordem) => ordem.every((peca, pos) => peca === pos);
+
+function pecaHtml(id) {
+  const q = Pedacos.quadrante(id);
+  return '<span class="pedaco-img" style="--px:' + q.px + ';--py:' + q.py + '"></span>';
+}
+
+function concluirLivro() {
+  estado.livroRestaurado = true;
+  estado.chaveMestraPega = true;
+  estado.acertos++;
+  salvar();
+  removerItem('fragmentos');
+  addItem('livro');
+  addItem('chavemestra');
+  abrirPaginaLivro(true);
+  fala('Você restaurou o livro e achou a chave mestra escondida atrás da página!');
+}
+
+/* Ainda faltam pedaços: mostra quantos já foram achados e onde procurar */
+function abrirProgressoPedacos() {
+  const tem = Pedacos.lista();
+  const casas = [0, 1, 2, 3].map(id => tem.includes(id)
+    ? '<div class="puzzle-vazia" style="padding:0;border:0">' + pecaHtml(id) + '</div>'
+    : '<div class="puzzle-vazia">?</div>').join('');
+  const locais = Pedacos.locais.map((nome, id) =>
+    '<li' + (tem.includes(id) ? ' class="ok"' : '') + '>' + nome + (tem.includes(id) ? ' ✓' : '') + '</li>').join('');
+  abrirModal('Livro de receitas rasgado', `
+    <p>As páginas do meio foram arrancadas e rasgadas em <strong>4 pedaços</strong>, escondidos pela cozinha. Você achou <strong>${tem.length} de ${Pedacos.total}</strong>.</p>
+    <div class="puzzle-area"><div class="puzzle-progresso" style="aspect-ratio:auto">${casas}</div></div>
+    <ul class="puzzle-lista">${locais}</ul>
+    <p class="dica-modal">Quando juntar os 4, clique de novo no livro para montar o quebra-cabeça. Dá para voltar às cenas anteriores pela barra do topo.</p>
+  `);
+}
+
+/* Tem os 4 pedaços: quebra-cabeça de trocar as peças de lugar */
 function abrirQuebraCabeca() {
   selecionado = null;
   renderInventario();
-  const deg = PECAS.map(() => 90 * (1 + Math.floor(Math.random() * 3)));
+  let ordem = embaralhar([0, 1, 2, 3]);
+  while (estaPronto(ordem)) ordem = embaralhar(ordem);
+  let escolhida = null;
   let resolvido = false;
+
   abrirModal('Restaurar o livro', `
-    <p>Clique em cada fragmento para girá-lo, até formar a imagem completa da sobremesa.</p>
-    <div class="quebra" id="quebra">
-      ${PECAS.map((p, i) => '<button type="button" class="peca" data-i="' + i + '" aria-label="Fragmento ' + (i + 1) + '"><span class="peca-img" id="pc' + i + '">' + svgPeca(p[0], p[1]) + '</span></button>').join('')}
+    <p>Você juntou os 4 pedaços! Clique em um pedaço e depois em outro para trocá-los de lugar, até remontar o livro.</p>
+    <div class="puzzle-area">
+      <div class="puzzle" id="puzzle"></div>
+      <div class="puzzle-modelo">MODELO<img src="../img/livro_quebra-cabeca.png" alt="Modelo: livro de capa vinho com uma estrela dourada"></div>
     </div>
-    <p class="dica-modal">O quadro de avisos e o barril têm pistas de como é a página original.</p>
+    <p class="dica-modal" id="puzzle-msg">O modelo ao lado mostra como o livro deve ficar.</p>
   `);
-  const aplicar = () => deg.forEach((d, i) => { $('#pc' + i).style.transform = 'rotate(' + d + 'deg)'; });
-  aplicar();
-  $('#quebra').addEventListener('click', e => {
-    const b = e.target.closest('.peca');
+
+  const desenhar = () => {
+    $('#puzzle').innerHTML = ordem.map((peca, pos) =>
+      '<button type="button" class="puzzle-peca' + (escolhida === pos ? ' escolhida' : '') + '" data-pos="' + pos + '"' +
+      (resolvido ? ' disabled' : '') + ' aria-label="Pedaço na posição ' + (pos + 1) + '">' + pecaHtml(peca) + '</button>').join('');
+  };
+  desenhar();
+
+  $('#puzzle').addEventListener('click', e => {
+    const b = e.target.closest('.puzzle-peca');
     if (!b || resolvido) return;
-    deg[Number(b.dataset.i)] += 90;
-    aplicar();
-    if (deg.every(d => d % 360 === 0)) {
+    const pos = Number(b.dataset.pos);
+    if (escolhida === null) { escolhida = pos; desenhar(); return; }
+    if (escolhida === pos) { escolhida = null; desenhar(); return; }
+    [ordem[escolhida], ordem[pos]] = [ordem[pos], ordem[escolhida]];
+    escolhida = null;
+    if (estaPronto(ordem)) {
       resolvido = true;
-      setTimeout(() => {
-        estado.livroRestaurado = true;
-        estado.chaveMestraPega = true;
-        estado.acertos++;
-        salvar();
-        removerItem('fragmentos');
-        addItem('livro');
-        addItem('chavemestra');
-        abrirPaginaLivro(true);
-        fala('Você restaurou o livro e achou a chave mestra escondida atrás da página!');
-      }, 500);
+      $('#puzzle-msg').textContent = 'Encaixou! O livro está inteiro de novo.';
+      desenhar();
+      setTimeout(concluirLivro, 900);
+    } else {
+      desenhar();
     }
   });
 }
@@ -327,10 +355,10 @@ function abrirQuebraCabeca() {
 function abrirLivro() {
   if (estado.livroRestaurado) {
     abrirPaginaLivro(false);
-  } else if (estado.inventario.includes('fragmentos')) {
+  } else if (Pedacos.lista().length >= Pedacos.total) {
     abrirQuebraCabeca();
   } else {
-    fala('Um livro de receitas rústico com as páginas centrais arrancadas. Faltam os fragmentos da página.');
+    abrirProgressoPedacos();
   }
 }
 

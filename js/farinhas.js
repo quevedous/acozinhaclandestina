@@ -1,18 +1,14 @@
 const CHAVE_ESTADO = 'cozinha_estado';
 const DURACAO = 15 * 60;
 
-const ORDEM_CORRETA = [
-  "rgba(37, 99, 235, 0.85)",  // Azul-Ciano
-  "rgba(16, 185, 129, 0.85)", // Verde-Esmeralda
-  "rgba(217, 119, 6, 0.85)",  // Âmbar Dourado
-  "rgba(220, 38, 38, 0.85)"   // Vermelho-Brasa
-];
+const ORDEM_CORRETA = ['azul', 'verde', 'laranja', 'vermelho'];
 
 const ITENS = {
+    fragmentos: { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro no Escritório do Chef.' },
   papel_dica: { 
-    nome: 'Bilhete Enigma Cromático', 
+    nome: 'Bilhete Enigma', 
     icone: '📜', 
-    desc: 'Um bilhete com a ordem correta baseada em valores RGBA. Clique para ler.' 
+    desc: 'Um bilhete antigo com códigos RGB dos reagentes. Clique para ler.' 
   }
 };
 
@@ -21,12 +17,7 @@ const PADRAO = {
   inventario: [],
   papelColetado: false,
   portaAberta: false,
-  frascosAtuais: [
-    "rgba(217, 119, 6, 0.85)", 
-    "rgba(37, 99, 235, 0.85)", 
-    "rgba(220, 38, 38, 0.85)", 
-    "rgba(16, 185, 129, 0.85)"
-  ]
+  frascosAtuais: ['laranja', 'azul', 'vermelho', 'verde']
 };
 
 function carregarEstado() {
@@ -158,14 +149,15 @@ if(btnPapelEscondido) {
 }
 
 function abrirEnigmaPapel() {
-  abrirModal('Bilhete Enigma · Cores RGBA', `
+  abrirModal('Bilhete Enigma · Anotações', `
     <div class="papel">
-      <p><strong>Ordem Sequencial dos Frascos:</strong></p>
-      <p>1. rgba(37, 99, 235, 0.85)</p>
-      <p>2. rgba(16, 185, 129, 0.85)</p>
-      <p>3. rgba(217, 119, 6, 0.85)</p>
-      <p>4. rgba(220, 38, 38, 0.85)</p>
-      <p class="dica-modal" style="margin-top:10px;">Vá até a porta da Câmara Fria e ordene os frascos conforme esta sequência exata.</p>
+      <p><strong>Anotações encontradas na despensa:</strong></p>
+      <p>Os reagentes foram identificados apenas por suas composições de cor.</p>
+      <p><strong>RGB (0, 0, 255)</strong></p>
+      <p><strong>RGB (0, 255, 0)</strong></p>
+      <p><strong>RGB (255, 165, 0)</strong></p>
+      <p><strong>RGB (255, 0, 0)</strong></p>
+      <p class="dica-modal">"A ordem correta está escondida nas cores."</p>
     </div>
   `);
 }

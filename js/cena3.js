@@ -5,6 +5,7 @@ const SENHA_CAIXA = '6075';
 const EMULSAO = { meta: 10, largura: 24, graca: 1 };
 
 const ITENS = {
+    fragmentos: { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro no Escritório do Chef.' },
   chave:       { nome: 'Chave de Fenda de Confeiteiro', icone: '🪛', desc: 'Clique no painel do termostato para abri-lo.' },
   mapa:        { nome: 'Mapa do Restaurante', icone: '🗺️', desc: 'Mostra o caminho entre as cozinhas. Clique de novo para abrir.' },
   baunilha:    { nome: 'Extrato de Baunilha Rara', icone: '🌿', desc: 'Ingrediente obrigatório para a nota máxima no prato final.' },
