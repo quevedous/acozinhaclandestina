@@ -15,7 +15,7 @@ const ITENS = {
   livro: { nome: 'Livro Restaurado', icone: '📖', desc: 'Receita completa do Bolo Clandestino.' },
   chavemestra: { nome: 'Chave Mestra', icone: '🗝️', desc: 'Abre portas trancadas do salão.' },
   especiarias: { nome: 'Especiarias Raras', icone: '🧂', desc: 'Tempero especial dos jurados.' },
-  papel_dica: { nome: 'Bilhete Enigma', icone: '📜', desc: 'Sequência: Azul → Verde → Laranja → Vermelho.' },
+  papel_dica: { nome: 'Bilhete Enigma', icone: '📜', desc: 'Sequência: Azul  Verde → Laranja → Vermelho.' },
   chave_porta: { nome: 'Chave da Câmara Fria', icone: '🔑', desc: 'Abre a porta da despensa trancada.' }
 };
 
@@ -28,7 +28,7 @@ const PADRAO = {
   erros: 0,
   acertos: 0
 };
-
++
 function carregarEstado() {
   try { return JSON.parse(sessionStorage.getItem(CHAVE_ESTADO)); } catch (e) { return null; }
 }
@@ -153,15 +153,57 @@ iframe.addEventListener('load', () => {
     const titulo = doc.querySelector('#header-bar .cenario')?.textContent || doc.title;
     if (titulo) $('#titulo-cenario').textContent = titulo;
 
-    const estiloEmbed = doc.createElement('style');
-    estiloEmbed.textContent = `
-      #header-bar, #mensagem, #inventory-bar { display: none !important; }
-      body { display: block !important; width: 100vw !important; height: 100vh !important; overflow: hidden !important; }
-      #game-stage { display: block !important; padding: 0 !important; width: 100vw !important; height: 100vh !important; }
-      .cena { width: 100vw !important; height: 100vh !important; max-width: none !important; max-height: none !important; border: 0 !important; box-shadow: none !important; }
-      .escopo { width: 100vw !important; height: 100vh !important; max-width: none !important; max-height: none !important; border: 0 !important; box-shadow: none !important; }
-    `;
-    doc.head.appendChild(estiloEmbed);
+    
+const estiloEmbed = doc.createElement('style');
+
+estiloEmbed.textContent = `
+  #header-bar,
+  #mensagem,
+  #inventory-bar {
+    display: none !important;
+  }
+
+  html,
+  body {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  body {
+    display: block !important;
+  }
+
+  #game-stage {
+    display: grid !important;
+    place-items: center !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .cena,
+  .escopo {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    height: auto !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .cena {
+    width: min(100%, calc(100vh * 1.8333)) !important;
+  }
+
+  .escopo {
+    width: min(100%, calc(100vh * 1.8333)) !important;
+  }
+`;
+
+doc.head.appendChild(estiloEmbed);
+
 
     const msgCena = doc.querySelector('#mensagem');
     if (msgCena) {
