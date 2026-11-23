@@ -22,6 +22,7 @@ const ITENS = {
   calda:        { nome: 'Calda no Ponto', icone: '🍯', desc: 'Calda de açúcar no ponto de bola mole, 118 °C.' },
   fragmentos:   { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro rasgado da estante.' },
   livro:        { nome: 'Livro Restaurado', icone: '📖', desc: 'Mostra a ordem original da receita. Clique para ler.' },
+  chavebarril:  { nome: 'Chave do Barril', icone: '🔑', desc: 'Selecione e clique no barril do canto esquerdo para abrir o cofre.' },
   chavemestra:  { nome: 'Chave Mestra', icone: '🗝️', desc: 'Clique no armário de especiarias (lateral da mesa) ou na porta de saída.' },
   especiarias:  { nome: 'Especiarias Raras', icone: '🧂', desc: 'Servem para decorar o prato final.' }
 };
@@ -193,7 +194,7 @@ function abrirBarril() {
     return;
   }
   if (BARRIL_PRECISA_CHAVE && !estado.chaveBarril) {
-    fala('A tampa do barril tem uma fechadura de cofre e está trancada: falta a chavinha. O bilhete do quadro diz que ela está na gaveta da mesa.');
+    fala('A tampa do barril tem uma fechadura de cofre e está trancada: falta a chave. Há uma chave pendurada no quadro de avisos.');
     return;
   }
   abrirCofreBarril();
@@ -223,6 +224,7 @@ function abrirCofreBarril() {
       estado.barrilAberto = true;
       estado.acertos++;
       salvar();
+      removerItem('chavebarril');
       fecharModal();
       Pedacos.coletar(3);
       const tenho = Pedacos.lista().length;
@@ -276,6 +278,7 @@ function abrirGaveta() {
       estado.chaveBarril = true;
       estado.acertos++;
       salvar();
+      if (!estado.barrilAberto) addItem('chavebarril');
       fecharModal();
       fala('Clique! A gaveta abriu e dentro havia uma chavinha com a etiqueta "BARRIL". Você a guardou: ela abre o cofre do barril, no canto esquerdo.');
     } else {
@@ -458,7 +461,7 @@ function abrirPorta() {
 ligar('#no-quadro', 'Quadro', abrirQuadro);
 ligar('#no-notamaster', 'Bilhete', abrirNotaMaster);
 ligar('#no-esboco', 'Desenho', abrirEsboco);
-ligar('#no-barril', 'Barril', abrirBarril);
+ligar('#no-barril', 'Barril', abrirBarril, { chavebarril: () => { selecionado = null; renderInventario(); abrirBarril(); } });
 ligar('#no-cartaz-barril', 'Cartaz do barril', abrirCartazBarril);
 ligar('#no-gaveta', 'Gaveta', abrirGaveta);
 ligar('#no-estante', 'Livros da estante', abrirLivro);
@@ -475,7 +478,16 @@ ligar('#no-trofeus-panela', 'Troféus', () => fala('Troféus de panela de cobre.
 ligar('#no-cupula', 'Redoma', () => fala('Uma redoma de vidro com uma planta verde estranha. A plaquinha diz: "Hortelã do Chef. Não tocar."'));
 ligar('#no-timer', 'Timer', () => fala('Um timer digital parado em 121. Parece uma temperatura que você já viu na Confeitaria.'));
 ligar('#no-baunilha', 'Garrafa', () => fala('Uma garrafa de extrato de baunilha rara, quase vazia. Ainda bem que você já pegou a sua.'));
-ligar('#no-chave-quadro', 'Chave', () => fala('Uma chave dourada presa ao quadro. Está soldada na cortiça: é só enfeite. O bilhete ao lado diz que a master key está no livro.'));
+ligar('#no-chave-quadro', 'Chave', () => {
+  if (estado.chaveBarril || estado.inventario.includes('chavebarril') || estado.barrilAberto) {
+    fala('Você já pegou a chave que estava pendurada no quadro.');
+    return;
+  }
+  estado.chaveBarril = true;
+  salvar();
+  addItem('chavebarril');
+  fala('Você pegou a chave pendurada no quadro! Selecione-a no inventário e clique no barril, no canto esquerdo.');
+});
 ligar('#no-bilhetes', 'Bilhetes', () => fala('Vários bilhetes iguais: "176 °F = 80 °C". O Chef cansou de ver estagiário errar essa conversão.'));
 
 function formatar(seg) {
