@@ -1,7 +1,7 @@
 const CHAVE_ESTADO = 'cozinha_estado';
 const DURACAO = 15 * 60;
-const SENHA_SEGURANCA = '10';
-const SENHA_CAIXA = '6075';
+const SENHA_SEGURANCA = '743';   // dias da semana, estações do ano, refeições principais
+const SENHA_CAIXA = '0311';      // recipiente #03 (calda de yuzu) + recipiente #11 (gelificante)
 const EMULSAO = { meta: 10, largura: 24, graca: 1 };
 
 const ITENS = {
@@ -183,27 +183,28 @@ function painelNumerico(titulo, intro, tam, completo, checar, sucesso, dica) {
 }
 
 function abrirPoster() {
-  abrirModal('Enigma das densidades', `
+  abrirModal('Charadas do freezer', `
     <div class="papel">
-      <p><strong>ENIGMA DAS DENSIDADES · Freezer</strong></p>
-      <p>Massa (g) = Volume (mL) × Densidade (g/cm³).<br>Lembre: 1 cm³ = 1 mL.</p>
-      <p><strong>Trava do freezer de frutas:</strong> massa do Recipiente #3 e massa do Recipiente #11, em gramas, nessa ordem, com 2 dígitos cada.</p>
-      <p><strong>Bloqueio de segurança da porta:</strong> o freezer de conservação marca <strong>14 °F</strong>. Digite em °C, sem o sinal de menos.</p>
-      <p>°C = (°F − 32) ÷ 1,8</p>
+      <p><strong>CHARADAS DO CHEF · Freezer</strong></p>
+      <p><strong>Bloqueio de segurança da porta</strong> (3 dígitos, na ordem):</p>
+      <ol>
+        <li>"Começo na segunda e termino no domingo. Quantos dias formam a minha família?"</li>
+        <li>"Primavera, verão, outono e inverno moram na minha casa. Quantos moradores?"</li>
+        <li>"Café da manhã, almoço e jantar. Quantas refeições principais o Chef serve por dia?"</li>
+      </ol>
+      <p><strong>Trava do freezer de frutas</strong> (4 dígitos): o número do recipiente da <em>calda de yuzu</em>, seguido do número do recipiente do <em>gelificante</em>, com 2 dígitos cada. Exemplo: recipiente 5 vira 05.</p>
     </div>
   `);
 }
 
 function abrirRecipiente(numero) {
-  const dados = numero === 3
-    ? { conteudo: 'Calda de yuzu', dens: '1,2', vol: '50' }
-    : { conteudo: 'Gelificante', dens: '1,5', vol: '50' };
+  const conteudo = numero === 3 ? 'Calda de yuzu' : 'Gelificante';
   abrirModal('Recipiente #' + numero, `
     <div class="papel">
       <p><strong>RECIPIENTE #${numero}</strong></p>
-      <p>Conteúdo: ${dados.conteudo}<br>Densidade: ${dados.dens} g/cm³<br>Volume: ${dados.vol} mL</p>
+      <p>Conteúdo: ${conteudo}</p>
     </div>
-    <p class="dica-modal">Massa = volume × densidade.</p>
+    <p class="dica-modal">O número do recipiente está na etiqueta. Veja o cartaz para saber como usá-lo.</p>
   `);
 }
 
@@ -214,8 +215,8 @@ function abrirSeguranca() {
   }
   painelNumerico(
     'Bloqueio de segurança',
-    'Digite a temperatura do freezer em °C (o visor mostra 14 °F).',
-    3, false,
+    'Digite a senha de 3 dígitos: as respostas das charadas do cartaz, na ordem.',
+    3, true,
     c => c === SENHA_SEGURANCA,
     () => {
       estado.segurancaAberta = true;
@@ -225,7 +226,7 @@ function abrirSeguranca() {
       fecharModal();
       fala('Bip! A luz do teclado ficou verde. A porta do freezer está liberada.');
     },
-    'Dica: o cartaz da parede explica como converter °F em °C.'
+    'Dica: as charadas estão no cartaz da parede.'
   );
 }
 
@@ -236,7 +237,7 @@ function abrirCaixa() {
   }
   painelNumerico(
     'Freezer de frutas raras',
-    'Trava de balança de precisão. Digite 4 dígitos: a massa (g) do Recipiente #3 e a do Recipiente #11.',
+    'Digite 4 dígitos: o número do recipiente da calda de yuzu e o do gelificante, com 2 dígitos cada.',
     4, true,
     c => c === SENHA_CAIXA,
     () => {
@@ -248,7 +249,7 @@ function abrirCaixa() {
       fecharModal();
       fala('Clique! O freezer abriu e você pegou a Fruta de Yuzu Congelada. Ela precisa descongelar na Confeitaria.');
     },
-    'Dica: leia as etiquetas dos recipientes e use a fórmula do cartaz.'
+    'Dica: leia as etiquetas dos recipientes nas prateleiras de cima.'
   );
 }
 

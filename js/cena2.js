@@ -20,7 +20,7 @@ const ITENS = {
   yuzu:        { nome: 'Fruta de Yuzu Congelada', icone: '🍋', desc: 'Precisa descongelar aos poucos. O mármore frio ajuda.' },
   merengue:    { nome: 'Merengue Assado', icone: '🍥', desc: 'Assado no ponto exato. Será usado no prato final.' },
   calda:       { nome: 'Calda no Ponto', icone: '🍯', desc: 'Calda de açúcar no ponto de bola mole, 118 °C.' },
-  papel_dica:  { nome: 'Papel Enigma da Despensa', icone: '📜', desc: 'Um bilhete rasgado com o enigma para abrir a porta eletrônica. Clique para decifrar.' },
+  papel_dica:  { nome: 'Papel Enigma da Despensa', icone: '📜', desc: 'Um bilhete rasgado com charadas sobre a cor de cada reagente. Clique para decifrar.' },
   chave_porta: { nome: 'Chave da Câmara Fria', icone: '🔑', desc: 'Chave obtida na bancada de frascos.' }
 };
 
@@ -167,12 +167,14 @@ function abrirEnigmaPapel() {
   abrirModal('Bilhete Enigma · Anotações', `
     <div class="papel">
       <p><strong>Anotações encontradas na despensa:</strong></p>
-      <p>Os reagentes foram identificados apenas por suas composições de cor.</p>
-      <p><strong>RGB (0, 0, 255)</strong></p>
-      <p><strong>RGB (0, 255, 0)</strong></p>
-      <p><strong>RGB (255, 165, 0)</strong></p>
-      <p><strong>RGB (255, 0, 0)</strong></p>
-      <p class="dica-modal">"A ordem correta está escondida nas cores."</p>
+      <p>Os frascos estão sem rótulo. O Chef só deixou charadas, e a ordem delas é a ordem da receita:</p>
+      <ol>
+        <li>"Pinto o céu num dia sem nuvens e encho o mar até o fundo. Sou fria, calma e profunda. Quem sou eu?"</li>
+        <li>"Estou nas folhas, na hortelã e no sinal que manda passar. Quem sou eu?"</li>
+        <li>"Tenho nome de fruta e o pôr do sol me veste. Fico entre o vermelho e o amarelo. Quem sou eu?"</li>
+        <li>"Sou a cor do tomate maduro, do morango e do sinal de PARE. Quem sou eu?"</li>
+      </ol>
+      <p class="dica-modal">"A resposta de cada charada é a cor de um frasco. Coloque-os nessa ordem, da esquerda para a direita."</p>
     </div>
   `);
 }
@@ -210,8 +212,7 @@ function abrirReceita() {
     <div class="papel">
       <p><strong>Merengue Suíço da Casa</strong></p>
       <p>4 claras, 220 g de açúcar e uma pitada de sal. Bater em banho-maria até firmar.</p>
-      <p><strong>Estágio 1 (Secar):</strong> exige <strong>Chama Azul-Ciano</strong> (calor suave).</p>
-      <p><strong>Estágio 2 (Dourar):</strong> veja a cor no Cartaz da parede.</p>
+      <p><strong>Estágio 1 (Secar)</strong> e <strong>Estágio 2 (Dourar):</strong> a cor da chama de cada estágio é uma charada. Leia o Cartaz da parede.</p>
       <p>"Não olhe números! O segredo do merengue perfeito está na cor da chama do queimador."</p>
     </div>
   `);
@@ -220,11 +221,12 @@ function abrirReceita() {
 function abrirPoster() {
   abrirModal('Cartaz do merengue', `
     <div class="papel">
-      <p><strong>MERENGUE · Espectro de Cozimento</strong></p>
-      <p>O merengue perfeito é assado em dois estágios visuais:</p>
-      <p><strong>1º Secar:</strong> <span class="amostra-cor" style="background:#2563eb"></span> Azul-Ciano</p>
-      <p><strong>2º Dourar:</strong> <span class="amostra-cor" style="background:#d97706"></span> Âmbar Dourado</p>
+      <p><strong>MERENGUE · Charadas da Chama</strong></p>
+      <p>O merengue perfeito é assado em dois estágios. A cor da chama de cada um é uma charada:</p>
+      <p><strong>1º Secar:</strong> "Sou a cor do céu limpo e do mar fundo. A chama mais mansa do fogão se veste de mim. Quem sou eu?"</p>
+      <p><strong>2º Dourar:</strong> "Sou a cor do mel que escorre, do caramelo no ponto e da medalha de ouro. Quem sou eu?"</p>
     </div>
+    <p class="dica-modal">Use o Guia de Chamas para ver como cada cor se chama no queimador.</p>
   `);
 }
 
@@ -234,10 +236,10 @@ function abrirTabela() {
       <p><strong>Escala Cromática do Queimador</strong></p>
       <table class="tabela-conv">
         <tr><th>Cor da Chama</th><th>Intensidade</th></tr>
-        <tr><td><span class="amostra-cor" style="background:#2563eb"></span>Azul-Ciano</td><td>Baixa (Secagem)</td></tr>
-        <tr><td><span class="amostra-cor" style="background:#10b981"></span>Verde-Esmeralda</td><td>Morna (Fermentação)</td></tr>
-        <tr><td><span class="amostra-cor" style="background:#d97706"></span>Âmbar Dourado</td><td>Média-Alta (Caramelizar)</td></tr>
-        <tr><td><span class="amostra-cor" style="background:#dc2626"></span>Vermelho-Brasa</td><td>Máxima (Queima rápido)</td></tr>
+        <tr><td><span class="amostra-cor" style="background:#2563eb"></span>Azul-Ciano</td><td>Baixa</td></tr>
+        <tr><td><span class="amostra-cor" style="background:#10b981"></span>Verde-Esmeralda</td><td>Morna</td></tr>
+        <tr><td><span class="amostra-cor" style="background:#d97706"></span>Âmbar Dourado</td><td>Média-Alta</td></tr>
+        <tr><td><span class="amostra-cor" style="background:#dc2626"></span>Vermelho-Brasa</td><td>Máxima</td></tr>
       </table>
     </div>
   `);
@@ -259,7 +261,7 @@ function abrirPainel(n) {
   abrirModal('Queimador · Estágio ' + n + ' (' + e.nome + ')', `
     <div class="display-forno">
       FORNO CONFEITARIA · ESTÁGIO ${n}<br>
-      Ajuste o regulador de gás até atingir a cor indicada na receita.
+      Ajuste o regulador de gás até a chama ficar da cor da charada do cartaz.
     </div>
     <div class="visor-chama" id="visor-chama" style="background:${corInicial.hex}">
       ${corInicial.nome}
@@ -293,7 +295,7 @@ function abrirPainel(n) {
     } else {
       estado.erros++;
       salvar();
-      $('#msg-forno').textContent = 'Essa cor de chama vai estragar o ponto! Confira a Receita e o Cartaz.';
+      $('#msg-forno').textContent = 'Essa cor de chama vai estragar o ponto! Releia a charada do Cartaz da parede.';
     }
   });
 }

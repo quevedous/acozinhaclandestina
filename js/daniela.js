@@ -67,9 +67,9 @@
         [faltaPedaco(0), 'Tem um pedaço de papel rasgado brilhando no chão da despensa. Ele é parte de um livro de receitas que você vai montar no Escritório do Chef.'],
       ],
       2: [
-        [e.fornoEtapa === 0, 'Clique no forno de cima. O painel pede a temperatura em °C, e o visor mostra em °F. O papel de conversão e a receita ajudam.'],
+        [e.fornoEtapa === 0, 'Clique no forno de cima e ajuste a cor da chama. A cor do Estágio 1 é uma charada no Cartaz da parede.'],
         [e.fornoEtapa === 1 || e.fornoEtapa === 3, 'O merengue ainda está assando. Espere alguns segundos e clique no forno de novo.'],
-        [e.fornoEtapa === 2, 'No estágio 2 o visor não mostra a temperatura. Ela está escrita em algum lugar do cenário. Depois é só converter para °C.'],
+        [e.fornoEtapa === 2, 'No Estágio 2 a cor da chama também é uma charada do Cartaz da parede. Pense em algo dourado, como mel ou caramelo.'],
         [e.fornoEtapa === 4, 'O merengue está pronto! Clique no forno para retirá-lo.'],
         [!e.merengue, 'A porta da Câmara Fria só abre quando o merengue sair do forno.'],
         [e.merengue && !e.caldaPronta, 'A calda precisa de um termômetro, e ele está na Câmara Fria. Depois selecione o termômetro e clique no frasco de calda.'],
@@ -78,8 +78,8 @@
       ],
       3: [
         [!e.termostatoAberto, 'O painel do termostato está preso por parafusos. Selecione a chave de fenda no inventário e clique no painel. Atrás dele tem algo que a Confeitaria precisa.'],
-        [!e.caixaAberta, 'O freezer de frutas tem uma trava de balança com 4 dígitos: a massa de dois recipientes. Leia as etiquetas deles e use a fórmula do cartaz.'],
-        [!e.segurancaAberta, 'O teclado de segurança pede a temperatura do freezer em °C. O visor mostra 14 °F, e o cartaz da parede explica como converter.'],
+        [!e.caixaAberta, 'O freezer de frutas tem uma trava de 4 dígitos: o número do recipiente da calda de yuzu e o do gelificante, 2 dígitos cada. Leia as etiquetas nas prateleiras.'],
+        [!e.segurancaAberta, 'O teclado de segurança pede 3 dígitos. A resposta está nas charadas do cartaz da parede.'],
         [!e.emulsaoPronta, 'O misturador de emulsão não é obrigatório para sair, mas o creme vai ser usado no prato final. Mantenha o indicador na zona verde.'],
         [!e.caldaPronta || !e.yuzuUsado, 'Volte à Confeitaria: use o termômetro no frasco de calda e deixe o yuzu descongelando no mármore. Só depois a porta do freezer abre.'],
         [faltaPedaco(2), 'Tem um pedaço de papel rasgado brilhando no chão gelado, à direita. Ele é parte de um livro de receitas.'],

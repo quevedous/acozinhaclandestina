@@ -8,7 +8,7 @@ const ITENS = {
   papel_dica: { 
     nome: 'Bilhete Enigma', 
     icone: '📜', 
-    desc: 'Um bilhete antigo com códigos RGB dos reagentes. Clique para ler.' 
+    desc: 'Um bilhete antigo com charadas sobre a cor de cada reagente. Clique para ler.' 
   }
 };
 
@@ -152,12 +152,14 @@ function abrirEnigmaPapel() {
   abrirModal('Bilhete Enigma · Anotações', `
     <div class="papel">
       <p><strong>Anotações encontradas na despensa:</strong></p>
-      <p>Os reagentes foram identificados apenas por suas composições de cor.</p>
-      <p><strong>RGB (0, 0, 255)</strong></p>
-      <p><strong>RGB (0, 255, 0)</strong></p>
-      <p><strong>RGB (255, 165, 0)</strong></p>
-      <p><strong>RGB (255, 0, 0)</strong></p>
-      <p class="dica-modal">"A ordem correta está escondida nas cores."</p>
+      <p>Os frascos estão sem rótulo. O Chef só deixou charadas, e a ordem delas é a ordem da receita:</p>
+      <ol>
+        <li>"Pinto o céu num dia sem nuvens e encho o mar até o fundo. Sou fria, calma e profunda. Quem sou eu?"</li>
+        <li>"Estou nas folhas, na hortelã e no sinal que manda passar. Quem sou eu?"</li>
+        <li>"Tenho nome de fruta e o pôr do sol me veste. Fico entre o vermelho e o amarelo. Quem sou eu?"</li>
+        <li>"Sou a cor do tomate maduro, do morango e do sinal de PARE. Quem sou eu?"</li>
+      </ol>
+      <p class="dica-modal">"A resposta de cada charada é a cor de um frasco. Coloque-os nessa ordem, da esquerda para a direita."</p>
     </div>
   `);
 }

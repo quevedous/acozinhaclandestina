@@ -5,9 +5,13 @@
 ================================================================== */
 
 /* ---------- pedaço de papel jogado no cenário ---------- */
+.pedaco-papel,
+.pedaco-papel:hover,
+.pedaco-papel:focus-visible {
+  z-index: 20; /* acima de qualquer área clicável, inclusive no hover (que usa z-index 6) */
+}
 .pedaco-papel {
   position: absolute;
-  z-index: 3;
   width: 5.2%;
   aspect-ratio: 898 / 868;
   padding: 0;

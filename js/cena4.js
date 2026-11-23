@@ -467,8 +467,8 @@ ligar('#no-armario', 'Armário', abrirArmario, { chavemestra: usarChaveNoArmario
 ligar('#no-porta', 'Porta', abrirPorta, { chavemestra: abrirPorta });
 ligar('#no-fechadura', 'Fechadura', abrirPorta, { chavemestra: abrirPorta });
 
-ligar('#no-poster-esq', 'Cartaz', () => fala('Uma cópia do cartaz do enigma das densidades da Câmara Fria, toda manchada. O Chef decorou o escritório com os próprios enigmas.'));
-ligar('#no-poster-centro', 'Cartaz', () => fala('Outra cópia do cartaz das densidades. Nada de novo aqui, você já resolveu esse enigma.'));
+ligar('#no-poster-esq', 'Cartaz', () => fala('Uma cópia do cartaz de charadas da Câmara Fria, toda manchada. O Chef decorou o escritório com os próprios enigmas.'));
+ligar('#no-poster-centro', 'Cartaz', () => fala('Outra cópia do cartaz da Câmara Fria. Nada de novo aqui, você já resolveu esse enigma.'));
 ligar('#no-mesa', 'Mesa', () => fala('Uma mesa de carvalho maciço. A gaveta do meio tem uma trava estranha, com encaixes de garrafa.'));
 ligar('#no-trofeus-chapeu', 'Troféus', () => fala('Troféus de chapéu de chef dourado. "Melhor Sobremesa do Ano", três anos seguidos.'));
 ligar('#no-trofeus-panela', 'Troféus', () => fala('Troféus de panela de cobre. Estão sem poeira: o Chef os limpa todo dia.'));
