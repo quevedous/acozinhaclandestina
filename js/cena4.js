@@ -1,5 +1,8 @@
 const CHAVE_ESTADO = 'cozinha_estado';
 const DURACAO = 15 * 60;
+// true  = o cofre do barril só abre depois de pegar a chavinha na gaveta da mesa
+// false = clicar no barril abre a task do cofre direto, sem precisar da chavinha
+const BARRIL_PRECISA_CHAVE = true;
 
 const VINHOS = [
   { id: 'A', nome: 'Tinto Reserva', ano: 2015, teor: 13.0 },
@@ -19,7 +22,7 @@ const ITENS = {
   calda:        { nome: 'Calda no Ponto', icone: '🍯', desc: 'Calda de açúcar no ponto de bola mole, 118 °C.' },
   fragmentos:   { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro rasgado da estante.' },
   livro:        { nome: 'Livro Restaurado', icone: '📖', desc: 'Mostra a ordem original da receita. Clique para ler.' },
-  chavemestra:  { nome: 'Chave Mestra', icone: '🗝️', desc: 'Clique no armário de especiarias ou na porta de saída.' },
+  chavemestra:  { nome: 'Chave Mestra', icone: '🗝️', desc: 'Clique no armário de especiarias (lateral da mesa) ou na porta de saída.' },
   especiarias:  { nome: 'Especiarias Raras', icone: '🧂', desc: 'Servem para decorar o prato final.' }
 };
 
@@ -168,7 +171,7 @@ function abrirNotaMaster() {
   abrirModal('Bilhete no quadro', `
     <div class="papel">
       <p><strong>MASTER KEY ESTÁ NO LIVRO</strong></p>
-      <p>"Escondi a chave mestra atrás de uma página do livro de receitas, na estante. Quem restaurar o livro, acha a chave."</p>
+      <p>"Guardei a chave mestra no armário embaixo da estante. A trava só solta para quem restaurar o livro de receitas, aquele de cima, com as páginas arrancadas."</p>
       <p>"O último pedaço do livro eu tranquei no cofre do barril. A chavinha? Na gaveta da minha mesa."</p>
     </div>
   `);
@@ -183,23 +186,29 @@ function abrirEsboco() {
   `);
 }
 
+/* Clique no BARRIL em si: abre a task do cofre (disco + timão) */
 function abrirBarril() {
   if (estado.barrilAberto) {
-    fala('O barril está aberto e vazio. O último pedaço do livro já é seu.');
+    fala('O cofre do barril está aberto e vazio. O último pedaço do livro já é seu.');
     return;
   }
-  if (estado.chaveBarril) {
-    abrirCofreBarril();
+  if (BARRIL_PRECISA_CHAVE && !estado.chaveBarril) {
+    fala('A tampa do barril tem uma fechadura de cofre e está trancada: falta a chavinha. O bilhete do quadro diz que ela está na gaveta da mesa.');
     return;
   }
-  abrirModal('Barril do Chef', `
+  abrirCofreBarril();
+}
+
+/* Clique no CARTAZ colado no barril: só mostra as pistas */
+function abrirCartazBarril() {
+  abrirModal('Cartaz do barril', `
     <div class="papel">
       <p><strong>PISTAS PARA O LIVRO</strong></p>
       <p>Foto do livro de receitas original, antes de ser rasgado:</p>
       <div class="ref"><img src="../img/livro_quebra-cabeca.png" alt="Livro de receitas de capa vinho com uma estrela dourada e uma fita vermelha"></div>
       <p>"O Chef rasgou a capa em 4 pedaços e escondeu pela cozinha: um na despensa, um na confeitaria, um na câmara fria e o último aqui, trancado no cofre dentro do barril. Juntando os 4, as peças formam esta imagem."</p>
     </div>
-    <p class="dica-modal">A tampa do barril tem uma fechadura de cofre, com um disco numerado e um timão. Está trancada: falta a chavinha. Talvez esteja na gaveta da mesa.</p>
+    <p class="dica-modal">O cartaz é só uma pista. O cofre fica dentro do barril: clique no barril, fora do cartaz.</p>
   `);
 }
 
@@ -291,7 +300,7 @@ function abrirPaginaLivro(novo) {
       </ol>
       <p>"Nunca inverta a ordem. Quem inverte lava louça."</p>
     </div>
-    ${novo ? '<p style="margin-top:12px">Atrás da página colada você achou uma <strong>chave mestra</strong> dourada!</p>' : '<p class="dica-modal">Guarde essa ordem para a Pista Principal.</p>'}
+    ${novo ? '<p style="margin-top:12px">Algo fez <strong>clique</strong> no armário embaixo da estante. A trava deve ter soltado!</p>' : '<p class="dica-modal">Guarde essa ordem para a Pista Principal.</p>'}
   `);
 }
 
@@ -313,14 +322,12 @@ function pecaHtml(id) {
 
 function concluirLivro() {
   estado.livroRestaurado = true;
-  estado.chaveMestraPega = true;
   estado.acertos++;
   salvar();
   removerItem('fragmentos');
   addItem('livro');
-  addItem('chavemestra');
   abrirPaginaLivro(true);
-  fala('Você restaurou o livro e achou a chave mestra escondida atrás da página!');
+  fala('Você restaurou o livro! Ouviu um clique vindo do armário embaixo da estante.');
 }
 
 /* Ainda faltam pedaços: mostra quantos já foram achados e onde procurar */
@@ -393,6 +400,23 @@ function abrirLivro() {
   }
 }
 
+/* Armário embaixo da estante: guarda a chave mestra (só solta depois de restaurar o livro) */
+function abrirArmarioEstante() {
+  if (estado.chaveMestraPega) {
+    fala('O armário embaixo da estante está aberto e vazio. Você já pegou a chave mestra.');
+    return;
+  }
+  if (!estado.livroRestaurado) {
+    fala('O armário embaixo da estante está preso por uma trava. Um bilhete diz: "Só abre para quem restaurar o livro rasgado."');
+    return;
+  }
+  estado.chaveMestraPega = true;
+  estado.acertos++;
+  salvar();
+  addItem('chavemestra');
+  fala('A trava soltou! Dentro do armário havia uma chave mestra dourada. Ela abre o armário de especiarias e a porta de saída.');
+}
+
 function usarChaveNoArmario() {
   if (estado.armarioAberto) {
     fala('O armário de especiarias já está aberto.');
@@ -412,7 +436,7 @@ function abrirArmario() {
   } else if (estado.inventario.includes('chavemestra')) {
     usarChaveNoArmario();
   } else {
-    fala('O armário de especiarias está trancado com uma fechadura dourada. Só uma chave mestra abre. O quadro de avisos diz onde ela está.');
+    fala('O armário de especiarias, na lateral da mesa, está trancado com uma fechadura dourada. Só uma chave mestra abre. O quadro de avisos diz onde ela está.');
   }
 }
 
@@ -435,8 +459,10 @@ ligar('#no-quadro', 'Quadro', abrirQuadro);
 ligar('#no-notamaster', 'Bilhete', abrirNotaMaster);
 ligar('#no-esboco', 'Desenho', abrirEsboco);
 ligar('#no-barril', 'Barril', abrirBarril);
+ligar('#no-cartaz-barril', 'Cartaz do barril', abrirCartazBarril);
 ligar('#no-gaveta', 'Gaveta', abrirGaveta);
-ligar('#no-estante', 'Estante de livros', abrirLivro);
+ligar('#no-estante', 'Livros da estante', abrirLivro);
+ligar('#no-estante-baixo', 'Armário da estante', abrirArmarioEstante);
 ligar('#no-armario', 'Armário', abrirArmario, { chavemestra: usarChaveNoArmario });
 ligar('#no-porta', 'Porta', abrirPorta, { chavemestra: abrirPorta });
 ligar('#no-fechadura', 'Fechadura', abrirPorta, { chavemestra: abrirPorta });
@@ -477,4 +503,4 @@ const relogio = setInterval(tick, 1000);
 
 renderInventario();
 tick();
-fala('Escritório secreto do Chef. Restaure o livro da estante para achar a chave mestra do armário de especiarias.');
+fala('Escritório secreto do Chef. Restaure o livro da estante: o armário de baixo guarda a chave mestra.');

@@ -88,8 +88,9 @@
         [!e.gavetaAberta && !e.barrilAberto, 'O quadro de avisos explica a ordem das garrafas. Resolva a gaveta da mesa: lá dentro está a chavinha do barril.'],
         [e.chaveBarril && !e.barrilAberto, 'Use a chavinha no barril, no canto esquerdo: dentro dele há um cofre. Gire o disco até os números do bilhete, no sentido das setas, e depois gire o timão.'],
         [window.Pedacos && window.Pedacos.lista().length < window.Pedacos.total, 'Faltam pedaços do livro. Um veio de cada cena anterior (despensa, confeitaria, câmara fria) e o último está no cofre do barril. Se esqueceu algum, volte pela barra do topo.'],
-        [!e.chaveMestraPega, 'Com os 4 pedaços, clique nos livros da estante e monte o quebra-cabeça: a chave mestra está escondida no livro.'],
-        [!e.armarioAberto, 'Use a chave mestra no armário de especiarias antes de sair.'],
+        [!e.livroRestaurado, 'Com os 4 pedaços, clique nos livros da estante e monte o quebra-cabeça do livro rasgado.'],
+        [!e.chaveMestraPega, 'Livro restaurado! A chave mestra está no armário embaixo da estante.'],
+        [!e.armarioAberto, 'Use a chave mestra no armário de especiarias, na lateral da mesa, antes de sair.'],
       ],
     };
     return (dicas[CENA] ?? []).find(([precisa]) => precisa)?.[1]
