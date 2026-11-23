@@ -20,7 +20,7 @@ const ITENS = {
   yuzu:        { nome: 'Fruta de Yuzu Congelada', icone: '🍋', desc: 'Precisa descongelar aos poucos. O mármore frio ajuda.' },
   merengue:    { nome: 'Merengue Assado', icone: '🍥', desc: 'Assado no ponto exato. Será usado no prato final.' },
   calda:       { nome: 'Calda no Ponto', icone: '🍯', desc: 'Calda de açúcar no ponto de bola mole, 118 °C.' },
-  papel_dica:  { nome: 'Papel Enigma da Despensa', icone: '📜', desc: 'Um bilhete rasgado com charadas sobre a cor de cada reagente. Clique para decifrar.' },
+  papel_dica:  { nome: 'Papel Enigma da Despensa', icone: '📜', desc: 'Um bilhete rasgado com o enigma para abrir a porta eletrônica. Clique para decifrar.' },
   chave_porta: { nome: 'Chave da Câmara Fria', icone: '🔑', desc: 'Chave obtida na bancada de frascos.' }
 };
 
@@ -167,14 +167,12 @@ function abrirEnigmaPapel() {
   abrirModal('Bilhete Enigma · Anotações', `
     <div class="papel">
       <p><strong>Anotações encontradas na despensa:</strong></p>
-      <p>Os frascos estão sem rótulo. O Chef só deixou charadas, e a ordem delas é a ordem da receita:</p>
-      <ol>
-        <li>"Pinto o céu num dia sem nuvens e encho o mar até o fundo. Sou fria, calma e profunda. Quem sou eu?"</li>
-        <li>"Estou nas folhas, na hortelã e no sinal que manda passar. Quem sou eu?"</li>
-        <li>"Tenho nome de fruta e o pôr do sol me veste. Fico entre o vermelho e o amarelo. Quem sou eu?"</li>
-        <li>"Sou a cor do tomate maduro, do morango e do sinal de PARE. Quem sou eu?"</li>
-      </ol>
-      <p class="dica-modal">"A resposta de cada charada é a cor de um frasco. Coloque-os nessa ordem, da esquerda para a direita."</p>
+      <p>Os reagentes foram identificados apenas por suas composições de cor.</p>
+      <p><strong>RGB (0, 0, 255)</strong></p>
+      <p><strong>RGB (0, 255, 0)</strong></p>
+      <p><strong>RGB (255, 165, 0)</strong></p>
+      <p><strong>RGB (255, 0, 0)</strong></p>
+      <p class="dica-modal">"A ordem correta está escondida nas cores."</p>
     </div>
   `);
 }
