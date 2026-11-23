@@ -25,7 +25,7 @@
       LEMBRETE_DICA,
     ],
     4: [
-      'O Escritório do Chef! A chave mestra e o armário de especiarias são o caminho da saída.',
+      'O Escritório do Chef! A chave mestra é o caminho da saída.',
       LEMBRETE_DICA,
     ],
   };
@@ -50,7 +50,6 @@
     4: () => [
       !estado.livroRestaurado && window.Pedacos && window.Pedacos.lista().length < window.Pedacos.total && ['os pedaços do livro de receitas', 'faltam alguns, e o último está no cofre do barril'],
       !estado.potesAbertos && BAUNILHA,
-      !estado.inventario.includes('especiarias') && ['as Especiarias Raras', 'ficam dentro do armário de especiarias'],
     ],
   };
 
@@ -85,12 +84,11 @@
         [faltaPedaco(2), 'Tem um pedaço de papel rasgado brilhando no chão gelado, à direita. Ele é parte de um livro de receitas.'],
       ],
       4: [
-        [!e.gavetaAberta && !e.barrilAberto, 'O quadro de avisos explica a ordem das garrafas. Resolva a gaveta da mesa: lá dentro está a chavinha do barril.'],
+        [!e.gavetaAberta && !e.barrilAberto, 'O quadro de avisos explica a ordem das garrafas. Pegue a chave pendurada no quadro (ou resolva a gaveta da mesa) para abrir o barril.'],
         [e.chaveBarril && !e.barrilAberto, 'Use a chavinha no barril, no canto esquerdo: dentro dele há um cofre. Gire o disco até os números do bilhete, no sentido das setas, e depois gire o timão.'],
         [window.Pedacos && window.Pedacos.lista().length < window.Pedacos.total, 'Faltam pedaços do livro. Um veio de cada cena anterior (despensa, confeitaria, câmara fria) e o último está no cofre do barril. Se esqueceu algum, volte pela barra do topo.'],
         [!e.livroRestaurado, 'Com os 4 pedaços, clique nos livros da estante e monte o quebra-cabeça do livro rasgado.'],
         [!e.chaveMestraPega, 'Livro restaurado! A chave mestra está no armário embaixo da estante.'],
-        [!e.armarioAberto, 'Use a chave mestra no armário de especiarias, na lateral da mesa, antes de sair.'],
       ],
     };
     return (dicas[CENA] ?? []).find(([precisa]) => precisa)?.[1]

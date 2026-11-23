@@ -23,8 +23,7 @@ const ITENS = {
   fragmentos:   { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro rasgado da estante.' },
   livro:        { nome: 'Livro Restaurado', icone: '📖', desc: 'Mostra a ordem original da receita. Clique para ler.' },
   chavebarril:  { nome: 'Chave do Barril', icone: '🔑', desc: 'Selecione e clique no barril do canto esquerdo para abrir o cofre.' },
-  chavemestra:  { nome: 'Chave Mestra', icone: '🗝️', desc: 'Clique no armário de especiarias (lateral da mesa) ou na porta de saída.' },
-  especiarias:  { nome: 'Especiarias Raras', icone: '🧂', desc: 'Servem para decorar o prato final.' }
+  chavemestra:  { nome: 'Chave Mestra', icone: '🗝️', desc: 'Selecione e clique na porta de saída para abrir.' }
 };
 
 const PADRAO = {
@@ -37,8 +36,7 @@ const PADRAO = {
   barrilAberto: false,
   pedacos: [],
   livroRestaurado: false,
-  chaveMestraPega: false,
-  armarioAberto: false
+  chaveMestraPega: false
 };
 function carregarEstado() {
   try { return JSON.parse(sessionStorage.getItem(CHAVE_ESTADO)); } catch (e) { return null; }
@@ -417,39 +415,12 @@ function abrirArmarioEstante() {
   estado.acertos++;
   salvar();
   addItem('chavemestra');
-  fala('A trava soltou! Dentro do armário havia uma chave mestra dourada. Ela abre o armário de especiarias e a porta de saída.');
-}
-
-function usarChaveNoArmario() {
-  if (estado.armarioAberto) {
-    fala('O armário de especiarias já está aberto.');
-    return;
-  }
-  estado.armarioAberto = true;
-  estado.acertos++;
-  salvar();
-  selecionado = null;
-  addItem('especiarias');
-  renderInventario();
-  fala('A chave mestra girou na fechadura! Dentro do armário você pegou as Especiarias Raras.');
-}
-function abrirArmario() {
-  if (estado.armarioAberto) {
-    fala('O armário de especiarias está aberto. Você já pegou as especiarias raras.');
-  } else if (estado.inventario.includes('chavemestra')) {
-    usarChaveNoArmario();
-  } else {
-    fala('O armário de especiarias, na lateral da mesa, está trancado com uma fechadura dourada. Só uma chave mestra abre. O quadro de avisos diz onde ela está.');
-  }
+  fala('A trava soltou! Dentro do armário havia uma chave mestra dourada. Ela abre a porta de saída.');
 }
 
 function abrirPorta() {
   if (!estado.chaveMestraPega) {
     fala('A porta está trancada por uma fechadura antiga. Só uma chave mestra abre. O quadro de avisos diz onde ela está.');
-    return;
-  }
-  if (!estado.armarioAberto) {
-    fala('A chave mestra gira, mas há um bilhete preso na porta: "Só passa quem já abriu o armário de especiarias."');
     return;
   }
   abrirModal('Pista Principal', `
@@ -466,7 +437,6 @@ ligar('#no-cartaz-barril', 'Cartaz do barril', abrirCartazBarril);
 ligar('#no-gaveta', 'Gaveta', abrirGaveta);
 ligar('#no-estante', 'Livros da estante', abrirLivro);
 ligar('#no-estante-baixo', 'Armário da estante', abrirArmarioEstante);
-ligar('#no-armario', 'Armário', abrirArmario, { chavemestra: usarChaveNoArmario });
 ligar('#no-porta', 'Porta', abrirPorta, { chavemestra: abrirPorta });
 ligar('#no-fechadura', 'Fechadura', abrirPorta, { chavemestra: abrirPorta });
 
