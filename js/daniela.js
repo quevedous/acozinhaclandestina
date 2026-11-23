@@ -48,7 +48,7 @@
       !estado.emulsaoPronta && ['o creme em emulsão', 'faça no misturador de emulsão, porque ele será usado no prato final'],
     ],
     4: () => [
-      !estado.livroRestaurado && window.Pedacos && window.Pedacos.lista().length < window.Pedacos.total && ['os pedaços do livro de receitas', 'faltam alguns, e um deles está na gaveta secreta da mesa'],
+      !estado.livroRestaurado && window.Pedacos && window.Pedacos.lista().length < window.Pedacos.total && ['os pedaços do livro de receitas', 'faltam alguns, e o último está no cofre do barril'],
       !estado.potesAbertos && BAUNILHA,
       !estado.inventario.includes('especiarias') && ['as Especiarias Raras', 'ficam dentro do armário de especiarias'],
     ],
@@ -85,8 +85,10 @@
         [faltaPedaco(2), 'Tem um pedaço de papel rasgado brilhando no chão gelado, à direita. Ele é parte de um livro de receitas.'],
       ],
       4: [
-        [!e.chaveMestraPega && window.Pedacos && window.Pedacos.lista().length < window.Pedacos.total, 'Para restaurar o livro da estante você precisa dos 4 pedaços de papel: despensa, confeitaria, câmara fria e a gaveta secreta da mesa. Se esqueceu algum, volte pela barra do topo.'],
-        [!e.chaveMestraPega, 'O quadro de avisos diz onde está a chave mestra. Ela está no livro rasgado da estante: monte o quebra-cabeça com os 4 pedaços.'],
+        [!e.gavetaAberta && !e.barrilAberto, 'O quadro de avisos explica a ordem das garrafas. Resolva a gaveta da mesa: lá dentro está a chavinha do barril.'],
+        [e.chaveBarril && !e.barrilAberto, 'Use a chavinha no barril, no canto esquerdo: dentro dele há um cofre. Gire o disco até os números do bilhete, no sentido das setas, e depois gire o timão.'],
+        [window.Pedacos && window.Pedacos.lista().length < window.Pedacos.total, 'Faltam pedaços do livro. Um veio de cada cena anterior (despensa, confeitaria, câmara fria) e o último está no cofre do barril. Se esqueceu algum, volte pela barra do topo.'],
+        [!e.chaveMestraPega, 'Com os 4 pedaços, clique nos livros da estante e monte o quebra-cabeça: a chave mestra está escondida no livro.'],
         [!e.armarioAberto, 'Use a chave mestra no armário de especiarias antes de sair.'],
       ],
     };

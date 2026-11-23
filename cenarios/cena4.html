@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../css/cena4.css">
 <link rel="stylesheet" href="../css/pedacos.css">
+<link rel="stylesheet" href="../css/cofre.css">
 <link rel="stylesheet" href="../css/hud.css">
 <title>Cenário 4 · O Escritório do Chef</title>
 </head>
@@ -24,10 +25,9 @@
     <img src="../img/cenario4.jpg" alt="Escritório do Chef com mesa de carvalho, troféus, estante de livros, quadro de avisos de cortiça, barril e porta de madeira" draggable="false" onerror="this.parentNode.classList.add('sem-imagem')">
 
     <button class="interactive-node r-esq r-baixo" id="no-poster-esq" type="button" data-nome="Cartaz na parede" aria-label="Cartaz na parede esquerda"></button>
-    <button class="interactive-node" id="no-barril" type="button" data-nome="Barril com pistas" aria-label="Barril com cartaz de pistas"></button>
-    <button class="interactive-node r-baixo" id="no-estante" type="button" data-nome="Estante de livros" aria-label="Estante de livros de receitas"></button>
+    <button class="interactive-node" id="no-barril" type="button" data-nome="Barril do Chef" aria-label="Barril trancado com cartaz de pistas"></button>
+    <button class="interactive-node r-baixo" id="no-estante" type="button" data-nome="Estante de livros" aria-label="Estante de livros de receitas, um deles com páginas arrancadas"></button>
     <button class="interactive-node" id="no-armario" type="button" data-nome="Armário de especiarias" aria-label="Armário de especiarias, trancado"></button>
-    <button class="interactive-node" id="no-livro" type="button" data-nome="Livro de receitas rasgado" aria-label="Livro de receitas com páginas arrancadas"></button>
     <button class="interactive-node r-baixo" id="no-poster-centro" type="button" data-nome="Cartaz da parede" aria-label="Cartaz no centro da parede"></button>
     <button class="interactive-node r-meio" id="no-mesa" type="button" data-nome="Mesa de carvalho" aria-label="Mesa de carvalho do Chef"></button>
     <button class="interactive-node" id="no-gaveta" type="button" data-nome="Gaveta secreta" aria-label="Gaveta secreta da mesa"></button>
@@ -59,9 +59,10 @@
   </div>
 </div>
 
-</body>
-<script src="../js/cena4.js" defer></script>
 <script src="../js/abas.js"></script>
 <script src="../js/hud.js"></script>
 <script src="../js/pedacos.js"></script>
+<script src="../js/cofre.js"></script>
+<script src="../js/cena4.js" defer></script>
+</body>
 </html>

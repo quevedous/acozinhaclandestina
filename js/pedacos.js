@@ -7,7 +7,7 @@
      pedaço 0  → Despensa (cena 1)
      pedaço 1  → Confeitaria (cena 2)
      pedaço 2  → Câmara Fria (cena 3)
-     pedaço 3  → Gaveta secreta da mesa (cena 4)
+     pedaço 3  → Cofre dentro do barril (cena 4)
 
    Cada pedaço é 1 quadrante (2x2) da imagem img/livro_quebra-cabeca.png.
 
@@ -33,7 +33,7 @@
     'Despensa (cena 1)',
     'Confeitaria (cena 2)',
     'Câmara Fria (cena 3)',
-    'Gaveta secreta da mesa (cena 4)'
+    'Cofre do barril (cena 4)'
   ];
 
   // estado, salvar, addItem, fala e selecionado são das próprias cenas
@@ -66,7 +66,7 @@
 
     const n = estado.pedacos.length;
     fala(n >= TOTAL
-      ? 'Você juntou os 4 pedaços do livro! Clique no livro rasgado da estante do Escritório do Chef para montar.'
+      ? 'Você juntou os 4 pedaços do livro! Clique nos livros da estante do Escritório do Chef para montar.'
       : 'Um pedaço de papel rasgado, de um livro de receitas! Você tem ' + n + ' de ' + TOTAL + '. Os outros estão espalhados pela cozinha.');
   }
 

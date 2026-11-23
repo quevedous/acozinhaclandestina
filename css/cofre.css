@@ -1,0 +1,176 @@
+/* ==================================================================
+   TASK DO COFRE (barril da cena 4) - inspirada na task "Unlock Safe"
+   da Airship, de Among Us. Estilos do widget criado por js/cofre.js.
+================================================================== */
+.cofre {
+  --raio: 78px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ---------- bilhete com a combinação ---------- */
+.cofre-bilhete {
+  min-width: 70%;
+  padding: 8px 16px 10px;
+  background: #cfe4ea;
+  color: #1a110d;
+  border: 3px solid #1a110d;
+  text-align: center;
+  clip-path: polygon(0 4%, 6% 0, 14% 5%, 24% 0, 40% 4%, 55% 0, 70% 5%, 86% 0, 94% 4%, 100% 0,
+                     100% 96%, 92% 100%, 80% 95%, 64% 100%, 46% 96%, 30% 100%, 16% 95%, 6% 100%, 0 96%);
+}
+.cofre-bilhete-titulo {
+  display: block;
+  font-family: 'Press Start 2P', monospace;
+  font-size: .5rem;
+  letter-spacing: 1px;
+  opacity: .7;
+}
+.cofre-numeros {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 4px;
+}
+.cofre-numeros .sep { font-size: 1.8rem; line-height: 1.1; }
+.cofre-numeros .cn { display: flex; flex-direction: column; align-items: center; min-width: 74px; }
+.cofre-numeros .cn b { font-family: 'Press Start 2P', monospace; font-size: 1.3rem; line-height: 1.4; }
+.cofre-numeros .cn i { font-style: normal; font-size: 1.15rem; line-height: 1; }
+.cofre-numeros .cn small { display: block; font-size: .95rem; opacity: .75; }
+.cofre-numeros .cn.atual b { color: #b3261e; }
+.cofre-numeros .cn.feito { opacity: .55; }
+.cofre-numeros .cn.oculto b { opacity: .35; }
+
+/* ---------- painel do cofre (amarelo, como no jogo original) ---------- */
+.cofre-mesa {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 18px 28px;
+  width: 100%;
+  padding: 16px 12px;
+  background: #d6a62c;
+  border: 4px solid #1a110d;
+  box-shadow: inset 0 0 0 4px #b8861a;
+}
+.cofre-disco-area, .cofre-timao-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- disco numerado ---------- */
+.cofre-disco {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: #15171c;
+  border: 5px solid #05060a;
+  box-shadow: inset 0 0 0 4px #3b4049, 3px 3px 0 0 rgba(0, 0, 0, .35);
+  cursor: grab;
+  touch-action: none;
+  outline: none;
+}
+.cofre-disco:active { cursor: grabbing; }
+.cofre-disco:focus-visible { box-shadow: inset 0 0 0 4px #E6B800, 3px 3px 0 0 rgba(0, 0, 0, .35); }
+.cofre-disco.travado { cursor: default; filter: grayscale(.8) brightness(.55); }
+
+.cofre-num {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  display: grid;
+  place-items: center;
+  color: #d9dde6;
+  font-family: 'Press Start 2P', monospace;
+  font-size: .7rem;
+  transform: rotate(var(--a)) translateY(calc(var(--raio) * -1)) rotate(calc(var(--a) * -1));
+}
+.cofre-num.ativo { color: #E6B800; text-shadow: 0 0 6px #E6B800; }
+
+.cofre-botao {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cofre-botao.anim { transition: transform .35s ease-out; }
+.cofre-ponteiro {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 8px;
+  height: calc(var(--raio) - 18px);
+  margin-left: -4px;
+  background: #E6B800;
+  border-radius: 4px 4px 0 0;
+}
+.cofre-botao::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70px;
+  height: 70px;
+  margin: -35px 0 0 -35px;
+  border-radius: 50%;
+  background: #2b2f38;
+  border: 4px solid #6b7280;
+  box-shadow: inset 0 0 0 6px #15171c;
+}
+
+/* ---------- timão de 3 hastes ---------- */
+.cofre-timao {
+  width: 190px;
+  height: 190px;
+  cursor: grab;
+  touch-action: none;
+  outline: none;
+  border-radius: 50%;
+}
+.cofre-timao:active { cursor: grabbing; }
+.cofre-timao:focus-visible { box-shadow: 0 0 0 4px #E6B800; }
+.cofre-timao .braco { fill: #1a1c22; stroke: #05060a; stroke-width: 3; stroke-linejoin: round; }
+.cofre-timao .hub { fill: #1a1c22; stroke: #05060a; stroke-width: 3; }
+.cofre-timao .anel-fundo { fill: none; stroke: rgba(0, 0, 0, .18); stroke-width: 6; }
+.cofre-timao .anel { fill: none; stroke: #1a110d; stroke-width: 6; stroke-linecap: round; }
+.cofre-timao.trancado { cursor: default; opacity: .75; }
+.cofre-timao.livre .braco, .cofre-timao.livre .hub { fill: #c9ced6; }
+
+/* ---------- botões de apoio (mouse ou toque) ---------- */
+.cofre-botoes { display: flex; gap: 8px; }
+.cofre-botoes button {
+  width: 44px;
+  height: 36px;
+  background: #2C221E;
+  color: #E6B800;
+  border: 3px solid #1a110d;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.cofre-botoes button:hover:not(:disabled) { background: #E6B800; color: #1a110d; }
+.cofre-botoes button:disabled { opacity: .35; cursor: default; }
+
+.cofre-msg { min-height: 2.6em; text-align: center; }
+.cofre-msg.erro { color: #b3261e; }
+.cofre-msg.ok { color: #2e6b2e; }
+
+.cofre.aberto .cofre-mesa { background: #8fbf6a; box-shadow: inset 0 0 0 4px #6d9a4c; }
+
+@keyframes cofre-treme {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+.cofre-disco.treme { animation: cofre-treme .3s; }

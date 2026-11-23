@@ -29,6 +29,8 @@ const PADRAO = {
   erros: 0,
   acertos: 0,
   gavetaAberta: false,
+  chaveBarril: false,
+  barrilAberto: false,
   pedacos: [],
   livroRestaurado: false,
   chaveMestraPega: false,
@@ -166,7 +168,8 @@ function abrirNotaMaster() {
   abrirModal('Bilhete no quadro', `
     <div class="papel">
       <p><strong>MASTER KEY ESTÁ NO LIVRO</strong></p>
-      <p>"Escondi a chave mestra atrás de uma página do livro de receitas. Quem restaurar o livro, acha a chave."</p>
+      <p>"Escondi a chave mestra atrás de uma página do livro de receitas, na estante. Quem restaurar o livro, acha a chave."</p>
+      <p>"O último pedaço do livro eu tranquei no cofre do barril. A chavinha? Na gaveta da minha mesa."</p>
     </div>
   `);
 }
@@ -181,19 +184,50 @@ function abrirEsboco() {
 }
 
 function abrirBarril() {
-  abrirModal('Pistas (para o livro)', `
+  if (estado.barrilAberto) {
+    fala('O barril está aberto e vazio. O último pedaço do livro já é seu.');
+    return;
+  }
+  if (estado.chaveBarril) {
+    abrirCofreBarril();
+    return;
+  }
+  abrirModal('Barril do Chef', `
     <div class="papel">
       <p><strong>PISTAS PARA O LIVRO</strong></p>
       <p>Foto do livro de receitas original, antes de ser rasgado:</p>
       <div class="ref"><img src="../img/livro_quebra-cabeca.png" alt="Livro de receitas de capa vinho com uma estrela dourada e uma fita vermelha"></div>
-      <p>"O Chef rasgou a capa em 4 pedaços e escondeu pela cozinha: um na despensa, um na confeitaria, um na câmara fria e um aqui, na gaveta secreta da mesa. Juntando os 4, as peças formam esta imagem."</p>
+      <p>"O Chef rasgou a capa em 4 pedaços e escondeu pela cozinha: um na despensa, um na confeitaria, um na câmara fria e o último aqui, trancado no cofre dentro do barril. Juntando os 4, as peças formam esta imagem."</p>
     </div>
+    <p class="dica-modal">A tampa do barril tem uma fechadura de cofre, com um disco numerado e um timão. Está trancada: falta a chavinha. Talvez esteja na gaveta da mesa.</p>
   `);
+}
+
+/* Task do cofre do barril (disco + timão): entrega o 4º pedaço do livro */
+function abrirCofreBarril() {
+  abrirModal('Cofre dentro do barril', `
+    <p>Você gira a chavinha e a tampa se abre: dentro do barril há um cofre. Siga o bilhete: gire o disco até cada número, <strong>no sentido da seta</strong>, e depois gire o timão.</p>
+    <div id="cofre-area"></div>
+  `);
+  const cofre = Cofre.montar($('#cofre-area'), {
+    aoConcluir: () => {
+      estado.barrilAberto = true;
+      estado.acertos++;
+      salvar();
+      fecharModal();
+      Pedacos.coletar(3);
+      const tenho = Pedacos.lista().length;
+      fala(tenho >= Pedacos.total
+        ? 'O cofre abriu e dentro estava o último pedaço do livro! Agora você tem os 4: clique nos livros da estante para montar.'
+        : 'O cofre abriu e dentro havia um pedaço do livro de receitas. Você tem ' + tenho + ' de ' + Pedacos.total + ': os outros estão nas cenas anteriores.');
+    }
+  });
+  aoFechar = () => cofre.destruir();
 }
 
 function abrirGaveta() {
   if (estado.gavetaAberta) {
-    fala('A gaveta secreta está aberta e vazia.');
+    fala('A gaveta secreta está aberta e vazia. Você já pegou a chavinha do barril.');
     return;
   }
   const ordem = ['D', 'A', 'B', 'C'];
@@ -230,14 +264,11 @@ function abrirGaveta() {
   $('#abrir-gaveta').addEventListener('click', () => {
     if (ordem.join() === ORDEM_VINHOS.join()) {
       estado.gavetaAberta = true;
+      estado.chaveBarril = true;
       estado.acertos++;
       salvar();
       fecharModal();
-      Pedacos.coletar(3);
-      const tenho = Pedacos.lista().length;
-      fala(tenho >= Pedacos.total
-        ? 'Clique! A gaveta abriu e dentro havia o último pedaço do livro! Agora você tem os 4: clique no livro rasgado da estante para montar.'
-        : 'Clique! A gaveta abriu e dentro havia um pedaço do livro de receitas. Você tem ' + tenho + ' de ' + Pedacos.total + ': os outros estão nas cenas anteriores.');
+      fala('Clique! A gaveta abriu e dentro havia uma chavinha com a etiqueta "BARRIL". Você a guardou: ela abre o cofre do barril, no canto esquerdo.');
     } else {
       estado.erros++;
       salvar();
@@ -301,10 +332,10 @@ function abrirProgressoPedacos() {
   const locais = Pedacos.locais.map((nome, id) =>
     '<li' + (tem.includes(id) ? ' class="ok"' : '') + '>' + nome + (tem.includes(id) ? ' ✓' : '') + '</li>').join('');
   abrirModal('Livro de receitas rasgado', `
-    <p>As páginas do meio foram arrancadas e rasgadas em <strong>4 pedaços</strong>, escondidos pela cozinha. Você achou <strong>${tem.length} de ${Pedacos.total}</strong>.</p>
+    <p>Entre os livros da estante, um está com as páginas do meio arrancadas. Elas foram rasgadas em <strong>4 pedaços</strong>, escondidos pela cozinha. Você achou <strong>${tem.length} de ${Pedacos.total}</strong>.</p>
     <div class="puzzle-area"><div class="puzzle-progresso" style="aspect-ratio:auto">${casas}</div></div>
     <ul class="puzzle-lista">${locais}</ul>
-    <p class="dica-modal">Quando juntar os 4, clique de novo no livro para montar o quebra-cabeça. Dá para voltar às cenas anteriores pela barra do topo.</p>
+    <p class="dica-modal">Quando juntar os 4, clique de novo nos livros da estante para montar o quebra-cabeça. Dá para voltar às cenas anteriores pela barra do topo.</p>
   `);
 }
 
@@ -405,14 +436,13 @@ ligar('#no-notamaster', 'Bilhete', abrirNotaMaster);
 ligar('#no-esboco', 'Desenho', abrirEsboco);
 ligar('#no-barril', 'Barril', abrirBarril);
 ligar('#no-gaveta', 'Gaveta', abrirGaveta);
-ligar('#no-livro', 'Livro', abrirLivro);
+ligar('#no-estante', 'Estante de livros', abrirLivro);
 ligar('#no-armario', 'Armário', abrirArmario, { chavemestra: usarChaveNoArmario });
 ligar('#no-porta', 'Porta', abrirPorta, { chavemestra: abrirPorta });
 ligar('#no-fechadura', 'Fechadura', abrirPorta, { chavemestra: abrirPorta });
 
 ligar('#no-poster-esq', 'Cartaz', () => fala('Uma cópia do cartaz do enigma das densidades da Câmara Fria, toda manchada. O Chef decorou o escritório com os próprios enigmas.'));
 ligar('#no-poster-centro', 'Cartaz', () => fala('Outra cópia do cartaz das densidades. Nada de novo aqui, você já resolveu esse enigma.'));
-ligar('#no-estante', 'Estante', () => fala('Uma estante cheia de livros de receitas rústicos. Quase todos estão inteiros. Procure o que está com páginas arrancadas.'));
 ligar('#no-mesa', 'Mesa', () => fala('Uma mesa de carvalho maciço. A gaveta do meio tem uma trava estranha, com encaixes de garrafa.'));
 ligar('#no-trofeus-chapeu', 'Troféus', () => fala('Troféus de chapéu de chef dourado. "Melhor Sobremesa do Ano", três anos seguidos.'));
 ligar('#no-trofeus-panela', 'Troféus', () => fala('Troféus de panela de cobre. Estão sem poeira: o Chef os limpa todo dia.'));
@@ -447,4 +477,4 @@ const relogio = setInterval(tick, 1000);
 
 renderInventario();
 tick();
-fala('Escritório secreto do Chef. Ache a ordem original do livro de receitas e a chave mestra do armário de especiarias.');
+fala('Escritório secreto do Chef. Restaure o livro da estante para achar a chave mestra do armário de especiarias.');
