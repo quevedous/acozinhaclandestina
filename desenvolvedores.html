@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/cssindex.css" />
+    <title>Desenvolvedoras · O Mistério da Cozinha Clandestina</title>
+    <style>
+      .navegacao-interna {
+        margin-bottom: 22px;
+        font-size: 1.25rem;
+      }
+      .navegacao-interna a {
+        color: var(--tomate);
+        font-weight: bold;
+      }
+      .lista-cards {
+        display: grid;
+        gap: 16px;
+        text-align: left;
+      }
+      .card-item {
+        padding: 18px;
+        background: #fffbe9;
+        border: 4px solid var(--escuro);
+        border-left: 12px solid var(--tomate);
+        box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.25);
+      }
+      .card-topo {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 10px;
+      }
+      .dev-foto {
+        width: 84px;
+        height: 84px;
+        object-fit: cover;
+        border: 4px solid var(--escuro);
+        box-shadow: 4px 4px 0 0 var(--latao);
+        background: var(--escuro);
+        flex-shrink: 0;
+      }
+      .card-titulo {
+        font-family: var(--titulo);
+        font-size: 0.85rem;
+        line-height: 1.5;
+        color: var(--tinta);
+      }
+      .card-cargo {
+        display: inline-block;
+        margin-top: 6px;
+        padding: 3px 8px;
+        background: var(--latao);
+        color: var(--escuro);
+        font-family: var(--titulo);
+        font-size: 0.55rem;
+        line-height: 1.4;
+      }
+      .card-desc {
+        font-size: 1.35rem;
+        color: var(--tinta);
+        margin-top: 8px;
+      }
+      .links-externos {
+        margin-top: 10px;
+        display: flex;
+        gap: 14px;
+        font-size: 1.25rem;
+      }
+      .links-externos a {
+        color: var(--tomate);
+        text-decoration: underline;
+      }
+      .links-externos a:hover {
+        color: var(--escuro);
+        background: var(--latao);
+      }
+
+      .secao-contato {
+        margin-top: 28px;
+        padding: 20px;
+        background: #fffbe9;
+        border: 4px solid var(--escuro);
+        border-top: 10px solid var(--latao);
+        text-align: left;
+      }
+      .secao-contato h2 {
+        font-family: var(--titulo);
+        font-size: 0.85rem;
+        line-height: 1.6;
+        margin-bottom: 12px;
+        color: var(--tinta);
+      }
+      .secao-contato fieldset {
+        border: 0;
+        display: grid;
+        gap: 12px;
+      }
+      .campo-grupo {
+        display: grid;
+        gap: 4px;
+      }
+      .campo-grupo label {
+        font-family: var(--titulo);
+        font-size: 0.6rem;
+        color: var(--tinta);
+      }
+      .campo-grupo input,
+      .campo-grupo select,
+      .campo-grupo textarea {
+        width: 100%;
+        padding: 10px;
+        font-family: var(--texto);
+        font-size: 1.35rem;
+        background: var(--papel);
+        color: var(--tinta);
+        border: 3px solid var(--escuro);
+      }
+      .btn-enviar {
+        justify-self: start;
+        padding: 12px 18px;
+        background: var(--escuro);
+        color: var(--latao);
+        border: 4px solid var(--escuro);
+        font-family: var(--titulo);
+        font-size: 0.7rem;
+        cursor: pointer;
+      }
+      .btn-enviar:hover {
+        background: var(--latao);
+        color: var(--escuro);
+      }
+
+      .btn-voltar-menu {
+        display: inline-block;
+        margin-top: 28px;
+        padding: 14px 20px;
+        background: var(--tomate);
+        color: var(--papel);
+        border: 4px solid var(--escuro);
+        box-shadow: 6px 6px 0 0 var(--escuro);
+        font-family: var(--titulo);
+        font-size: 0.75rem;
+        line-height: 1.4;
+        text-decoration: none;
+      }
+      .btn-voltar-menu:hover,
+      .btn-voltar-menu:focus-visible {
+        background: var(--latao);
+        color: var(--escuro);
+        transform: translate(-3px, -3px);
+        box-shadow: 9px 9px 0 0 var(--escuro);
+      }
+      .btn-voltar-menu:active {
+        transform: translate(3px, 3px);
+        box-shadow: none;
+      }
+    </style>
+  </head>
+  <body class="home">
+    <main class="cardapio">
+      <header>
+        <div class="selo" aria-hidden="true">👩‍🍳</div>
+        <h1>Desenvolvedoras</h1>
+        <p class="subtitulo">As chefs por trás da cozinha</p>
+        <nav class="navegacao-interna" aria-label="Atalho interno">
+          <a href="#contato">↓ Ir para o formulário de contato</a>
+        </nav>
+      </header>
+
+      <section class="lista-cards" aria-label="Equipe de desenvolvimento">
+        <article class="card-item">
+          <div class="card-topo">
+            <img
+              class="dev-foto"
+              src="img/livia.png"
+              alt="Foto da desenvolvedora Lívia Quevedo"
+            />
+            <div>
+              <h2 class="card-titulo">Lívia Quevedo</h2>
+              <span class="card-cargo">Game Design · Programação &amp; Enigmas</span>
+            </div>
+          </div>
+          <p class="card-desc">
+            Idealização dos cenários, lógica interativa em JavaScript puro,
+            mecânicas de inventário e elaboração dos quebra-cabeças da cozinha.
+          </p>
+          <div class="links-externos">
+            <a href="https://github.com/quevedous" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+          </div>
+        </article>
+
+        <article class="card-item">
+          <div class="card-topo">
+            <img
+              class="dev-foto"
+              src="img/julia.png"
+              alt="Foto da desenvolvedora Julia Miranda"
+            />
+            <div>
+              <h2 class="card-titulo">Julia Miranda</h2>
+              <span class="card-cargo">Direção de Arte · Roteiro &amp; Interface</span>
+            </div>
+          </div>
+          <p class="card-desc">
+            Identidade visual em pixel art, narrativa do Diário de Bordo,
+            design das telas e experiência de investigação dos cenários.
+          </p>
+          <div class="links-externos">
+            <a href="https://github.com/2025320818-boop" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+          </div>
+        </article>
+      </section>
+
+      <section class="secao-contato" id="contato" aria-labelledby="titulo-contato">
+        <h2 id="titulo-contato">📬 Fale com a Cozinha (Contato)</h2>
+        <form id="form-contato" action="https://formsubmit.co/2025320818@aluno.canoas.ifrs.edu.br" method="POST">
+          <input type="hidden" name="_cc" value="2025303138@aluno.canoas.ifrs.edu.br" />
+          <input type="hidden" name="_subject" value="[Cozinha Clandestina] Novo contato pelo site" />
+          <input type="hidden" name="_captcha" value="false" />
+
+          <fieldset>
+            <legend hidden>Envie uma mensagem para as desenvolvedoras</legend>
+
+            <div class="campo-grupo">
+              <label for="nome-usuario">Seu nome:</label>
+              <input type="text" id="nome-usuario" name="nome" required placeholder="Ex: Chef Convidado" />
+            </div>
+
+            <div class="campo-grupo">
+              <label for="email-usuario">Seu e-mail:</label>
+              <input type="email" id="email-usuario" name="email" required placeholder="voce@exemplo.com" />
+            </div>
+
+            <div class="campo-grupo">
+              <label for="assunto-usuario">Assunto:</label>
+              <select id="assunto-usuario" name="assunto">
+                <option value="Feedback sobre o jogo">Feedback sobre o jogo</option>
+                <option value="Dúvida sobre um enigma">Dúvida sobre um enigma</option>
+                <option value="Reportar problema">Reportar problema</option>
+              </select>
+            </div>
+
+            <div class="campo-grupo">
+              <label for="mensagem-usuario">Mensagem:</label>
+              <textarea id="mensagem-usuario" name="mensagem" rows="3" required placeholder="Escreva seu recado..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-enviar">Enviar Recado</button>
+          </fieldset>
+        </form>
+      </section>
+
+      <a class="btn-voltar-menu" href="index.html">← Voltar ao Cardápio</a>
+
+      <footer class="rodape-cardapio">
+        <p>O Mistério da Cozinha Clandestina · 2026</p>
+      </footer>
+    </main>
+  </body>
+</html>

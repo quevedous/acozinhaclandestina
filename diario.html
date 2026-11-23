@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/cssindex.css" />
+    <title>Diário de Bordo · O Mistério da Cozinha Clandestina</title>
+    <style>
+      .aviso-diario {
+        margin-bottom: 22px;
+        padding: 14px 16px;
+        background: #fffbe9;
+        border: 4px solid var(--escuro);
+        border-top: 8px solid var(--latao);
+        font-size: 1.35rem;
+        color: var(--tinta);
+        text-align: left;
+      }
+      .lista-pistas {
+        display: grid;
+        gap: 16px;
+        text-align: left;
+      }
+      .card-pista {
+        padding: 18px;
+        background: #fffbe9;
+        border: 4px solid var(--escuro);
+        border-left: 12px solid var(--tomate);
+        box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.25);
+      }
+      .card-pista-topo {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .card-pista h2 {
+        font-family: var(--titulo);
+        font-size: 0.85rem;
+        line-height: 1.5;
+        color: var(--tinta);
+      }
+      .tag-cena {
+        padding: 3px 8px;
+        background: var(--latao);
+        color: var(--escuro);
+        font-family: var(--titulo);
+        font-size: 0.55rem;
+        line-height: 1.4;
+      }
+      .card-pista p {
+        font-size: 1.35rem;
+        color: var(--tinta);
+      }
+      .controles-diario {
+        margin-top: 24px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        justify-content: center;
+      }
+      .btn-acao {
+        display: inline-block;
+        padding: 14px 20px;
+        background: var(--escuro);
+        color: var(--latao);
+        border: 4px solid var(--escuro);
+        box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.35);
+        font-family: var(--titulo);
+        font-size: 0.7rem;
+        line-height: 1.4;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .btn-acao:hover {
+        background: var(--latao);
+        color: var(--escuro);
+      }
+      .btn-voltar-menu {
+        display: inline-block;
+        padding: 14px 20px;
+        background: var(--tomate);
+        color: var(--papel);
+        border: 4px solid var(--escuro);
+        box-shadow: 6px 6px 0 0 var(--escuro);
+        font-family: var(--titulo);
+        font-size: 0.75rem;
+        line-height: 1.4;
+        text-decoration: none;
+      }
+      .btn-voltar-menu:hover,
+      .btn-voltar-menu:focus-visible {
+        background: var(--latao);
+        color: var(--escuro);
+        transform: translate(-3px, -3px);
+        box-shadow: 9px 9px 0 0 var(--escuro);
+      }
+      .btn-voltar-menu:active {
+        transform: translate(3px, 3px);
+        box-shadow: none;
+      }
+      #status-diario {
+        margin-top: 14px;
+        font-size: 1.25rem;
+        color: var(--tomate);
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body class="home" onload="carregarDiario()">
+    <main class="cardapio">
+      <header>
+        <div class="selo" aria-hidden="true">📓</div>
+        <h1>Diário de Bordo</h1>
+        <p class="subtitulo">Registro oficial de pistas e descobertas</p>
+      </header>
+
+      <p class="aviso-diario">
+        Acompanhe aqui as anotações da investigação na Cozinha Clandestina.
+        Conforme você avança nos cenários, novas pistas descobertas ficam
+        registradas neste caderno.
+      </p>
+
+      <section class="lista-pistas" id="lista-pistas" aria-label="Pistas registradas">
+        <article class="card-pista">
+          <div class="card-pista-topo">
+            <h2>Anotação #01 · O Ponto de Partida</h2>
+            <span class="tag-cena">Prólogo</span>
+          </div>
+          <p>
+            A porta da despensa foi trancada por fora com um teclado eletrônico.
+            O antigo chef deixou bilhetes espalhados entre os mantimentos antes
+            de desaparecer.
+          </p>
+        </article>
+
+        <article class="card-pista">
+          <div class="card-pista-topo">
+            <h2>Anotação #02 · Os Ingredientes Secretos</h2>
+            <span class="tag-cena">Investigação</span>
+          </div>
+          <p>
+            Potes de tempero, farinhas e receitas rasgadas escondem combinações
+            numéricas e temperaturas exatas necessárias para destravar cada etapa
+            da cozinha.
+          </p>
+        </article>
+
+        <article class="card-pista" id="bloco-pistas-salvas" hidden>
+          <div class="card-pista-topo">
+            <h2>Anotação #03 · Descobertas da Sessão Atual</h2>
+            <span class="tag-cena">Progresso Salvo</span>
+          </div>
+          <p id="texto-pistas-salvas"></p>
+        </article>
+      </section>
+
+      <p id="status-diario" aria-live="polite"></p>
+
+      <div class="controles-diario">
+        <button type="button" class="btn-acao" onclick="limparDiario()">
+          Limpar Anotações Salvas
+        </button>
+        <a class="btn-voltar-menu" href="index.html">← Voltar ao Cardápio</a>
+      </div>
+
+      <footer class="rodape-cardapio">
+        <p>O Mistério da Cozinha Clandestina · 2026</p>
+      </footer>
+    </main>
+
+    <script>
+      function carregarDiario() {
+        var bloco = document.getElementById("bloco-pistas-salvas");
+        var texto = document.getElementById("texto-pistas-salvas");
+        var chaves = ["diario", "pistas", "cozinha_diario", "anotacoes"];
+        var conteudoEncontrado = "";
+        var i = 0;
+
+        for (i = 0; i < chaves.length; i++) {
+          var valor = localStorage.getItem(chaves[i]);
+          if (valor && valor !== "[]" && valor !== "{}") {
+            conteudoEncontrado = valor;
+            break;
+          }
+        }
+
+        if (conteudoEncontrado !== "") {
+          bloco.hidden = false;
+          texto.textContent = "Registros encontrados no navegador: " + conteudoEncontrado;
+        }
+      }
+
+      function limparDiario() {
+        var bloco = document.getElementById("bloco-pistas-salvas");
+        var status = document.getElementById("status-diario");
+        localStorage.removeItem("diario");
+        localStorage.removeItem("pistas");
+        localStorage.removeItem("cozinha_diario");
+        localStorage.removeItem("anotacoes");
+        bloco.hidden = true;
+        status.textContent = "Anotações salvas da sessão foram limpas.";
+      }
+    </script>
+  </body>
+</html>

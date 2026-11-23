@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/cssindex.css" />
+    <title>Uso de IAs · O Mistério da Cozinha Clandestina</title>
+    <style>
+      .aviso-topo {
+        margin-bottom: 22px;
+        padding: 14px 16px;
+        background: #fffbe9;
+        border: 4px solid var(--escuro);
+        border-top: 8px solid var(--latao);
+        font-size: 1.35rem;
+        color: var(--tinta);
+        text-align: left;
+      }
+      .lista-ias {
+        display: grid;
+        gap: 16px;
+        text-align: left;
+      }
+      .card-ia {
+        padding: 18px;
+        background: #fffbe9;
+        border: 4px solid var(--escuro);
+        border-left: 12px solid var(--tomate);
+        box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.25);
+      }
+      .card-ia-topo {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .card-ia h2 {
+        font-family: var(--titulo);
+        font-size: 0.85rem;
+        line-height: 1.5;
+        color: var(--tinta);
+      }
+      .selo-gratuito {
+        padding: 3px 8px;
+        background: var(--latao);
+        color: var(--escuro);
+        font-family: var(--titulo);
+        font-size: 0.55rem;
+        line-height: 1.4;
+      }
+      .card-ia p {
+        font-size: 1.35rem;
+        color: var(--tinta);
+        margin-bottom: 10px;
+      }
+      .card-ia a {
+        color: var(--tomate);
+        font-size: 1.25rem;
+        text-decoration: underline;
+      }
+      .card-ia a:hover {
+        color: var(--escuro);
+        background: var(--latao);
+      }
+      .btn-voltar-menu {
+        display: inline-block;
+        margin-top: 28px;
+        padding: 14px 20px;
+        background: var(--tomate);
+        color: var(--papel);
+        border: 4px solid var(--escuro);
+        box-shadow: 6px 6px 0 0 var(--escuro);
+        font-family: var(--titulo);
+        font-size: 0.75rem;
+        line-height: 1.4;
+        text-decoration: none;
+      }
+      .btn-voltar-menu:hover,
+      .btn-voltar-menu:focus-visible {
+        background: var(--latao);
+        color: var(--escuro);
+        transform: translate(-3px, -3px);
+        box-shadow: 9px 9px 0 0 var(--escuro);
+      }
+      .btn-voltar-menu:active {
+        transform: translate(3px, 3px);
+        box-shadow: none;
+      }
+    </style>
+  </head>
+  <body class="home">
+    <main class="cardapio">
+      <header>
+        <div class="selo" aria-hidden="true">🤖</div>
+        <h1>Uso de IAs</h1>
+        <p class="subtitulo">Transparência e ferramentas utilizadas no projeto</p>
+      </header>
+
+      <p class="aviso-topo">
+        Em conformidade com as boas práticas acadêmicas, listamos abaixo as
+        ferramentas de Inteligência Artificial gratuitas utilizadas como apoio
+        criativo e técnico durante o desenvolvimento deste jogo.
+      </p>
+
+      <section class="lista-ias" aria-label="Ferramentas de Inteligência Artificial">
+        <article class="card-ia">
+          <div class="card-ia-topo">
+            <h2>Google Gemini</h2>
+            <span class="selo-gratuito">Plano Gratuito</span>
+          </div>
+          <p>
+            Apoio na revisão de código HTML5 semântico, estilização CSS retrô,
+            refatoração de scripts em JavaScript puro e revisão textual dos
+            diálogos e pistas do Diário de Bordo.
+          </p>
+          <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer">Acessar Google Gemini ↗</a>
+        </article>
+
+        <article class="card-ia">
+          <div class="card-ia-topo">
+            <h2>ChatGPT (OpenAI)</h2>
+            <span class="selo-gratuito">Plano Gratuito</span>
+          </div>
+          <p>
+            Brainstorming inicial da narrativa investigativa, estruturação da
+            lógica dos enigmas da cozinha e revisão de acessibilidade das telas.
+          </p>
+          <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">Acessar ChatGPT ↗</a>
+        </article>
+
+        <article class="card-ia">
+          <div class="card-ia-topo">
+            <h2>Geradores de Imagem em Pixel Art</h2>
+            <span class="selo-gratuito">Uso Gratuito</span>
+          </div>
+          <p>
+            Criação e adaptação de conceitos visuais para os cenários internos da
+            cozinha, itens do inventário e elementos gráficos em estilo retrô
+            16-bit.
+          </p>
+          <a href="https://www.bing.com/images/create" target="_blank" rel="noopener noreferrer">Acessar Microsoft Designer ↗</a>
+        </article>
+      </section>
+
+      <a class="btn-voltar-menu" href="index.html">← Voltar ao Cardápio</a>
+
+      <footer class="rodape-cardapio">
+        <p>O Mistério da Cozinha Clandestina · 2026</p>
+      </footer>
+    </main>
+  </body>
+</html>
