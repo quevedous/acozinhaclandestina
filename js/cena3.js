@@ -1,23 +1,21 @@
-const CHAVE_ESTADO = 'cozinha_estado';
-const DURACAO = 15 * 60;
-const SENHA_SEGURANCA = '743';   // dias da semana, estações do ano, refeições principais
-const SENHA_CAIXA = '0311';      // recipiente #03 (calda de yuzu) + recipiente #11 (gelificante)
-const EMULSAO = { meta: 10, largura: 24, graca: 1 };
+var CHAVE_ESTADO = 'cozinha_estado';
+var DURACAO = 15 * 60;
+var SENHA_SEGURANCA = '10';
+var SENHA_CAIXA = '6075';
+var EMULSAO = { meta: 10, largura: 24, graca: 1 };
 
-const ITENS = {
-    fragmentos: { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro no Escritório do Chef.' },
-  chave:       { nome: 'Chave de Fenda de Confeiteiro', icone: '🪛', desc: 'Clique no painel do termostato para abri-lo.' },
-  mapa:        { nome: 'Mapa do Restaurante', icone: '🗺️', desc: 'Mostra o caminho entre as cozinhas. Clique de novo para abrir.' },
-  baunilha:    { nome: 'Extrato de Baunilha Rara', icone: '🌿', desc: 'Ingrediente obrigatório para a nota máxima no prato final.' },
-  termometro:  { nome: 'Termômetro Digital', icone: '🌡️', desc: 'Leve para a Confeitaria e use no frasco de calda.' },
-  yuzu:        { nome: 'Fruta de Yuzu Congelada', icone: '🍋', desc: 'Leve para a Confeitaria e deixe descongelar no mármore frio.' },
-  merengue:    { nome: 'Merengue Assado', icone: '🍥', desc: 'Assado no ponto exato. Será usado no prato final.' },
-  calda:       { nome: 'Calda no Ponto', icone: '🍯', desc: 'Calda de açúcar no ponto de bola mole, 118 °C.' }
+var ITENS = {
+  fragmentos: { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro no Escritório do Chef.' },
+  chave: { nome: 'Chave de Fenda de Confeiteiro', icone: '🪛', desc: 'Clique no painel do termostato para abri-lo.' },
+  mapa: { nome: 'Mapa do Restaurante', icone: '🗺️', desc: 'Mostra o caminho entre as cozinhas. Clique de novo para abrir.' },
+  baunilha: { nome: 'Extrato de Baunilha Rara', icone: '🌿', desc: 'Ingrediente obrigatório para a nota máxima no prato final.' },
+  termometro: { nome: 'Termômetro Digital', icone: '🌡️', desc: 'Leve para a Confeitaria e use no frasco de calda.' },
+  yuzu: { nome: 'Fruta de Yuzu Congelada', icone: '🍋', desc: 'Leve para a Confeitaria e deixe descongelar no mármore frio.' },
+  merengue: { nome: 'Merengue Assado', icone: '🍥', desc: 'Assado no ponto exato. Será usado no prato final.' },
+  calda: { nome: 'Calda no Ponto', icone: '🍯', desc: 'Calda de açúcar no ponto de bola mole, 118 °C.' }
 };
 
-ItensFoto.completar(ITENS);
-
-const PADRAO = {
+var PADRAO = {
   fim: Date.now() + DURACAO * 1000,
   inventario: [],
   erros: 0,
@@ -36,75 +34,107 @@ const PADRAO = {
   segurancaAberta: false,
   emulsaoPronta: false
 };
+
 function carregarEstado() {
-  try { return JSON.parse(sessionStorage.getItem(CHAVE_ESTADO)); } catch (e) { return null; }
+  try {
+    return JSON.parse(localStorage.getItem(CHAVE_ESTADO));
+  } catch (e) {
+    return null;
+  }
 }
-let estado = Object.assign({}, PADRAO, carregarEstado() || {});
+
+var estado = Object.assign({}, PADRAO, carregarEstado() || {});
+
 function salvar() {
-  try { sessionStorage.setItem(CHAVE_ESTADO, JSON.stringify(estado)); } catch (e) {}
+  try {
+    localStorage.setItem(CHAVE_ESTADO, JSON.stringify(estado));
+  } catch (e) {}
 }
 salvar();
 
-const $ = s => document.querySelector(s);
-const overlay = $('#modal-overlay');
-const modalTitulo = $('#modal-titulo');
-const modalCorpo = $('#modal-corpo');
-let travado = false;
-let selecionado = null;
-let aoFechar = null;
+function $(s) {
+  return document.querySelector(s);
+}
 
-function fala(texto) { $('#mensagem').textContent = texto; }
+var overlay = $('#modal-overlay');
+var modalTitulo = $('#modal-titulo');
+var modalCorpo = $('#modal-corpo');
+var travado = false;
+var selecionado = null;
+var aoFechar = null;
+
+function fala(texto) {
+  $('#mensagem').textContent = texto;
+}
 
 function abrirModal(titulo, html) {
-  if (aoFechar) { aoFechar(); aoFechar = null; }
+  if (aoFechar) {
+    aoFechar();
+    aoFechar = null;
+  }
   modalTitulo.textContent = titulo;
   modalCorpo.innerHTML = html;
   overlay.hidden = false;
 }
+
 function fecharModal() {
   if (travado) return;
-  if (aoFechar) { aoFechar(); aoFechar = null; }
+  if (aoFechar) {
+    aoFechar();
+    aoFechar = null;
+  }
   overlay.hidden = true;
   modalCorpo.innerHTML = '';
 }
-$('#modal-fechar').addEventListener('click', fecharModal);
-overlay.addEventListener('click', e => { if (e.target === overlay) fecharModal(); });
-document.addEventListener('keydown', e => {
+
+$('#modal-fechar').onclick = fecharModal;
+overlay.onclick = function (e) {
+  if (e.target === overlay) fecharModal();
+};
+document.onkeydown = function (e) {
   if (e.key === 'Escape') fecharModal();
   if ((e.key === 'h' || e.key === 'H') && overlay.hidden) $('#cena').classList.toggle('debug');
-});
+};
 
 function renderInventario() {
-  const barra = $('#inventory-bar');
-  barra.innerHTML = '';
-  for (let i = 0; i < 8; i++) {
-    const id = estado.inventario[i];
-    if (id && ITENS[id]) {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'slot cheio' + (selecionado === id ? ' ativo' : '');
-      b.title = ITENS[id].nome;
-      b.setAttribute('aria-label', ITENS[id].nome);
-      ItensFoto.aplicar(b, id, ITENS[id].icone);
-      b.addEventListener('click', () => clicarItem(id));
-      barra.appendChild(b);
+  var barra = $('#inventory-bar');
+  var html = '';
+  for (var i = 0; i < 8; i++) {
+    var id = estado.inventario[i];
+    var item = ITENS[id];
+    if (item) {
+      var ativo = selecionado === id ? ' ativo' : '';
+      html += `<button type="button" class="slot cheio${ativo}" title="${item.nome}" aria-label="${item.nome}" onclick="clicarItem('${id}')">${item.icone}</button>`;
     } else {
-      const d = document.createElement('div');
-      d.className = 'slot';
-      barra.appendChild(d);
+      html += '<div class="slot"></div>';
     }
   }
+  barra.innerHTML = html;
 }
+
 function addItem(id) {
-  if (!estado.inventario.includes(id)) estado.inventario.push(id);
+  var existe = false;
+  for (var i = 0; i < estado.inventario.length; i++) {
+    if (estado.inventario[i] === id) {
+      existe = true;
+      break;
+    }
+  }
+  if (!existe) estado.inventario.push(id);
   salvar();
   renderInventario();
 }
+
 function removerItem(id) {
-  estado.inventario = estado.inventario.filter(i => i !== id);
+  var novo = [];
+  for (var i = 0; i < estado.inventario.length; i++) {
+    if (estado.inventario[i] !== id) novo.push(estado.inventario[i]);
+  }
+  estado.inventario = novo;
   salvar();
   renderInventario();
 }
+
 function clicarItem(id) {
   if (id === 'mapa') {
     selecionado = null;
@@ -121,15 +151,21 @@ function clicarItem(id) {
   }
   renderInventario();
 }
+
 function ligar(id, alvo, fn, usos) {
-  $(id).addEventListener('click', () => {
+  var el = $(id);
+  if (!el) return;
+  el.onclick = function () {
     if (selecionado) {
-      if (usos && usos[selecionado]) { usos[selecionado](); return; }
+      if (usos && usos[selecionado]) {
+        usos[selecionado]();
+        return;
+      }
       fala(ITENS[selecionado].nome + ' não funciona em: ' + alvo + '. Clique no item de novo para guardá-lo.');
       return;
     }
     fn();
-  });
+  };
 }
 
 function abrirMapa() {
@@ -146,25 +182,38 @@ function abrirMapa() {
 }
 
 function painelNumerico(titulo, intro, tam, completo, checar, sucesso, dica) {
-  let codigo = '';
+  var codigo = '';
+  var nums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  var botoesNum = '';
+  for (var i = 0; i < nums.length; i++) {
+    botoesNum += `<button type="button" data-n="${nums[i]}">${nums[i]}</button>`;
+  }
+
   abrirModal(titulo, `
     <p>${intro}</p>
     <div class="visor" id="visor">${'-'.repeat(tam)}</div>
     <div class="teclado">
-      ${[1,2,3,4,5,6,7,8,9].map(d => `<button type="button" data-n="${d}">${d}</button>`).join('')}
+      ${botoesNum}
       <button type="button" data-a="limpar">C</button>
       <button type="button" data-n="0">0</button>
       <button type="button" data-a="ok">OK</button>
     </div>
     ${dica ? `<p class="dica-modal">${dica}</p>` : ''}
   `);
-  const visor = $('#visor');
-  const atualizar = () => { visor.textContent = (codigo + '-'.repeat(tam)).slice(0, tam); };
-  modalCorpo.querySelector('.teclado').addEventListener('click', ev => {
-    const b = ev.target.closest('button');
+
+  var visor = $('#visor');
+  function atualizar() {
+    visor.textContent = (codigo + '-'.repeat(tam)).slice(0, tam);
+  }
+
+  modalCorpo.querySelector('.teclado').onclick = function (ev) {
+    var b = ev.target.closest('button');
     if (!b) return;
     if (b.dataset.n !== undefined) {
-      if (codigo.length < tam) { codigo += b.dataset.n; atualizar(); }
+      if (codigo.length < tam) {
+        codigo += b.dataset.n;
+        atualizar();
+      }
     } else if (b.dataset.a === 'limpar') {
       codigo = '';
       atualizar();
@@ -178,35 +227,37 @@ function painelNumerico(titulo, intro, tam, completo, checar, sucesso, dica) {
         codigo = '';
         visor.classList.add('erro');
         visor.textContent = 'ERRO';
-        setTimeout(() => { visor.classList.remove('erro'); atualizar(); }, 800);
+        setTimeout(function () {
+          visor.classList.remove('erro');
+          atualizar();
+        }, 800);
       }
     }
-  });
+  };
 }
 
 function abrirPoster() {
-  abrirModal('Charadas do freezer', `
+  abrirModal('Enigma das densidades', `
     <div class="papel">
-      <p><strong>CHARADAS DO CHEF · Freezer</strong></p>
-      <p><strong>Bloqueio de segurança da porta</strong> (3 dígitos, na ordem):</p>
-      <ol>
-        <li>"Começo na segunda e termino no domingo. Quantos dias formam a minha família?"</li>
-        <li>"Primavera, verão, outono e inverno moram na minha casa. Quantos moradores?"</li>
-        <li>"Café da manhã, almoço e jantar. Quantas refeições principais o Chef serve por dia?"</li>
-      </ol>
-      <p><strong>Trava do freezer de frutas</strong> (4 dígitos): o número do recipiente da <em>calda de yuzu</em>, seguido do número do recipiente do <em>gelificante</em>, com 2 dígitos cada. Exemplo: recipiente 5 vira 05.</p>
+      <p><strong>ENIGMA DAS DENSIDADES · Freezer</strong></p>
+      <p>Massa (g) = Volume (mL) × Densidade (g/cm³).<br>Lembre: 1 cm³ = 1 mL.</p>
+      <p><strong>Trava do freezer de frutas:</strong> massa do Recipiente #3 e massa do Recipiente #11, em gramas, nessa ordem, com 2 dígitos cada.</p>
+      <p><strong>Bloqueio de segurança da porta:</strong> o freezer de conservação marca <strong>14 °F</strong>. Digite em °C, sem o sinal de menos.</p>
+      <p>°C = (°F − 32) ÷ 1,8</p>
     </div>
   `);
 }
 
 function abrirRecipiente(numero) {
-  const conteudo = numero === 3 ? 'Calda de yuzu' : 'Gelificante';
+  var dados = numero === 3
+    ? { conteudo: 'Calda de yuzu', dens: '1,2', vol: '50' }
+    : { conteudo: 'Gelificante', dens: '1,5', vol: '50' };
   abrirModal('Recipiente #' + numero, `
     <div class="papel">
       <p><strong>RECIPIENTE #${numero}</strong></p>
-      <p>Conteúdo: ${conteudo}</p>
+      <p>Conteúdo: ${dados.conteudo}<br>Densidade: ${dados.dens} g/cm³<br>Volume: ${dados.vol} mL</p>
     </div>
-    <p class="dica-modal">O número do recipiente está na etiqueta. Veja o cartaz para saber como usá-lo.</p>
+    <p class="dica-modal">Massa = volume × densidade.</p>
   `);
 }
 
@@ -217,10 +268,12 @@ function abrirSeguranca() {
   }
   painelNumerico(
     'Bloqueio de segurança',
-    'Digite a senha de 3 dígitos: as respostas das charadas do cartaz, na ordem.',
-    3, true,
-    c => c === SENHA_SEGURANCA,
-    () => {
+    'Digite a temperatura do freezer em °C (o visor mostra 14 °F).',
+    3, false,
+    function (c) {
+      return c === SENHA_SEGURANCA;
+    },
+    function () {
       estado.segurancaAberta = true;
       estado.acertos++;
       salvar();
@@ -228,7 +281,7 @@ function abrirSeguranca() {
       fecharModal();
       fala('Bip! A luz do teclado ficou verde. A porta do freezer está liberada.');
     },
-    'Dica: as charadas estão no cartaz da parede.'
+    'Dica: o cartaz da parede explica como converter °F em °C.'
   );
 }
 
@@ -239,10 +292,12 @@ function abrirCaixa() {
   }
   painelNumerico(
     'Freezer de frutas raras',
-    'Digite 4 dígitos: o número do recipiente da calda de yuzu e o do gelificante, com 2 dígitos cada.',
+    'Trava de balança de precisão. Digite 4 dígitos: a massa (g) do Recipiente #3 e a do Recipiente #11.',
     4, true,
-    c => c === SENHA_CAIXA,
-    () => {
+    function (c) {
+      return c === SENHA_CAIXA;
+    },
+    function () {
       estado.caixaAberta = true;
       estado.acertos++;
       salvar();
@@ -251,7 +306,7 @@ function abrirCaixa() {
       fecharModal();
       fala('Clique! O freezer abriu e você pegou a Fruta de Yuzu Congelada. Ela precisa descongelar na Confeitaria.');
     },
-    'Dica: leia as etiquetas dos recipientes nas prateleiras de cima.'
+    'Dica: leia as etiquetas dos recipientes e use a fórmula do cartaz.'
   );
 }
 
@@ -273,42 +328,56 @@ function abrirMisturador() {
     <button type="button" class="btn-pixel" id="comecar">COMEÇAR</button>
     <p class="dica-modal" id="em-msg">Mova o mouse (ou o dedo) sobre a barra. Também funciona com as setas ← e →.</p>
   `);
-  const trilho = $('#trilho');
-  const zonaEl = $('#zona-em');
-  const marca = $('#marca');
-  const prog = $('#prog');
-  const leit = $('#leitura-em');
-  const msg = $('#em-msg');
-  const btn = $('#comecar');
-  let pos = 50, centro = 50, dentro = 0, fora = 0, raf = 0, ultimo = 0, t0 = 0;
+  var trilho = $('#trilho');
+  var zonaEl = $('#zona-em');
+  var marca = $('#marca');
+  var prog = $('#prog');
+  var leit = $('#leitura-em');
+  var msg = $('#em-msg');
+  var btn = $('#comecar');
+  var pos = 50, centro = 50, dentro = 0, fora = 0, raf = 0, ultimo = 0, t0 = 0;
 
-  const desenhar = () => {
+  function desenhar() {
     zonaEl.style.left = (centro - EMULSAO.largura / 2) + '%';
     zonaEl.style.width = EMULSAO.largura + '%';
     marca.style.left = pos + '%';
     prog.style.width = Math.min(100, (dentro / EMULSAO.meta) * 100) + '%';
     leit.textContent = Math.min(dentro, EMULSAO.meta).toFixed(1) + ' / ' + EMULSAO.meta + ' s';
-  };
-  const moverPara = x => {
-    const r = trilho.getBoundingClientRect();
+  }
+
+  function moverPara(x) {
+    var r = trilho.getBoundingClientRect();
     pos = Math.max(0, Math.min(100, ((x - r.left) / r.width) * 100));
+  }
+
+  trilho.onpointermove = function (e) {
+    moverPara(e.clientX);
   };
-  trilho.addEventListener('pointermove', e => moverPara(e.clientX));
-  trilho.addEventListener('pointerdown', e => moverPara(e.clientX));
-  const teclas = e => {
-    if (e.key === 'ArrowLeft') { pos = Math.max(0, pos - 4); e.preventDefault(); }
-    if (e.key === 'ArrowRight') { pos = Math.min(100, pos + 4); e.preventDefault(); }
-  };
-  document.addEventListener('keydown', teclas);
-  aoFechar = () => {
-    cancelAnimationFrame(raf);
-    document.removeEventListener('keydown', teclas);
+  trilho.onpointerdown = function (e) {
+    moverPara(e.clientX);
   };
 
-  const quadro = agora => {
-    const dt = Math.min(0.1, (agora - ultimo) / 1000);
+  var prevKey = document.onkeydown;
+  document.onkeydown = function (e) {
+    if (prevKey) prevKey(e);
+    if (e.key === 'ArrowLeft') {
+      pos = Math.max(0, pos - 4);
+      e.preventDefault();
+    }
+    if (e.key === 'ArrowRight') {
+      pos = Math.min(100, pos + 4);
+      e.preventDefault();
+    }
+  };
+  aoFechar = function () {
+    cancelAnimationFrame(raf);
+    document.onkeydown = prevKey;
+  };
+
+  function quadro(agora) {
+    var dt = Math.min(0.1, (agora - ultimo) / 1000);
     ultimo = agora;
-    const t = (agora - t0) / 1000;
+    var t = (agora - t0) / 1000;
     centro = 50 + 30 * Math.sin(t * 0.8) + 8 * Math.sin(t * 2.1);
     centro = Math.max(EMULSAO.largura / 2, Math.min(100 - EMULSAO.largura / 2, centro));
     if (Math.abs(pos - centro) <= EMULSAO.largura / 2) {
@@ -335,8 +404,9 @@ function abrirMisturador() {
       return;
     }
     raf = requestAnimationFrame(quadro);
-  };
-  btn.addEventListener('click', () => {
+  }
+
+  btn.onclick = function () {
     dentro = 0;
     fora = 0;
     btn.hidden = true;
@@ -344,7 +414,7 @@ function abrirMisturador() {
     t0 = performance.now();
     ultimo = t0;
     raf = requestAnimationFrame(quadro);
-  });
+  };
   desenhar();
 }
 
@@ -361,10 +431,18 @@ function usarChaveNoTermostato() {
   renderInventario();
   fala('Você soltou os parafusos e achou um Termômetro Digital escondido atrás do painel. Leve-o para a Confeitaria.');
 }
+
+function temChave() {
+  for (var i = 0; i < estado.inventario.length; i++) {
+    if (estado.inventario[i] === 'chave') return true;
+  }
+  return false;
+}
+
 function abrirTermostato() {
   if (estado.termostatoAberto) {
     fala('O painel do termostato está aberto e vazio.');
-  } else if (estado.inventario.includes('chave')) {
+  } else if (temChave()) {
     usarChaveNoTermostato();
   } else {
     fala('Um painel de termostato preso por parafusos. Falta uma ferramenta para abrir. A chave de fenda está na Despensa.');
@@ -376,7 +454,7 @@ function abrirPorta() {
     abrirSeguranca();
     return;
   }
-  const falta = [];
+  var falta = [];
   if (!estado.caldaPronta) falta.push('a calda no ponto (use o termômetro no frasco da Confeitaria)');
   if (!estado.yuzuUsado) falta.push('o yuzu descongelando no mármore da Confeitaria');
   if (falta.length) {
@@ -397,50 +475,53 @@ function abrirPorta() {
 }
 
 ligar('#no-poster', 'Cartaz', abrirPoster);
-ligar('#no-pote3a', 'Recipiente', () => abrirRecipiente(3));
-ligar('#no-pote3b', 'Recipiente', () => abrirRecipiente(3));
-ligar('#no-pote11', 'Recipiente', () => abrirRecipiente(11));
+ligar('#no-pote3a', 'Recipiente', function () { abrirRecipiente(3); });
+ligar('#no-pote3b', 'Recipiente', function () { abrirRecipiente(3); });
+ligar('#no-pote11', 'Recipiente', function () { abrirRecipiente(11); });
 ligar('#no-teclado', 'Teclado', abrirSeguranca);
 ligar('#no-porta', 'Porta', abrirPorta);
 ligar('#no-caixa', 'Freezer', abrirCaixa);
 ligar('#no-misturador', 'Misturador', abrirMisturador);
 ligar('#no-termostato', 'Termostato', abrirTermostato, { chave: usarChaveNoTermostato });
 
-ligar('#no-armario', 'Armário', () => fala('Um armário de inox lacrado pelo gelo. Não abre.'));
-ligar('#no-geladeira-esq', 'Geladeira', () => fala('Uma geladeira industrial cheia de caixas. A porta está congelada e não abre.'));
-ligar('#no-geladeira-meio', 'Geladeira', () => fala('Uma geladeira de vidro com caixas de leite e manteiga. Nada de útil.'));
-ligar('#no-caixas-esq', 'Caixas', () => fala('Caixas de papelão duras de tanto gelo.'));
-ligar('#no-caixas-dir', 'Caixas', () => fala('Caixas congeladas no alto da prateleira. Nada de útil.'));
-ligar('#no-lampada', 'Lâmpada', () => fala('A luz azulada da lâmpada deixa a sala ainda mais fria.'));
-ligar('#no-gelo', 'Gelo', () => fala('Poças de gelo no chão. Melhor andar devagar.'));
-ligar('#no-potes-med', 'Recipientes', () => fala('As etiquetas destes recipientes estão apagadas pelo gelo. Os legíveis estão na prateleira de cima.'));
-ligar('#no-recip-baixo', 'Recipientes', () => fala('Recipientes 011 e 012, com as etiquetas cobertas de gelo. Não dá para ler.'));
+ligar('#no-armario', 'Armário', function () { fala('Um armário de inox lacrado pelo gelo. Não abre.'); });
+ligar('#no-geladeira-esq', 'Geladeira', function () { fala('Uma geladeira industrial cheia de caixas. A porta está congelada e não abre.'); });
+ligar('#no-geladeira-meio', 'Geladeira', function () { fala('Uma geladeira de vidro com caixas de leite e manteiga. Nada de útil.'); });
+ligar('#no-caixas-esq', 'Caixas', function () { fala('Caixas de papelão duras de tanto gelo.'); });
+ligar('#no-caixas-dir', 'Caixas', function () { fala('Caixas congeladas no alto da prateleira. Nada de útil.'); });
+ligar('#no-lampada', 'Lâmpada', function () { fala('A luz azulada da lâmpada deixa a sala ainda mais fria.'); });
+ligar('#no-gelo', 'Gelo', function () { fala('Uma placa de gelo escorregadia no piso.'); });
 
 function formatar(seg) {
-  const m = String(Math.floor(seg / 60)).padStart(2, '0');
-  const s = String(seg % 60).padStart(2, '0');
+  var m = String(Math.floor(seg / 60)).padStart(2, '0');
+  var s = String(seg % 60).padStart(2, '0');
   return m + ':' + s;
 }
+
 function fimDeJogo() {
   clearInterval(relogio);
   travado = true;
-  try { sessionStorage.removeItem(CHAVE_ESTADO); } catch (e) {}
+  try {
+    localStorage.removeItem(CHAVE_ESTADO);
+  } catch (e) {}
   abrirModal('FORA DO TEMPO!', `
-    <p>O concurso começou sem você. O Chef abre a porta, furioso, e você está demitido antes de tocar na bancada.</p>
+    <p>O concurso começou sem você.</p>
     <a class="btn-pixel" href="../index.html">Voltar ao menu</a>
   `);
 }
+
 function tick() {
-  const restante = Math.max(0, Math.ceil((estado.fim - Date.now()) / 1000));
-  const cron = $('#cronometro');
+  var restante = Math.max(0, Math.ceil((estado.fim - Date.now()) / 1000));
+  var cron = $('#cronometro');
   cron.textContent = formatar(restante);
   cron.classList.toggle('urgente', restante <= 60);
   if (restante <= 0) fimDeJogo();
 }
-const relogio = setInterval(tick, 1000);
+
+var relogio = setInterval(tick, 1000);
 
 if (estado.caixaAberta) $('#no-caixa').classList.add('aberta');
 if (estado.segurancaAberta) $('#no-teclado').classList.add('aberta');
 renderInventario();
 tick();
-fala('Câmara Fria. Procure o termômetro digital e abra o freezer das frutas raras.');
+fala('Câmara Fria. O ar está congelante.');

@@ -1,32 +1,30 @@
 'use strict';
 
-const CHAVE_ESTADO = 'cozinha_estado';
-const DURACAO = 15 * 60;
-const TEMPO_ESTAGIO = 5000;
+var CHAVE_ESTADO = 'cozinha_estado';
+var DURACAO = 15 * 60;
+var TEMPO_ESTAGIO = 5000;
 
-const ESTAGIOS = {
+var ESTAGIOS = {
   1: { min: 18, max: 34, nome: 'secar', corNome: 'Azul-Ciano (Chama Branda)', hex: '#2563eb' },
   2: { min: 64, max: 80, nome: 'dourar', corNome: 'Âmbar Dourado (Chama Média-Alta)', hex: '#d97706' }
 };
 
-const CALDA = { min: 100, max: 140, alvo: 118, tol: 3, vel: 28 };
+var CALDA = { min: 100, max: 140, alvo: 118, tol: 3, vel: 28 };
 
-const ITENS = {
-    fragmentos: { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro no Escritório do Chef.' },
-  chave:       { nome: 'Chave de Fenda de Confeiteiro', icone: '🪛', desc: 'Vai servir para abrir um painel na Câmara Fria.' },
-  mapa:        { nome: 'Mapa do Restaurante', icone: '🗺️', desc: 'Mostra o caminho entre as cozinhas. Clique de novo para abrir.' },
-  baunilha:    { nome: 'Extrato de Baunilha Rara', icone: '🌿', desc: 'Ingrediente obrigatório para a nota máxima no prato final.' },
-  termometro:  { nome: 'Termômetro Digital', icone: '🌡️', desc: 'Selecione e clique no frasco de calda para medir o ponto.' },
-  yuzu:        { nome: 'Fruta de Yuzu Congelada', icone: '🍋', desc: 'Precisa descongelar aos poucos. O mármore frio ajuda.' },
-  merengue:    { nome: 'Merengue Assado', icone: '🍥', desc: 'Assado no ponto exato. Será usado no prato final.' },
-  calda:       { nome: 'Calda no Ponto', icone: '🍯', desc: 'Calda de açúcar no ponto de bola mole, 118 °C.' },
-  papel_dica:  { nome: 'Papel Enigma da Despensa', icone: '📜', desc: 'Um bilhete rasgado com o enigma para abrir a porta eletrônica. Clique para decifrar.' },
+var ITENS = {
+  fragmentos: { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro no Escritório do Chef.' },
+  chave: { nome: 'Chave de Fenda de Confeiteiro', icone: '🪛', desc: 'Vai servir para abrir um painel na Câmara Fria.' },
+  mapa: { nome: 'Mapa do Restaurante', icone: '🗺️', desc: 'Mostra o caminho entre as cozinhas. Clique de novo para abrir.' },
+  baunilha: { nome: 'Extrato de Baunilha Rara', icone: '🌿', desc: 'Ingrediente obrigatório para a nota máxima no prato final.' },
+  termometro: { nome: 'Termômetro Digital', icone: '🌡️', desc: 'Selecione e clique no frasco de calda para medir o ponto.' },
+  yuzu: { nome: 'Fruta de Yuzu Congelada', icone: '🍋', desc: 'Precisa descongelar aos poucos. O mármore frio ajuda.' },
+  merengue: { nome: 'Merengue Assado', icone: '🍥', desc: 'Assado no ponto exato. Será usado no prato final.' },
+  calda: { nome: 'Calda no Ponto', icone: '🍯', desc: 'Calda de açúcar no ponto de bola mole, 118 °C.' },
+  papel_dica: { nome: 'Papel Enigma da Despensa', icone: '📜', desc: 'Um bilhete rasgado com o enigma para abrir a porta eletrônica. Clique para decifrar.' },
   chave_porta: { nome: 'Chave da Câmara Fria', icone: '🔑', desc: 'Chave obtida na bancada de frascos.' }
 };
 
-ItensFoto.completar(ITENS);
-
-const PADRAO = {
+var PADRAO = {
   fim: Date.now() + DURACAO * 1000,
   inventario: [],
   itemSelecionado: null,
@@ -45,94 +43,120 @@ const PADRAO = {
 };
 
 function carregarEstado() {
-  try { return JSON.parse(sessionStorage.getItem(CHAVE_ESTADO)); } catch (e) { return null; }
+  try {
+    return JSON.parse(localStorage.getItem(CHAVE_ESTADO));
+  } catch (e) {
+    return null;
+  }
 }
-let estado = Object.assign({}, PADRAO, carregarEstado() || {});
+
+var estado = Object.assign({}, PADRAO, carregarEstado() || {});
+
 function salvar() {
-  try { sessionStorage.setItem(CHAVE_ESTADO, JSON.stringify(estado)); } catch (e) {}
+  try {
+    localStorage.setItem(CHAVE_ESTADO, JSON.stringify(estado));
+  } catch (e) {}
 }
 salvar();
 
-const $ = s => document.querySelector(s);
-const overlay = $('#modal-overlay');
-const modalTitulo = $('#modal-titulo');
-const modalCorpo = $('#modal-corpo');
-let travado = false;
-let selecionado = estado.itemSelecionado || null;
-let aoFechar = null;
+function $(s) {
+  return document.querySelector(s);
+}
+
+var overlay = $('#modal-overlay');
+var modalTitulo = $('#modal-titulo');
+var modalCorpo = $('#modal-corpo');
+var travado = false;
+var selecionado = estado.itemSelecionado || null;
+var aoFechar = null;
 
 function sincronizarEstado() {
-  const atual = carregarEstado();
+  var atual = carregarEstado();
   if (atual) {
     estado = Object.assign({}, estado, atual);
     selecionado = estado.itemSelecionado || null;
   }
 }
 
-window.addEventListener('message', (e) => {
-  if (e.data?.tipo === 'ITEM_SELECIONADO') {
+window.onmessage = function (e) {
+  if (e.data && e.data.tipo === 'ITEM_SELECIONADO') {
     selecionado = e.data.id;
     estado.itemSelecionado = e.data.id;
   }
-});
+};
 
 function fala(texto) {
-  const el = $('#mensagem');
+  var el = $('#mensagem');
   if (el) el.textContent = texto;
 }
 
 function abrirModal(titulo, html) {
-  if (aoFechar) { aoFechar(); aoFechar = null; }
+  if (aoFechar) {
+    aoFechar();
+    aoFechar = null;
+  }
   modalTitulo.textContent = titulo;
   modalCorpo.innerHTML = html;
   overlay.hidden = false;
 }
+
 function fecharModal() {
   if (travado) return;
-  if (aoFechar) { aoFechar(); aoFechar = null; }
+  if (aoFechar) {
+    aoFechar();
+    aoFechar = null;
+  }
   overlay.hidden = true;
   modalCorpo.innerHTML = '';
 }
-$('#modal-fechar').addEventListener('click', fecharModal);
-overlay.addEventListener('click', e => { if (e.target === overlay) fecharModal(); });
-document.addEventListener('keydown', e => {
+
+$('#modal-fechar').onclick = fecharModal;
+overlay.onclick = function (e) {
+  if (e.target === overlay) fecharModal();
+};
+document.onkeydown = function (e) {
   if (e.key === 'Escape') fecharModal();
   if ((e.key === 'h' || e.key === 'H') && overlay.hidden) $('#cena').classList.toggle('debug');
-});
+};
 
 function renderInventario() {
-  const barra = $('#inventory-bar');
+  var barra = $('#inventory-bar');
   if (!barra) return;
-  barra.innerHTML = '';
-  for (let i = 0; i < 8; i++) {
-    const id = estado.inventario[i];
-    if (id && ITENS[id]) {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'slot cheio' + (selecionado === id ? ' ativo' : '');
-      b.title = ITENS[id].nome;
-      b.setAttribute('aria-label', ITENS[id].nome);
-      ItensFoto.aplicar(b, id, ITENS[id].icone);
-      b.addEventListener('click', () => clicarItem(id));
-      barra.appendChild(b);
+  var html = '';
+  for (var i = 0; i < 8; i++) {
+    var id = estado.inventario[i];
+    var item = ITENS[id];
+    if (item) {
+      var ativo = selecionado === id ? ' ativo' : '';
+      html += `<button type="button" class="slot cheio${ativo}" title="${item.nome}" aria-label="${item.nome}" onclick="clicarItem('${id}')">${item.icone}</button>`;
     } else {
-      const d = document.createElement('div');
-      d.className = 'slot';
-      barra.appendChild(d);
+      html += '<div class="slot"></div>';
     }
   }
+  barra.innerHTML = html;
 }
 
 function addItem(id) {
   sincronizarEstado();
-  if (!estado.inventario.includes(id)) estado.inventario.push(id);
+  var existe = false;
+  for (var i = 0; i < estado.inventario.length; i++) {
+    if (estado.inventario[i] === id) {
+      existe = true;
+      break;
+    }
+  }
+  if (!existe) estado.inventario.push(id);
   salvar();
   renderInventario();
 }
 
 function removerItem(id) {
   sincronizarEstado();
-  estado.inventario = estado.inventario.filter(i => i !== id);
+  var novo = [];
+  for (var i = 0; i < estado.inventario.length; i++) {
+    if (estado.inventario[i] !== id) novo.push(estado.inventario[i]);
+  }
+  estado.inventario = novo;
   if (selecionado === id) {
     selecionado = null;
     estado.itemSelecionado = null;
@@ -180,17 +204,20 @@ function abrirEnigmaPapel() {
 }
 
 function ligar(id, alvo, fn, usos) {
-  const el = $(id);
+  var el = $(id);
   if (el) {
-    el.addEventListener('click', () => {
+    el.onclick = function () {
       sincronizarEstado();
       if (selecionado) {
-        if (usos && usos[selecionado]) { usos[selecionado](); return; }
+        if (usos && usos[selecionado]) {
+          usos[selecionado]();
+          return;
+        }
         fala(ITENS[selecionado].nome + ' não funciona em: ' + alvo + '. Clique no item de novo para guardá-lo.');
         return;
       }
       fn();
-    });
+    };
   }
 }
 
@@ -212,7 +239,8 @@ function abrirReceita() {
     <div class="papel">
       <p><strong>Merengue Suíço da Casa</strong></p>
       <p>4 claras, 220 g de açúcar e uma pitada de sal. Bater em banho-maria até firmar.</p>
-      <p><strong>Estágio 1 (Secar)</strong> e <strong>Estágio 2 (Dourar):</strong> a cor da chama de cada estágio é uma charada. Leia o Cartaz da parede.</p>
+      <p><strong>Estágio 1 (Secar):</strong> exige <strong>Chama Azul-Ciano</strong> (calor suave).</p>
+      <p><strong>Estágio 2 (Dourar):</strong> veja a cor no Cartaz da parede.</p>
       <p>"Não olhe números! O segredo do merengue perfeito está na cor da chama do queimador."</p>
     </div>
   `);
@@ -221,12 +249,11 @@ function abrirReceita() {
 function abrirPoster() {
   abrirModal('Cartaz do merengue', `
     <div class="papel">
-      <p><strong>MERENGUE · Charadas da Chama</strong></p>
-      <p>O merengue perfeito é assado em dois estágios. A cor da chama de cada um é uma charada:</p>
-      <p><strong>1º Secar:</strong> "Sou a cor do céu limpo e do mar fundo. A chama mais mansa do fogão se veste de mim. Quem sou eu?"</p>
-      <p><strong>2º Dourar:</strong> "Sou a cor do mel que escorre, do caramelo no ponto e da medalha de ouro. Quem sou eu?"</p>
+      <p><strong>MERENGUE · Espectro de Cozimento</strong></p>
+      <p>O merengue perfeito é assado em dois estágios visuais:</p>
+      <p><strong>1º Secar:</strong> <span class="amostra-cor" style="background:#2563eb"></span> Azul-Ciano</p>
+      <p><strong>2º Dourar:</strong> <span class="amostra-cor" style="background:#d97706"></span> Âmbar Dourado</p>
     </div>
-    <p class="dica-modal">Use o Guia de Chamas para ver como cada cor se chama no queimador.</p>
   `);
 }
 
@@ -236,10 +263,10 @@ function abrirTabela() {
       <p><strong>Escala Cromática do Queimador</strong></p>
       <table class="tabela-conv">
         <tr><th>Cor da Chama</th><th>Intensidade</th></tr>
-        <tr><td><span class="amostra-cor" style="background:#2563eb"></span>Azul-Ciano</td><td>Baixa</td></tr>
-        <tr><td><span class="amostra-cor" style="background:#10b981"></span>Verde-Esmeralda</td><td>Morna</td></tr>
-        <tr><td><span class="amostra-cor" style="background:#d97706"></span>Âmbar Dourado</td><td>Média-Alta</td></tr>
-        <tr><td><span class="amostra-cor" style="background:#dc2626"></span>Vermelho-Brasa</td><td>Máxima</td></tr>
+        <tr><td><span class="amostra-cor" style="background:#2563eb"></span>Azul-Ciano</td><td>Baixa (Secagem)</td></tr>
+        <tr><td><span class="amostra-cor" style="background:#10b981"></span>Verde-Esmeralda</td><td>Morna (Fermentação)</td></tr>
+        <tr><td><span class="amostra-cor" style="background:#d97706"></span>Âmbar Dourado</td><td>Média-Alta (Caramelizar)</td></tr>
+        <tr><td><span class="amostra-cor" style="background:#dc2626"></span>Vermelho-Brasa</td><td>Máxima (Queima rápido)</td></tr>
       </table>
     </div>
   `);
@@ -254,14 +281,14 @@ function calcularCorChama(val) {
 }
 
 function abrirPainel(n) {
-  const e = ESTAGIOS[n];
-  let valorAtual = 50;
-  const corInicial = calcularCorChama(valorAtual);
+  var e = ESTAGIOS[n];
+  var valorAtual = 50;
+  var corInicial = calcularCorChama(valorAtual);
 
   abrirModal('Queimador · Estágio ' + n + ' (' + e.nome + ')', `
     <div class="display-forno">
       FORNO CONFEITARIA · ESTÁGIO ${n}<br>
-      Ajuste o regulador de gás até a chama ficar da cor da charada do cartaz.
+      Ajuste o regulador de gás até atingir a cor indicada na receita.
     </div>
     <div class="visor-chama" id="visor-chama" style="background:${corInicial.hex}">
       ${corInicial.nome}
@@ -271,17 +298,17 @@ function abrirPainel(n) {
     <p class="dica-modal" id="msg-forno">Arraste o controle para mudar a cor da chama.</p>
   `);
 
-  const slider = $('#slider-chama');
-  const visor = $('#visor-chama');
+  var slider = $('#slider-chama');
+  var visor = $('#visor-chama');
 
-  slider.addEventListener('input', () => {
+  slider.oninput = function () {
     valorAtual = Number(slider.value);
-    const info = calcularCorChama(valorAtual);
+    var info = calcularCorChama(valorAtual);
     visor.style.backgroundColor = info.hex;
     visor.textContent = info.nome;
-  });
+  };
 
-  $('#confirmar-chama').addEventListener('click', () => {
+  $('#confirmar-chama').onclick = function () {
     if (valorAtual >= e.min && valorAtual <= e.max) {
       estado.fornoEtapa = n === 1 ? 1 : 3;
       estado.assadoEm = Date.now() + TEMPO_ESTAGIO;
@@ -295,18 +322,24 @@ function abrirPainel(n) {
     } else {
       estado.erros++;
       salvar();
-      $('#msg-forno').textContent = 'Essa cor de chama vai estragar o ponto! Releia a charada do Cartaz da parede.';
+      $('#msg-forno').textContent = 'Essa cor de chama vai estragar o ponto! Confira a Receita e o Cartaz.';
     }
-  });
+  };
 }
 
 function abrirForno() {
   sincronizarEstado();
-  const et = estado.fornoEtapa;
-  if (et === 0) { abrirPainel(1); return; }
-  if (et === 2) { abrirPainel(2); return; }
+  var et = estado.fornoEtapa;
+  if (et === 0) {
+    abrirPainel(1);
+    return;
+  }
+  if (et === 2) {
+    abrirPainel(2);
+    return;
+  }
   if (et === 1 || et === 3) {
-    const s = Math.max(1, Math.ceil((estado.assadoEm - Date.now()) / 1000));
+    var s = Math.max(1, Math.ceil((estado.assadoEm - Date.now()) / 1000));
     fala('O merengue ainda está assando. Faltam cerca de ' + s + ' segundos.');
     return;
   }
@@ -323,9 +356,9 @@ function abrirForno() {
 }
 
 function atualizarForno() {
-  const f = $('#no-forno');
+  var f = $('#no-forno');
   if (!f) return;
-  const agora = Date.now();
+  var agora = Date.now();
   if (estado.fornoEtapa === 1 && agora >= estado.assadoEm) {
     estado.fornoEtapa = 2;
     salvar();
@@ -348,9 +381,9 @@ function abrirCalda() {
   estado.itemSelecionado = null;
   salvar();
   renderInventario();
-  const span = CALDA.max - CALDA.min;
-  const zonaEsq = ((CALDA.alvo - CALDA.tol - CALDA.min) / span) * 100;
-  const zonaLarg = ((2 * CALDA.tol) / span) * 100;
+  var span = CALDA.max - CALDA.min;
+  var zonaEsq = ((CALDA.alvo - CALDA.tol - CALDA.min) / span) * 100;
+  var zonaLarg = ((2 * CALDA.tol) / span) * 100;
   abrirModal('Ponto da calda', `
     <p>Pare o termômetro no <strong>Ponto de Bola Mole: ${CALDA.alvo} °C</strong>.</p>
     <div class="termo">
@@ -361,23 +394,26 @@ function abrirCalda() {
     <button type="button" class="btn-pixel" id="parar">PARAR</button>
     <p class="dica-modal" id="calda-msg">Clique em PARAR quando a agulha estiver na faixa verde.</p>
   `);
-  const agulha = $('#agulha');
-  const leitura = $('#leitura');
-  let temp = CALDA.min;
-  const t0 = performance.now();
-  let raf = 0;
-  const quadro = agora => {
-    const d = ((agora - t0) / 1000) * CALDA.vel;
-    const m = d % (2 * span);
+  var agulha = $('#agulha');
+  var leitura = $('#leitura');
+  var temp = CALDA.min;
+  var t0 = performance.now();
+  var raf = 0;
+
+  function quadro(agora) {
+    var d = ((agora - t0) / 1000) * CALDA.vel;
+    var m = d % (2 * span);
     temp = CALDA.min + (m <= span ? m : 2 * span - m);
     if (agulha) agulha.style.left = (((temp - CALDA.min) / span) * 100) + '%';
     if (leitura) leitura.textContent = temp.toFixed(1) + ' °C';
     raf = requestAnimationFrame(quadro);
-  };
+  }
   raf = requestAnimationFrame(quadro);
-  aoFechar = () => cancelAnimationFrame(raf);
+  aoFechar = function () {
+    cancelAnimationFrame(raf);
+  };
 
-  $('#parar').addEventListener('click', () => {
+  $('#parar').onclick = function () {
     if (Math.abs(temp - CALDA.alvo) <= CALDA.tol) {
       estado.caldaPronta = true;
       estado.acertos++;
@@ -392,7 +428,7 @@ function abrirCalda() {
         ? 'Cedo demais: a calda ainda está rala (' + temp.toFixed(1) + ' °C).'
         : 'Passou do ponto (' + temp.toFixed(1) + ' °C).';
     }
-  });
+  };
 }
 
 ligar('#no-receita', 'Receita', abrirReceita);
@@ -400,7 +436,7 @@ ligar('#no-poster', 'Cartaz', abrirPoster);
 ligar('#no-tabela', 'Guia de Chamas', abrirTabela);
 ligar('#no-forno', 'Forno', abrirForno);
 
-ligar('#no-potes-meio', 'Potes de farinha', () => {
+ligar('#no-potes-meio', 'Potes de farinha', function () {
   window.location.href = 'farinhas.html';
 });
 
@@ -411,29 +447,36 @@ function irParaDespensa() {
   window.location.href = 'bancada.html';
 }
 
-ligar('#no-porta', 'Porta', () => {
+ligar('#no-porta', 'Porta', function () {
   irParaDespensa();
 }, {
-  chave_porta: () => {
+  chave_porta: function () {
     fala('A chave não serve nesta porta. O acesso à Câmara Fria é pelo alçapão da despensa.');
     setTimeout(irParaDespensa, 1200);
   }
 });
 
-ligar('#no-calda', 'Frasco de calda', () => {
+function temTermometro() {
+  for (var i = 0; i < estado.inventario.length; i++) {
+    if (estado.inventario[i] === 'termometro') return true;
+  }
+  return false;
+}
+
+ligar('#no-calda', 'Frasco de calda', function () {
   if (estado.caldaPronta) {
     fala('A calda já está pronta e guardada.');
-  } else if (estado.inventario.includes('termometro')) {
+  } else if (temTermometro()) {
     fala('Selecione o termômetro digital no inventário e clique no frasco.');
   } else {
     fala('Um frasco de açúcar caramelizando. Falta um termômetro para acertar o ponto.');
   }
 }, { termometro: abrirCalda });
 
-ligar('#no-marmore', 'Bancada', () => {
+ligar('#no-marmore', 'Bancada', function () {
   fala('O mármore está gelado. Serve para descongelar coisas devagar.');
 }, {
-  yuzu: () => {
+  yuzu: function () {
     removerItem('yuzu');
     estado.yuzuUsado = true;
     salvar();
@@ -441,40 +484,46 @@ ligar('#no-marmore', 'Bancada', () => {
   }
 });
 
-const avisoForno = () => fala('Forno vazio e desligado.');
+function avisoForno() {
+  fala('Forno vazio e desligado.');
+}
 ligar('#no-forno2', 'Forno', avisoForno);
 ligar('#no-forno3', 'Forno', avisoForno);
 ligar('#no-forno4', 'Forno', avisoForno);
 
-ligar('#no-janela', 'Janela', () => fala('Uma janela com grades.'));
-ligar('#no-frasco', 'Alambique', () => fala('Um alambique de vidro com líquido borbulhando.'));
-ligar('#no-extrato', 'Extrato', () => fala('Garrafa de extrato.'));
-ligar('#no-yuzu', 'Yuzu', () => fala('Pote de yuzu.'));
-ligar('#no-barril', 'Barril', () => fala('Barril vazio.'));
-ligar('#no-caixote', 'Caixote', () => fala('Caixote com potes vazios.'));
-ligar('#no-prateleira', 'Prateleira', () => fala('Potes de ingredientes.'));
-ligar('#no-panelas', 'Panelas', () => fala('Panelas empilhadas.'));
-ligar('#no-bicos', 'Bicos', () => fala('Bicos de confeitar.'));
-ligar('#no-batedeira', 'Batedeira', () => fala('Batedeira industrial.'));
-ligar('#no-prancheta', 'Prancheta', () => fala('Prancheta com anotações de produção.'));
+ligar('#no-janela', 'Janela', function () { fala('Uma janela com grades.'); });
+ligar('#no-frasco', 'Alambique', function () { fala('Um alambique de vidro com líquido borbulhando.'); });
+ligar('#no-extrato', 'Extrato', function () { fala('Garrafa de extrato.'); });
+ligar('#no-yuzu', 'Yuzu', function () { fala('Pote de yuzu.'); });
+ligar('#no-barril', 'Barril', function () { fala('Barril vazio.'); });
+ligar('#no-caixote', 'Caixote', function () { fala('Caixote com potes vazios.'); });
+ligar('#no-prateleira', 'Prateleira', function () { fala('Potes de ingredientes.'); });
+ligar('#no-panelas', 'Panelas', function () { fala('Panelas empilhadas.'); });
+ligar('#no-bicos', 'Bicos', function () { fala('Bicos de confeitar.'); });
+ligar('#no-batedeira', 'Batedeira', function () { fala('Batedeira industrial.'); });
+ligar('#no-prancheta', 'Prancheta', function () { fala('Prancheta com anotações de produção.'); });
 
 function formatar(seg) {
-  const m = String(Math.floor(seg / 60)).padStart(2, '0');
-  const s = String(seg % 60).padStart(2, '0');
+  var m = String(Math.floor(seg / 60)).padStart(2, '0');
+  var s = String(seg % 60).padStart(2, '0');
   return m + ':' + s;
 }
+
 function fimDeJogo() {
   clearInterval(relogio);
   travado = true;
-  try { sessionStorage.removeItem(CHAVE_ESTADO); } catch (e) {}
+  try {
+    localStorage.removeItem(CHAVE_ESTADO);
+  } catch (e) {}
   abrirModal('FORA DO TEMPO!', `
     <p>O concurso começou sem você.</p>
     <a class="btn-pixel" href="../index.html">Voltar ao menu</a>
   `);
 }
+
 function tick() {
-  const restante = Math.max(0, Math.ceil((estado.fim - Date.now()) / 1000));
-  const cron = $('#cronometro');
+  var restante = Math.max(0, Math.ceil((estado.fim - Date.now()) / 1000));
+  var cron = $('#cronometro');
   if (cron) {
     cron.textContent = formatar(restante);
     cron.classList.toggle('urgente', restante <= 60);
@@ -482,7 +531,8 @@ function tick() {
   atualizarForno();
   if (restante <= 0) fimDeJogo();
 }
-const relogio = setInterval(tick, 1000);
+
+var relogio = setInterval(tick, 1000);
 
 renderInventario();
 tick();

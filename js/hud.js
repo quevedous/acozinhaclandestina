@@ -1,30 +1,13 @@
-/* ==================================================================
-   HUD DAS CENAS: barra preta do topo + Diário + abas + tela cheia.
-
-   Como usar: no fim do <body> de cada cena (menos a cena 5), depois
-   dos scripts da própria cena:
-
-     <link rel="stylesheet" href="../css/hud.css">      (no <head>)
-     <script src="../js/abas.js"></script>
-     <script src="../js/hud.js"></script>
-
-   O script reaproveita os elementos que a cena já tem (#header-bar,
-   #inventory-bar, #cronometro, #mensagem), então a lógica de cada
-   cena continua funcionando sem mudanças.
-
-   Tudo fica dentro de uma função para não colidir com as constantes
-   (ITENS, estado, $ ...) dos scripts das cenas.
-================================================================== */
 (function () {
   'use strict';
 
-  const header = document.getElementById('header-bar');
+  var header = document.getElementById('header-bar');
   if (!header) return;
 
-  const CHAVE_ESTADO = 'cozinha_estado';   // estado do jogo (as cenas escrevem)
-  const CHAVE_HUD = 'cozinha_hud';         // diário e dica (só o HUD escreve)
+  var CHAVE_ESTADO = 'cozinha_estado';
+  var CHAVE_HUD = 'cozinha_hud';
 
-  const ITENS = {
+  var ITENS = {
     chave: { nome: 'Chave de Fenda de Confeiteiro', icone: '🪛', desc: 'Serve para abrir painéis parafusados.' },
     mapa: { nome: 'Mapa do Restaurante', icone: '🗺️', desc: 'Planta baixa da cozinha clandestina.' },
     baunilha: { nome: 'Extrato de Baunilha Rara', icone: '🌿', desc: 'Essência aromática rara para a massa.' },
@@ -32,24 +15,25 @@
     yuzu: { nome: 'Fruta de Yuzu Congelada', icone: '🍋', desc: 'Ingrediente criogênico final do bolo.' },
     merengue: { nome: 'Merengue Assado', icone: '🍥', desc: 'Base crocante assada no ponto.' },
     calda: { nome: 'Calda no Ponto', icone: '🍯', desc: 'Calda dourada brilhante.' },
-        fragmentos: { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro no Escritório do Chef.' },
+    fragmentos: { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro no Escritório do Chef.' },
     livro: { nome: 'Livro Restaurado', icone: '📖', desc: 'Receita completa do Bolo Clandestino.' },
     chavemestra: { nome: 'Chave Mestra', icone: '🗝️', desc: 'Abre portas trancadas do salão.' },
     especiarias: { nome: 'Especiarias Raras', icone: '🧂', desc: 'Tempero especial dos jurados.' },
-    papel_dica: { nome: 'Bilhete Enigma', icone: '📜', desc: 'Sequência: Azul  Verde → Laranja → Vermelho.' },
+    papel_dica: { nome: 'Bilhete Enigma', icone: '📜', desc: 'Sequência: Azul → Verde → Laranja → Vermelho.' },
     chave_porta: { nome: 'Chave da Câmara Fria', icone: '🔑', desc: 'Abre a porta da despensa trancada.' }
   };
 
-  if (window.ItensFoto) ItensFoto.completar(ITENS);
-
-  const HUD_PADRAO = {
+  var HUD_PADRAO = {
     dicaAtual: 'Explore o cenário e clique nos objetos para investigar.',
     diario: ['Início da prova: 15 minutos para preparar e entregar o Bolo Clandestino.']
   };
 
-  /* ---------- armazenamento ---------- */
   function ler(chave) {
-    try { return JSON.parse(sessionStorage.getItem(chave)); } catch (e) { return null; }
+    try {
+      return JSON.parse(localStorage.getItem(chave));
+    } catch (e) {
+      return null;
+    }
   }
 
   function lerHud() {
@@ -57,94 +41,108 @@
   }
 
   function salvarHud(hud) {
-    try { sessionStorage.setItem(CHAVE_HUD, JSON.stringify(hud)); } catch (e) {}
+    try {
+      localStorage.setItem(CHAVE_HUD, JSON.stringify(hud));
+    } catch (e) {}
   }
 
   function inventario() {
-    const est = ler(CHAVE_ESTADO);
+    var est = ler(CHAVE_ESTADO);
     return (est && Array.isArray(est.inventario)) ? est.inventario : [];
   }
 
-  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-
-  function el(tag, classe, attrs) {
-    const e = document.createElement(tag);
-    if (classe) e.className = classe;
-    Object.entries(attrs || {}).forEach(([k, v]) => e.setAttribute(k, v));
-    return e;
+  function esc(t) {
+    return String(t).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
   }
 
-  /* ---------- monta a barra ---------- */
   document.body.classList.add('hud');
 
-  // proporção do cenário (1408/768, 16/9...) para caber na altura da janela
-  const cena = document.querySelector('.cena, .escopo');
+  var cena = document.querySelector('.cena, .escopo');
   if (cena) {
-    const m = String(getComputedStyle(cena).aspectRatio || '').match(/([\d.]+)\s*\/\s*([\d.]+)/);
-    if (m && Number(m[2])) document.body.style.setProperty('--prop', (Number(m[1]) / Number(m[2])).toFixed(4));
+    var m = String(getComputedStyle(cena).aspectRatio || '').match(/([\d.]+)\s*\/\s*([\d.]+)/);
+    if (m && Number(m[2])) {
+      document.body.style.setProperty('--prop', (Number(m[1]) / Number(m[2])).toFixed(4));
+    }
   }
 
-  const nav = el('nav', 'abas', { 'aria-label': 'Menu do jogo' });
-  header.querySelectorAll('a.voltar').forEach((a, i) => {
-    a.classList.add('aba');
-    if (i === 0) a.classList.add('aba-menu');
-    nav.appendChild(a);
-  });
-  const grupo = header.querySelector('.grupo-esq');
+  var links = header.querySelectorAll('a.voltar');
+  var linksVoltar = '';
+  for (var i = 0; i < links.length; i++) {
+    links[i].classList.add('aba');
+    if (i === 0) links[i].classList.add('aba-menu');
+    linksVoltar += links[i].outerHTML;
+  }
+
+  var grupo = header.querySelector('.grupo-esq');
   if (grupo) grupo.remove();
 
-  const abasTexto = window.HUD_ABAS || {};
-  Object.keys(abasTexto).forEach((id) => {
-    const b = el('button', 'aba', { type: 'button', 'data-aba': id });
-    b.textContent = { 'como-jogar': 'Como jogar', 'historia': 'História', 'desenvolvedores': 'Desenvolvedores' }[id] || abasTexto[id].titulo;
-    nav.appendChild(b);
-  });
-  header.insertBefore(nav, header.firstChild);
-
-  const inv = document.getElementById('inventory-bar');
-  if (inv) header.appendChild(inv);
-
-  const controles = el('div', 'hud-controles');
-  const btnDiario = el('button', 'btn-hud', { type: 'button', id: 'btn-diario' });
-  btnDiario.textContent = '📖 Diário';
-  const btnTela = el('button', 'btn-hud', { type: 'button', id: 'btn-tela-cheia', title: 'Tela cheia', 'aria-label': 'Tela cheia' });
-  btnTela.innerHTML = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M1 6V1h5M10 1h5v5M15 10v5h-5M6 15H1v-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
-  controles.append(btnDiario, btnTela);
-  const cron = document.getElementById('cronometro');
-  if (cron) controles.appendChild(cron);
-  header.appendChild(controles);
-
-  /* ---------- janelas ---------- */
-  function criarJanela(id, tituloId, fecharId) {
-    const wrap = el('div', '', { id });
-    wrap.hidden = true;
-    wrap.innerHTML = `
-      <div class="hud-janela" role="dialog" aria-modal="true" aria-labelledby="${tituloId}">
-        <div class="hud-janela-topo">
-          <h2 id="${tituloId}"></h2>
-          <button class="hud-fechar" id="${fecharId}" type="button" aria-label="Fechar">X</button>
-        </div>
-        <div class="hud-janela-corpo"></div>
-      </div>`;
-    document.body.appendChild(wrap);
-    return wrap;
+  var abasTexto = window.HUD_ABAS || {};
+  var nomesAbas = { 'como-jogar': 'Como jogar', 'historia': 'História', 'desenvolvedores': 'Desenvolvedores' };
+  var chavesAbas = Object.keys(abasTexto);
+  var botoesAbasHtml = '';
+  for (var j = 0; j < chavesAbas.length; j++) {
+    var idAba = chavesAbas[j];
+    var rotulo = nomesAbas[idAba] || abasTexto[idAba].titulo;
+    botoesAbasHtml += `<button class="aba" type="button" data-aba="${idAba}">${rotulo}</button>`;
   }
 
-  const modalDiario = criarJanela('modal-diario', 'diario-titulo', 'diario-fechar');
-  const modalAba = criarJanela('modal-aba', 'aba-titulo', 'aba-fechar');
-  modalDiario.querySelector('h2').textContent = '📖 DIÁRIO DE BORDO';
-  modalDiario.querySelector('.hud-janela-corpo').id = 'diario-corpo';
-  modalAba.querySelector('.hud-janela-corpo').id = 'aba-corpo';
-  modalAba.querySelector('.hud-janela-corpo').classList.add('conteudo-aba');
+  header.insertAdjacentHTML('afterbegin', `<nav class="abas" aria-label="Menu do jogo">${linksVoltar}${botoesAbasHtml}</nav>`);
+  var nav = header.querySelector('nav.abas');
 
-  const botoesAba = nav.querySelectorAll('.aba[data-aba]');
-  const marcarAba = (id) => botoesAba.forEach((b) => b.classList.toggle('ativa', b.dataset.aba === id));
+  var inv = document.getElementById('inventory-bar');
+  if (inv) header.appendChild(inv);
+
+  header.insertAdjacentHTML('beforeend', `
+    <div class="hud-controles" id="hud-controles">
+      <button class="btn-hud" type="button" id="btn-diario">📖 Diário</button>
+      <button class="btn-hud" type="button" id="btn-tela-cheia" title="Tela cheia" aria-label="Tela cheia">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M1 6V1h5M10 1h5v5M15 10v5h-5M6 15H1v-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      </button>
+    </div>
+  `);
+
+  var controles = document.getElementById('hud-controles');
+  var cron = document.getElementById('cronometro');
+  if (cron) controles.appendChild(cron);
+
+  document.body.insertAdjacentHTML('beforeend', `
+    <div id="modal-diario" hidden>
+      <div class="hud-janela" role="dialog" aria-modal="true" aria-labelledby="diario-titulo">
+        <div class="hud-janela-topo">
+          <h2 id="diario-titulo">📖 DIÁRIO DE BORDO</h2>
+          <button class="hud-fechar" id="diario-fechar" type="button" aria-label="Fechar">X</button>
+        </div>
+        <div class="hud-janela-corpo" id="diario-corpo"></div>
+      </div>
+    </div>
+    <div id="modal-aba" hidden>
+      <div class="hud-janela" role="dialog" aria-modal="true" aria-labelledby="aba-titulo">
+        <div class="hud-janela-topo">
+          <h2 id="aba-titulo"></h2>
+          <button class="hud-fechar" id="aba-fechar" type="button" aria-label="Fechar">X</button>
+        </div>
+        <div class="hud-janela-corpo conteudo-aba" id="aba-corpo"></div>
+      </div>
+    </div>
+  `);
+
+  var modalDiario = document.getElementById('modal-diario');
+  var modalAba = document.getElementById('modal-aba');
+  var botoesAba = nav.querySelectorAll('.aba[data-aba]');
+
+  function marcarAba(id) {
+    for (var k = 0; k < botoesAba.length; k++) {
+      botoesAba[k].classList.toggle('ativa', botoesAba[k].dataset.aba === id);
+    }
+  }
 
   function abrirAba(id) {
-    const aba = abasTexto[id];
+    var aba = abasTexto[id];
     if (!aba) return;
     modalAba.querySelector('h2').textContent = aba.titulo;
-    const corpo = modalAba.querySelector('.hud-janela-corpo');
+    var corpo = modalAba.querySelector('.hud-janela-corpo');
     corpo.innerHTML = aba.html;
     corpo.scrollTop = 0;
     modalAba.hidden = false;
@@ -157,14 +155,27 @@
   }
 
   function abrirDiario() {
-    const hud = lerHud();
-    const itens = inventario();
+    var hud = lerHud();
+    var itens = inventario();
+    var listaItens = '';
 
-    const listaItens = itens.length
-      ? itens.map((id) => `<li>${window.ItensFoto ? ItensFoto.html(id, ITENS[id] ? ITENS[id].icone : '📦') : (ITENS[id] ? ITENS[id].icone : '📦')} <strong>${esc(ITENS[id] ? ITENS[id].nome : id)}:</strong> ${esc(ITENS[id] ? ITENS[id].desc : '')}</li>`).join('')
-      : '<li>Nenhum item coletado ainda.</li>';
+    if (itens.length > 0) {
+      for (var i = 0; i < itens.length; i++) {
+        var id = itens[i];
+        var icone = ITENS[id] ? ITENS[id].icone : '📦';
+        var nome = esc(ITENS[id] ? ITENS[id].nome : id);
+        var desc = esc(ITENS[id] ? ITENS[id].desc : '');
+        listaItens += `<li>${icone} <strong>${nome}:</strong> ${desc}</li>`;
+      }
+    } else {
+      listaItens = '<li>Nenhum item coletado ainda.</li>';
+    }
 
-    const listaNotas = (hud.diario || []).slice().reverse().map((n) => `<li>• ${esc(n)}</li>`).join('');
+    var notas = hud.diario || [];
+    var listaNotas = '';
+    for (var j = notas.length - 1; j >= 0; j--) {
+      listaNotas += `<li>• ${esc(notas[j])}</li>`;
+    }
 
     document.getElementById('diario-corpo').innerHTML = `
       <div class="diario-secao">
@@ -182,46 +193,64 @@
     modalDiario.hidden = false;
   }
 
-  botoesAba.forEach((b) => {
-    b.addEventListener('click', () => {
-      if (!modalAba.hidden && b.classList.contains('ativa')) { fecharAba(); return; }
+  for (var b = 0; b < botoesAba.length; b++) {
+    botoesAba[b].onclick = function () {
+      if (!modalAba.hidden && this.classList.contains('ativa')) {
+        fecharAba();
+        return;
+      }
       modalDiario.hidden = true;
-      abrirAba(b.dataset.aba);
-    });
-  });
+      abrirAba(this.dataset.aba);
+    };
+  }
 
-  btnDiario.addEventListener('click', () => {
+  document.getElementById('btn-diario').onclick = function () {
     if (!modalAba.hidden) fecharAba();
     abrirDiario();
-  });
-  document.getElementById('diario-fechar').addEventListener('click', () => { modalDiario.hidden = true; });
-  document.getElementById('aba-fechar').addEventListener('click', fecharAba);
-  modalDiario.addEventListener('click', (e) => { if (e.target === modalDiario) modalDiario.hidden = true; });
-  modalAba.addEventListener('click', (e) => { if (e.target === modalAba) fecharAba(); });
+  };
+  document.getElementById('diario-fechar').onclick = function () {
+    modalDiario.hidden = true;
+  };
+  document.getElementById('aba-fechar').onclick = fecharAba;
+  modalDiario.onclick = function (e) {
+    if (e.target === modalDiario) modalDiario.hidden = true;
+  };
+  modalAba.onclick = function (e) {
+    if (e.target === modalAba) fecharAba();
+  };
 
-  document.addEventListener('keydown', (e) => {
+  var prevKey = document.onkeydown;
+  document.onkeydown = function (e) {
+    if (prevKey) prevKey(e);
     if (e.key !== 'Escape') return;
     if (!modalAba.hidden) fecharAba();
     if (!modalDiario.hidden) modalDiario.hidden = true;
-  });
+  };
 
-  btnTela.addEventListener('click', () => {
+  var btnTela = document.getElementById('btn-tela-cheia');
+  btnTela.onclick = function () {
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen().catch(() => {});
+      document.documentElement.requestFullscreen().catch(function () {});
     }
-  });
-  document.addEventListener('fullscreenchange', () => {
+  };
+  document.onfullscreenchange = function () {
     btnTela.title = document.fullscreenElement ? 'Sair da tela cheia' : 'Tela cheia';
     btnTela.setAttribute('aria-label', btnTela.title);
-  });
+  };
 
-  /* ---------- diário e dica: acompanha a mensagem da cena ---------- */
   function registrarDiario(nota) {
     if (!nota) return;
-    const hud = lerHud();
-    if (!hud.diario.includes(nota)) {
+    var hud = lerHud();
+    var existe = false;
+    for (var i = 0; i < hud.diario.length; i++) {
+      if (hud.diario[i] === nota) {
+        existe = true;
+        break;
+      }
+    }
+    if (!existe) {
       hud.diario.push(nota);
       salvarHud(hud);
     }
@@ -229,27 +258,32 @@
 
   function atualizarDica(texto) {
     if (!texto) return;
-    const hud = lerHud();
+    var hud = lerHud();
     hud.dicaAtual = texto;
     salvarHud(hud);
   }
 
-  const msg = document.getElementById('mensagem');
-  let timerMsg = null;
+  var msg = document.getElementById('mensagem');
+  var timerMsg = null;
 
   function mostrarMensagem() {
     if (!msg) return;
     msg.classList.add('visivel');
     clearTimeout(timerMsg);
-    timerMsg = setTimeout(() => msg.classList.remove('visivel'), 9000);
+    timerMsg = setTimeout(function () {
+      msg.classList.remove('visivel');
+    }, 9000);
   }
 
   if (msg) {
-    const inicial = msg.textContent.trim();
-    if (inicial) { atualizarDica(inicial); mostrarMensagem(); }
+    var inicial = msg.textContent.trim();
+    if (inicial) {
+      atualizarDica(inicial);
+      mostrarMensagem();
+    }
 
-    new MutationObserver(() => {
-      const txt = msg.textContent.trim();
+    new MutationObserver(function () {
+      var txt = msg.textContent.trim();
       if (!txt) return;
       atualizarDica(txt);
       registrarDiario(txt);
@@ -257,14 +291,24 @@
     }).observe(msg, { childList: true, characterData: true, subtree: true });
   }
 
-  // anota "Coletou: ..." quando um item novo entra no inventário
-  let ultimoInv = inventario().slice();
-  salvarHud(lerHud());   // garante que o diário exista desde a primeira cena
+  var ultimoInv = inventario().slice();
+  salvarHud(lerHud());
 
-  setInterval(() => {
-    const atual = inventario();
-    atual.filter((id) => !ultimoInv.includes(id))
-      .forEach((id) => registrarDiario(`Coletou: ${ITENS[id] ? ITENS[id].nome : id}`));
+  setInterval(function () {
+    var atual = inventario();
+    for (var i = 0; i < atual.length; i++) {
+      var id = atual[i];
+      var estavaAntes = false;
+      for (var j = 0; j < ultimoInv.length; j++) {
+        if (ultimoInv[j] === id) {
+          estavaAntes = true;
+          break;
+        }
+      }
+      if (!estavaAntes) {
+        registrarDiario('Coletou: ' + (ITENS[id] ? ITENS[id].nome : id));
+      }
+    }
     ultimoInv = atual.slice();
   }, 300);
 })();

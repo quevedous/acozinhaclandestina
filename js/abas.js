@@ -1,8 +1,3 @@
-/* ------------------------------------------------------------------
-   TEXTOS DAS ABAS (Como jogar · História · Desenvolvedores)
-   Para editar os textos, mexa só no objeto HUD_ABAS logo abaixo.
-   Quem desenha as abas é o js/hud.js (cenas) e o js/capa.js (capa).
-------------------------------------------------------------------- */
 window.HUD_ABAS = {
   'como-jogar': {
     titulo: 'COMO JOGAR',
@@ -10,31 +5,23 @@ window.HUD_ABAS = {
       <p class="intro">Você acordou trancado na despensa de uma cozinha clandestina. O concurso do Chef começa em minutos e você precisa chegar à bancada final com a sobremesa pronta.</p>
 
       <h3>Objetivo</h3>
-      <p>Atravessar os cenários, resolver os enigmas e montar a sobremesa na pista principal antes que o cronômetro chegue a 00:00.</p>
+      <p>Atravessar os 6 cenários, resolver os enigmas e entregar o bolo pronto aos jurados antes que o cronômetro chegue a 00:00.</p>
 
       <h3>Passo a passo</h3>
       <ol>
-        <li><strong>Explore o cenário.</strong> Passe o mouse sobre os objetos: uma seta pulando mostra o que pode ser clicado.</li>
+        <li><strong>Explore o cenário.</strong> Clique nos objetos para examinar. Os que brilham podem ser interagidos.</li>
         <li><strong>Colete itens.</strong> Tudo o que você pegar vai para o inventário, na barra preta do topo da tela.</li>
         <li><strong>Use os itens.</strong> Clique em um item do inventário para selecioná-lo e depois clique no objeto onde quer usá-lo.</li>
         <li><strong>Resolva os enigmas.</strong> Conversões de medidas, sequências, minigames de tempo e muito mais abrem novas portas.</li>
         <li><strong>Avance de cenário.</strong> Cada área tem um objetivo principal que libera a próxima.</li>
-        <li><strong>Empratar.</strong> Na pista final, siga a sequência correta e monte o prato com cuidado.</li>
+        <li><strong>Empratar e servir.</strong> Na reta final, atravesse a pista, monte o bolo na ordem certa e sirva aos jurados.</li>
       </ol>
 
-      <h3>Tempo e pontuação</h3>
+      <h3>Tempo e avaliação</h3>
       <ul>
         <li>O cronômetro fica no topo da tela e não pausa, nem com esta janela aberta.</li>
-        <li>Sua <strong>precisão</strong> sobe com acertos de primeira e bom desempenho nos minigames.</li>
-        <li>Tentativas erradas diminuem a precisão.</li>
-      </ul>
-
-      <h3>Os 4 finais</h3>
-      <ul>
-        <li><strong>A Nova Estrela Michelin:</strong> mais de 3 minutos restantes e precisão a partir de 90%.</li>
-        <li><strong>Aprovado com Ressalvas:</strong> dentro do tempo, precisão entre 70% e 89%.</li>
-        <li><strong>Desastre Empratado:</strong> dentro do tempo, precisão abaixo de 70%.</li>
-        <li><strong>Fora do Tempo!:</strong> o cronômetro chegou a zero.</li>
+        <li>Pedir dicas para a Daniela desconta <strong>1 minuto</strong> do seu tempo restante.</li>
+        <li>Três jurados avaliam seu desempenho final com notas de 0 a 10 com base nos seus acertos, erros e tempo restante.</li>
       </ul>
 
       <p class="dica"><strong>Dica:</strong> leia bilhetes, rótulos e diários com atenção. As respostas dos enigmas costumam estar escondidas neles.</p>
@@ -51,8 +38,6 @@ window.HUD_ABAS = {
       <p>Para sair, será preciso decifrar bilhetes rasgados, dominar fornos, caldas e temperaturas, atravessar a câmara fria e chegar ao escritório do Chef. Só então a pista principal estará à sua espera, com os jurados já sentados à mesa.</p>
 
       <p>O relógio já começou a correr. Você tem 15 minutos para escapar, montar o bolo e provar que merece a receita.</p>
-
-      <p class="dica"></p>
     `
   },
 
@@ -62,14 +47,11 @@ window.HUD_ABAS = {
       <p class="intro">O Mistério da Cozinha Clandestina foi feito por:</p>
 
       <ul class="equipe">
-        <li><strong>Nome do desenvolvedor 1</strong><br>Programação e game design</li>
-        <li><strong>Nome do desenvolvedor 2</strong><br>Arte e cenários</li>
-        <li><strong>Nome do desenvolvedor 3</strong><br>Enigmas e roteiro</li>
+        <li><strong>Lívia Quevedo</strong><br>Game Design · Programação &amp; Enigmas</li>
+        <li><strong>Julia Miranda</strong><br>Direção de Arte · Roteiro &amp; Interface</li>
       </ul>
 
       <p>Código-fonte: <a href="https://github.com/quevedous/acozinhaclandestina" target="_blank" rel="noopener">github.com/quevedous/acozinhaclandestina</a></p>
-
-      <p class="dica">Troque os nomes e funções em <strong>js/abas.js</strong>.</p>
     `
   }
 };

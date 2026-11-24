@@ -1,20 +1,12 @@
-const CHAVE_ESTADO = 'cozinha_estado';
-const DURACAO = 15 * 60;
+var CHAVE_ESTADO = 'cozinha_estado';
+var DURACAO = 15 * 60;
 
-const ORDEM_CORRETA = ['azul', 'verde', 'laranja', 'vermelho'];
-
-const ITENS = {
-    fragmentos: { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro no Escritório do Chef.' },
-  papel_dica: { 
-    nome: 'Bilhete Enigma', 
-    icone: '📜', 
-    desc: 'Um bilhete antigo com códigos RGB dos reagentes. Clique para ler.' 
-  }
+var ITENS = {
+  fragmentos: { nome: 'Fragmentos da Página', icone: '📜', desc: 'Pedaços de um livro de receitas rasgado. Junte os 4 e monte o livro no Escritório do Chef.' },
+  papel_dica: { nome: 'Bilhete Enigma', icone: '📜', desc: 'Um bilhete antigo com códigos RGB dos reagentes. Clique para ler.' }
 };
 
-ItensFoto.completar(ITENS);
-
-const PADRAO = {
+var PADRAO = {
   fim: Date.now() + DURACAO * 1000,
   inventario: [],
   papelColetado: false,
@@ -23,99 +15,120 @@ const PADRAO = {
 };
 
 function carregarEstado() {
-  try { return JSON.parse(sessionStorage.getItem(CHAVE_ESTADO)); } catch (e) { return null; }
+  try {
+    return JSON.parse(localStorage.getItem(CHAVE_ESTADO));
+  } catch (e) {
+    return null;
+  }
 }
-let estado = Object.assign({}, PADRAO, carregarEstado() || {});
+
+var estado = Object.assign({}, PADRAO, carregarEstado() || {});
+
 function salvar() {
-  try { sessionStorage.setItem(CHAVE_ESTADO, JSON.stringify(estado)); } catch (e) {}
+  try {
+    localStorage.setItem(CHAVE_ESTADO, JSON.stringify(estado));
+  } catch (e) {}
 }
 salvar();
 
-const $ = s => document.querySelector(s);
-const escopo = $('#escopo');
-const overlay = $('#modal-overlay');
-const modalTitulo = $('#modal-titulo');
-const modalCorpo = $('#modal-corpo');
-let selecionado = null;
-let travado = false;
-let aoFechar = null;
+function $(s) {
+  return document.querySelector(s);
+}
 
-function fala(texto) { $('#mensagem').textContent = texto; }
+var escopo = $('#escopo');
+var overlay = $('#modal-overlay');
+var modalTitulo = $('#modal-titulo');
+var modalCorpo = $('#modal-corpo');
+var selecionado = null;
+var travado = false;
+var aoFechar = null;
+
+function fala(texto) {
+  $('#mensagem').textContent = texto;
+}
 
 function abrirModal(titulo, html) {
-  if (aoFechar) { aoFechar(); aoFechar = null; }
+  if (aoFechar) {
+    aoFechar();
+    aoFechar = null;
+  }
   modalTitulo.textContent = titulo;
   modalCorpo.innerHTML = html;
   overlay.hidden = false;
 }
+
 function fecharModal() {
   if (travado) return;
-  if (aoFechar) { aoFechar(); aoFechar = null; }
+  if (aoFechar) {
+    aoFechar();
+    aoFechar = null;
+  }
   overlay.hidden = true;
   modalCorpo.innerHTML = '';
 }
-$('#modal-fechar').addEventListener('click', fecharModal);
-overlay.addEventListener('click', e => { if (e.target === overlay) fecharModal(); });
 
-const tempoInicio = setInterval(() => {
-  const restante = Math.max(0, Math.ceil((estado.fim - Date.now()) / 1000));
-  const cron = $('#cronometro');
-  if(cron) {
-    const m = String(Math.floor(restante / 60)).padStart(2, '0');
-    const s = String(restante % 60).padStart(2, '0');
+$('#modal-fechar').onclick = fecharModal;
+overlay.onclick = function (e) {
+  if (e.target === overlay) fecharModal();
+};
+
+var tempoInicio = setInterval(function () {
+  var restante = Math.max(0, Math.ceil((estado.fim - Date.now()) / 1000));
+  var cron = $('#cronometro');
+  if (cron) {
+    var m = String(Math.floor(restante / 60)).padStart(2, '0');
+    var s = String(restante % 60).padStart(2, '0');
     cron.textContent = m + ':' + s;
     cron.classList.toggle('urgente', restante <= 60);
   }
   if (restante <= 0) {
     clearInterval(tempoInicio);
     travado = true;
-    abrirModal('FORA DO TEMPO!', `<p>O tempo esgotou.</p><a class="btn-pixel" href="../index.html">Voltar ao menu</a>`);
+    abrirModal('FORA DO TEMPO!', '<p>O tempo esgotou.</p><a class="btn-pixel" href="../index.html">Voltar ao menu</a>');
   }
 }, 1000);
 
-escopo.addEventListener('mousemove', e => {
-  const rect = escopo.getBoundingClientRect();
-  const x = ((e.clientX - rect.left) / rect.width) * 100;
-  const y = ((e.clientY - rect.top) / rect.height) * 100;
+escopo.onmousemove = function (e) {
+  var rect = escopo.getBoundingClientRect();
+  var x = ((e.clientX - rect.left) / rect.width) * 100;
+  var y = ((e.clientY - rect.top) / rect.height) * 100;
   escopo.style.setProperty('--x', x + '%');
   escopo.style.setProperty('--y', y + '%');
 
-  const btnPapel = $('#no-papel-escondido');
+  var btnPapel = $('#no-papel-escondido');
   if (btnPapel && !estado.papelColetado) {
-    const distanciaX = Math.abs((e.clientX - rect.left) - (btnPapel.offsetLeft + btnPapel.offsetWidth / 2));
-    const distanciaY = Math.abs((e.clientY - rect.top) - (btnPapel.offsetTop + btnPapel.offsetHeight / 2));
-    if (distanciaX < 110 && distanciaY < 110) {
-      btnPapel.classList.add('iluminado');
-    } else {
-      btnPapel.classList.remove('iluminado');
-    }
+    var dx = Math.abs((e.clientX - rect.left) - (btnPapel.offsetLeft + btnPapel.offsetWidth / 2));
+    var dy = Math.abs((e.clientY - rect.top) - (btnPapel.offsetTop + btnPapel.offsetHeight / 2));
+    btnPapel.classList.toggle('iluminado', dx < 110 && dy < 110);
   }
-});
+};
 
 function renderInventario() {
-  const barra = $('#inventory-bar');
-  if(!barra) return;
-  barra.innerHTML = '';
-  for (let i = 0; i < 8; i++) {
-    const id = estado.inventario[i];
-    if (id && ITENS[id]) {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'slot cheio' + (selecionado === id ? ' ativo' : '');
-      b.title = ITENS[id].nome;
-      ItensFoto.aplicar(b, id, ITENS[id].icone);
-      b.addEventListener('click', () => clicarItem(id));
-      barra.appendChild(b);
+  var barra = $('#inventory-bar');
+  if (!barra) return;
+  var html = '';
+  for (var i = 0; i < 8; i++) {
+    var id = estado.inventario[i];
+    var item = ITENS[id];
+    if (item) {
+      var ativo = selecionado === id ? ' ativo' : '';
+      html += `<button type="button" class="slot cheio${ativo}" title="${item.nome}" aria-label="${item.nome}" onclick="clicarItem('${id}')">${item.icone}</button>`;
     } else {
-      const d = document.createElement('div');
-      d.className = 'slot';
-      barra.appendChild(d);
+      html += '<div class="slot"></div>';
     }
   }
+  barra.innerHTML = html;
 }
 
 function addItem(id) {
-  if (!estado.inventario.includes(id)) estado.inventario.push(id);
+  var existe = false;
+  for (var i = 0; i < estado.inventario.length; i++) {
+    if (estado.inventario[i] === id) {
+      existe = true;
+      break;
+    }
+  }
+  if (!existe) estado.inventario.push(id);
   salvar();
   renderInventario();
 }
@@ -137,9 +150,17 @@ function clicarItem(id) {
   renderInventario();
 }
 
-const btnPapelEscondido = $('#no-papel-escondido');
-if(btnPapelEscondido) {
-  btnPapelEscondido.addEventListener('click', () => {
+var btnPapelEscondido = $('#no-papel-escondido');
+if (btnPapelEscondido) {
+  btnPapelEscondido.onfocus = function () {
+    var rect = escopo.getBoundingClientRect();
+    var x = ((btnPapelEscondido.offsetLeft + btnPapelEscondido.offsetWidth / 2) / rect.width) * 100;
+    var y = ((btnPapelEscondido.offsetTop + btnPapelEscondido.offsetHeight / 2) / rect.height) * 100;
+    escopo.style.setProperty('--x', x + '%');
+    escopo.style.setProperty('--y', y + '%');
+    btnPapelEscondido.classList.add('iluminado');
+  };
+  btnPapelEscondido.onclick = function () {
     if (estado.papelColetado) return;
     estado.papelColetado = true;
     salvar();
@@ -147,7 +168,7 @@ if(btnPapelEscondido) {
     addItem('papel_dica');
     fala('Você achou um bilhete na escuridão e o guardou no inventário!');
     abrirEnigmaPapel();
-  });
+  };
 }
 
 function abrirEnigmaPapel() {

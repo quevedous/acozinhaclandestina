@@ -1,14 +1,7 @@
-/* ==================================================================
-   PEDAÇOS DO LIVRO + QUEBRA-CABEÇA DA CENA 4
-   Carregado nas cenas 1, 2, 3 e 4 (junto com js/pedacos.js).
-   A imagem do livro é img/livro_quebra-cabeca.png, dividida em 2x2.
-================================================================== */
-
-/* ---------- pedaço de papel jogado no cenário ---------- */
 .pedaco-papel,
 .pedaco-papel:hover,
 .pedaco-papel:focus-visible {
-  z-index: 20; /* acima de qualquer área clicável, inclusive no hover (que usa z-index 6) */
+  z-index: 20;
 }
 .pedaco-papel {
   position: absolute;
@@ -34,7 +27,6 @@
   50%      { filter: drop-shadow(0 0 9px rgba(230, 184, 0, 1)); }
 }
 
-/* a imagem do livro, mostrando só 1 dos 4 quadrantes (--px / --py) */
 .pedaco-img {
   background-image: url('../img/livro_quebra-cabeca.png');
   background-repeat: no-repeat;
@@ -42,13 +34,11 @@
   background-position: var(--px, 0%) var(--py, 0%);
   image-rendering: pixelated;
 }
-/* bordas "rasgadas" só no pedaço solto no cenário */
 .pedaco-papel .pedaco-img {
   clip-path: polygon(3% 8%, 22% 0, 41% 6%, 60% 0, 82% 5%, 100% 2%, 97% 28%, 100% 52%, 95% 76%, 100% 100%,
                      76% 95%, 54% 100%, 33% 94%, 14% 100%, 0 96%, 5% 70%, 0 46%, 4% 24%);
 }
 
-/* ---------- janela do livro: progresso e quebra-cabeça ---------- */
 .puzzle-area {
   display: flex;
   align-items: flex-start;

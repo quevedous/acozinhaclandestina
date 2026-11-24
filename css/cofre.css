@@ -1,7 +1,3 @@
-/* ==================================================================
-   TASK DO COFRE (barril da cena 4) - inspirada na task "Unlock Safe"
-   da Airship, de Among Us. Estilos do widget criado por js/cofre.js.
-================================================================== */
 .cofre {
   --raio: 78px;
   display: flex;
@@ -12,7 +8,6 @@
   -webkit-user-select: none;
 }
 
-/* ---------- bilhete com a combinação ---------- */
 .cofre-bilhete {
   min-width: 70%;
   padding: 8px 16px 10px;
@@ -46,7 +41,6 @@
 .cofre-numeros .cn.feito { opacity: .55; }
 .cofre-numeros .cn.oculto b { opacity: .35; }
 
-/* ---------- painel do cofre (amarelo, como no jogo original) ---------- */
 .cofre-mesa {
   display: flex;
   flex-wrap: wrap;
@@ -66,7 +60,6 @@
   gap: 8px;
 }
 
-/* ---------- disco numerado ---------- */
 .cofre-disco {
   position: relative;
   width: 200px;
@@ -129,7 +122,6 @@
   box-shadow: inset 0 0 0 6px #15171c;
 }
 
-/* ---------- timão de 3 hastes ---------- */
 .cofre-timao {
   width: 190px;
   height: 190px;
@@ -139,38 +131,4 @@
   border-radius: 50%;
 }
 .cofre-timao:active { cursor: grabbing; }
-.cofre-timao:focus-visible { box-shadow: 0 0 0 4px #E6B800; }
-.cofre-timao .braco { fill: #1a1c22; stroke: #05060a; stroke-width: 3; stroke-linejoin: round; }
-.cofre-timao .hub { fill: #1a1c22; stroke: #05060a; stroke-width: 3; }
-.cofre-timao .anel-fundo { fill: none; stroke: rgba(0, 0, 0, .18); stroke-width: 6; }
-.cofre-timao .anel { fill: none; stroke: #1a110d; stroke-width: 6; stroke-linecap: round; }
-.cofre-timao.trancado { cursor: default; opacity: .75; }
-.cofre-timao.livre .braco, .cofre-timao.livre .hub { fill: #c9ced6; }
-
-/* ---------- botões de apoio (mouse ou toque) ---------- */
-.cofre-botoes { display: flex; gap: 8px; }
-.cofre-botoes button {
-  width: 44px;
-  height: 36px;
-  background: #2C221E;
-  color: #E6B800;
-  border: 3px solid #1a110d;
-  font-size: 1.3rem;
-  line-height: 1;
-  cursor: pointer;
-}
-.cofre-botoes button:hover:not(:disabled) { background: #E6B800; color: #1a110d; }
-.cofre-botoes button:disabled { opacity: .35; cursor: default; }
-
-.cofre-msg { min-height: 2.6em; text-align: center; }
-.cofre-msg.erro { color: #b3261e; }
-.cofre-msg.ok { color: #2e6b2e; }
-
-.cofre.aberto .cofre-mesa { background: #8fbf6a; box-shadow: inset 0 0 0 4px #6d9a4c; }
-
-@keyframes cofre-treme {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-6px); }
-  75% { transform: translateX(6px); }
-}
-.cofre-disco.treme { animation: cofre-treme .3s; }
+.cofre-timao:focus-visible { box-shadow: 0 0 0 4px #E6B800;

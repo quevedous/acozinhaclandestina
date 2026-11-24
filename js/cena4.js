@@ -1,18 +1,16 @@
-const CHAVE_ESTADO = 'cozinha_estado';
-const DURACAO = 15 * 60;
-// true  = o cofre do barril só abre depois de pegar a chavinha na gaveta da mesa
-// false = clicar no barril abre a task do cofre direto, sem precisar da chavinha
-const BARRIL_PRECISA_CHAVE = true;
+var CHAVE_ESTADO = 'cozinha_estado';
+var DURACAO = 15 * 60;
+var BARRIL_PRECISA_CHAVE = true;
 
-const VINHOS = [
+var VINHOS = [
   { id: 'A', nome: 'Tinto Reserva', ano: 2015, teor: 13.0 },
   { id: 'B', nome: 'Branco Seco',   ano: 2009, teor: 12.0 },
   { id: 'C', nome: 'Rosé da Casa',  ano: 2015, teor: 12.5 },
   { id: 'D', nome: 'Tinto Jovem',   ano: 2018, teor: 14.0 }
 ];
-const ORDEM_VINHOS = ['B', 'C', 'A', 'D'];
+var ORDEM_VINHOS = ['B', 'C', 'A', 'D'];
 
-const ITENS = {
+var ITENS = {
   chave:        { nome: 'Chave de Fenda de Confeiteiro', icone: '🪛', desc: 'Já serviu para abrir o termostato.' },
   mapa:         { nome: 'Mapa do Restaurante', icone: '🗺️', desc: 'Mostra o caminho entre as cozinhas. Clique de novo para abrir.' },
   baunilha:     { nome: 'Extrato de Baunilha Rara', icone: '🌿', desc: 'Ingrediente obrigatório para a nota máxima no prato final.' },
@@ -26,9 +24,9 @@ const ITENS = {
   chavemestra:  { nome: 'Chave Mestra', icone: '🗝️', desc: 'Selecione e clique na porta de saída para abrir.' }
 };
 
-ItensFoto.completar(ITENS);
+if (typeof ItensFoto !== 'undefined') ItensFoto.completar(ITENS);
 
-const PADRAO = {
+var PADRAO = {
   fim: Date.now() + DURACAO * 1000,
   inventario: [],
   erros: 0,
@@ -40,25 +38,33 @@ const PADRAO = {
   livroRestaurado: false,
   chaveMestraPega: false
 };
+
 function carregarEstado() {
   try { return JSON.parse(sessionStorage.getItem(CHAVE_ESTADO)); } catch (e) { return null; }
 }
-let estado = Object.assign({}, PADRAO, carregarEstado() || {});
+
+var estado = Object.assign({}, PADRAO, carregarEstado() || {});
 if (!Array.isArray(estado.pedacos)) estado.pedacos = [];
+
 function salvar() {
   try { sessionStorage.setItem(CHAVE_ESTADO, JSON.stringify(estado)); } catch (e) {}
 }
 salvar();
 
-const $ = s => document.querySelector(s);
-const overlay = $('#modal-overlay');
-const modalTitulo = $('#modal-titulo');
-const modalCorpo = $('#modal-corpo');
-let travado = false;
-let selecionado = null;
-let aoFechar = null;
+function $(s) {
+  return document.querySelector(s);
+}
 
-function fala(texto) { $('#mensagem').textContent = texto; }
+var overlay = $('#modal-overlay');
+var modalTitulo = $('#modal-titulo');
+var modalCorpo = $('#modal-corpo');
+var travado = false;
+var selecionado = null;
+var aoFechar = null;
+
+function fala(texto) {
+  $('#mensagem').textContent = texto;
+}
 
 function abrirModal(titulo, html) {
   if (aoFechar) { aoFechar(); aoFechar = null; }
@@ -66,50 +72,75 @@ function abrirModal(titulo, html) {
   modalCorpo.innerHTML = html;
   overlay.hidden = false;
 }
+
 function fecharModal() {
   if (travado) return;
   if (aoFechar) { aoFechar(); aoFechar = null; }
   overlay.hidden = true;
   modalCorpo.innerHTML = '';
 }
-$('#modal-fechar').addEventListener('click', fecharModal);
-overlay.addEventListener('click', e => { if (e.target === overlay) fecharModal(); });
-document.addEventListener('keydown', e => {
+
+$('#modal-fechar').onclick = fecharModal;
+overlay.onclick = function (e) {
+  if (e.target === overlay) fecharModal();
+};
+document.onkeydown = function (e) {
   if (e.key === 'Escape') fecharModal();
   if ((e.key === 'h' || e.key === 'H') && overlay.hidden) $('#cena').classList.toggle('debug');
-});
+};
 
 function renderInventario() {
-  const barra = $('#inventory-bar');
-  barra.innerHTML = '';
-  for (let i = 0; i < 10; i++) {
-    const id = estado.inventario[i];
+  var barra = $('#inventory-bar');
+  var html = '';
+  for (var i = 0; i < 10; i++) {
+    var id = estado.inventario[i];
     if (id && ITENS[id]) {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'slot cheio' + (selecionado === id ? ' ativo' : '');
-      b.title = ITENS[id].nome;
-      b.setAttribute('aria-label', ITENS[id].nome);
-      ItensFoto.aplicar(b, id, ITENS[id].icone);
-      b.addEventListener('click', () => clicarItem(id));
-      barra.appendChild(b);
+      var ativo = selecionado === id ? ' ativo' : '';
+      html += `<button type="button" class="slot cheio${ativo}" data-item="${id}" title="${ITENS[id].nome}" aria-label="${ITENS[id].nome}">${ITENS[id].icone}</button>`;
     } else {
-      const d = document.createElement('div');
-      d.className = 'slot';
-      barra.appendChild(d);
+      html += '<div class="slot"></div>';
     }
   }
+  barra.innerHTML = html;
+
+  var botoes = barra.querySelectorAll('button.slot.cheio');
+  for (var j = 0; j < botoes.length; j++) {
+    var btn = botoes[j];
+    var itemId = btn.dataset.item;
+    if (typeof ItensFoto !== 'undefined') {
+      ItensFoto.aplicar(btn, itemId, ITENS[itemId].icone);
+    }
+    btn.onclick = function () {
+      clicarItem(this.dataset.item);
+    };
+  }
 }
+
 function addItem(id) {
-  if (!estado.inventario.includes(id)) estado.inventario.push(id);
+  var existe = false;
+  for (var i = 0; i < estado.inventario.length; i++) {
+    if (estado.inventario[i] === id) {
+      existe = true;
+      break;
+    }
+  }
+  if (!existe) estado.inventario.push(id);
   salvar();
   renderInventario();
 }
+
 function removerItem(id) {
-  estado.inventario = estado.inventario.filter(i => i !== id);
+  var novo = [];
+  for (var i = 0; i < estado.inventario.length; i++) {
+    if (estado.inventario[i] !== id) {
+      novo.push(estado.inventario[i]);
+    }
+  }
+  estado.inventario = novo;
   salvar();
   renderInventario();
 }
+
 function clicarItem(id) {
   if (id === 'mapa') {
     selecionado = null;
@@ -132,15 +163,19 @@ function clicarItem(id) {
   }
   renderInventario();
 }
+
 function ligar(id, alvo, fn, usos) {
-  $(id).addEventListener('click', () => {
+  $(id).onclick = function () {
     if (selecionado) {
-      if (usos && usos[selecionado]) { usos[selecionado](); return; }
+      if (usos && usos[selecionado]) {
+        usos[selecionado]();
+        return;
+      }
       fala(ITENS[selecionado].nome + ' não funciona em: ' + alvo + '. Clique no item de novo para guardá-lo.');
       return;
     }
     fn();
-  });
+  };
 }
 
 function abrirMapa() {
@@ -187,7 +222,6 @@ function abrirEsboco() {
   `);
 }
 
-/* Clique no BARRIL em si: abre a task do cofre (disco + timão) */
 function abrirBarril() {
   if (estado.barrilAberto) {
     fala('O cofre do barril está aberto e vazio. O último pedaço do livro já é seu.');
@@ -200,7 +234,6 @@ function abrirBarril() {
   abrirCofreBarril();
 }
 
-/* Clique no CARTAZ colado no barril: só mostra as pistas */
 function abrirCartazBarril() {
   abrirModal('Cartaz do barril', `
     <div class="papel">
@@ -213,27 +246,35 @@ function abrirCartazBarril() {
   `);
 }
 
-/* Task do cofre do barril (disco + timão): entrega o 4º pedaço do livro */
 function abrirCofreBarril() {
   abrirModal('Cofre dentro do barril', `
     <p>Você gira a chavinha e a tampa se abre: dentro do barril há um cofre. Siga o bilhete: gire o disco até cada número, <strong>no sentido da seta</strong>, e depois gire o timão.</p>
     <div id="cofre-area"></div>
   `);
-  const cofre = Cofre.montar($('#cofre-area'), {
-    aoConcluir: () => {
+  var cofre = Cofre.montar($('#cofre-area'), {
+    aoConcluir: function () {
       estado.barrilAberto = true;
       estado.acertos++;
       salvar();
       removerItem('chavebarril');
       fecharModal();
       Pedacos.coletar(3);
-      const tenho = Pedacos.lista().length;
+      var tenho = Pedacos.lista().length;
       fala(tenho >= Pedacos.total
         ? 'O cofre abriu e dentro estava o último pedaço do livro! Agora você tem os 4: clique nos livros da estante para montar.'
         : 'O cofre abriu e dentro havia um pedaço do livro de receitas. Você tem ' + tenho + ' de ' + Pedacos.total + ': os outros estão nas cenas anteriores.');
     }
   });
-  aoFechar = () => cofre.destruir();
+  aoFechar = function () {
+    cofre.destruir();
+  };
+}
+
+function buscarVinho(id) {
+  for (var i = 0; i < VINHOS.length; i++) {
+    if (VINHOS[i].id === id) return VINHOS[i];
+  }
+  return null;
 }
 
 function abrirGaveta() {
@@ -241,250 +282,42 @@ function abrirGaveta() {
     fala('A gaveta secreta está aberta e vazia. Você já pegou a chavinha do barril.');
     return;
   }
-  const ordem = ['D', 'A', 'B', 'C'];
+  var ordem = ['D', 'A', 'B', 'C'];
   abrirModal('Gaveta secreta da mesa', `
     <p>A gaveta tem quatro encaixes de garrafa em relevo. Coloque os vinhos na ordem certa, da esquerda para a direita.</p>
     <div class="vinhos" id="vinhos"></div>
     <button type="button" class="btn-pixel" id="abrir-gaveta">ABRIR GAVETA</button>
     <p class="dica-modal" id="gaveta-msg">Use as setas para mudar a ordem. A regra do Chef está no quadro de avisos.</p>
   `);
-  const cont = $('#vinhos');
-  const desenhar = () => {
-    cont.innerHTML = ordem.map((id, i) => {
-      const v = VINHOS.find(x => x.id === id);
-      return '<div class="vinho"><span class="garrafa">🍾</span>' +
-        '<span class="v-nome">' + v.nome + '</span>' +
-        '<span class="v-info">Safra ' + v.ano + '<br>' + v.teor.toFixed(1).replace('.', ',') + '%</span>' +
-        '<span class="v-setas">' +
-        '<button type="button" data-i="' + i + '" data-d="-1"' + (i === 0 ? ' disabled' : '') + ' aria-label="Mover para a esquerda">◀</button>' +
-        '<button type="button" data-i="' + i + '" data-d="1"' + (i === ordem.length - 1 ? ' disabled' : '') + ' aria-label="Mover para a direita">▶</button>' +
-        '</span></div>';
-    }).join('');
-  };
+  var cont = $('#vinhos');
+  function desenhar() {
+    var html = '';
+    for (var i = 0; i < ordem.length; i++) {
+      var id = ordem[i];
+      var v = buscarVinho(id);
+      var disEsq = i === 0 ? ' disabled' : '';
+      var disDir = i === ordem.length - 1 ? ' disabled' : '';
+      html += `
+        <div class="vinho">
+          <span class="garrafa">🍾</span>
+          <span class="v-nome">${v.nome}</span>
+          <span class="v-info">Safra ${v.ano}<br>${v.teor.toFixed(1).replace('.', ',')}%</span>
+          <span class="v-setas">
+            <button type="button" data-i="${i}" data-d="-1"${disEsq} aria-label="Mover para a esquerda">◀</button>
+            <button type="button" data-i="${i}" data-d="1"${disDir} aria-label="Mover para a direita">▶</button>
+          </span>
+        </div>
+      `;
+    }
+    cont.innerHTML = html;
+  }
   desenhar();
-  cont.addEventListener('click', e => {
-    const b = e.target.closest('button');
+
+  cont.onclick = function (e) {
+    var b = e.target.closest('button');
     if (!b || b.disabled) return;
-    const i = Number(b.dataset.i);
-    const d = Number(b.dataset.d);
-    const t = ordem[i];
+    var i = Number(b.dataset.i);
+    var d = Number(b.dataset.d);
+    var t = ordem[i];
     ordem[i] = ordem[i + d];
     ordem[i + d] = t;
-    desenhar();
-  });
-  $('#abrir-gaveta').addEventListener('click', () => {
-    if (ordem.join() === ORDEM_VINHOS.join()) {
-      estado.gavetaAberta = true;
-      estado.chaveBarril = true;
-      estado.acertos++;
-      salvar();
-      if (!estado.barrilAberto) addItem('chavebarril');
-      fecharModal();
-      fala('Clique! A gaveta abriu e dentro havia uma chavinha com a etiqueta "BARRIL". Você a guardou: ela abre o cofre do barril, no canto esquerdo.');
-    } else {
-      estado.erros++;
-      salvar();
-      $('#gaveta-msg').textContent = 'A gaveta não cedeu. A ordem não está certa. Releia a regra do Chef no quadro de avisos.';
-    }
-  });
-}
-
-function abrirPaginaLivro(novo) {
-  abrirModal('Livro restaurado', `
-    <div class="papel">
-      <p><strong>Receita original · Sobremesa do Chef</strong></p>
-      <ol>
-        <li>Derreter</li>
-        <li>Emulsionar</li>
-        <li>Resfriar</li>
-        <li>Assar</li>
-        <li>Descansar</li>
-        <li>Empratar</li>
-      </ol>
-      <p>"Nunca inverta a ordem. Quem inverte lava louça."</p>
-    </div>
-    ${novo ? '<p style="margin-top:12px">Algo fez <strong>clique</strong> no armário embaixo da estante. A trava deve ter soltado!</p>' : '<p class="dica-modal">Guarde essa ordem para a Pista Principal.</p>'}
-  `);
-}
-
-function embaralhar(lista) {
-  const a = lista.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const k = Math.floor(Math.random() * (i + 1));
-    [a[i], a[k]] = [a[k], a[i]];
-  }
-  return a;
-}
-
-const estaPronto = (ordem) => ordem.every((peca, pos) => peca === pos);
-
-function pecaHtml(id) {
-  const q = Pedacos.quadrante(id);
-  return '<span class="pedaco-img" style="--px:' + q.px + ';--py:' + q.py + '"></span>';
-}
-
-function concluirLivro() {
-  estado.livroRestaurado = true;
-  estado.acertos++;
-  salvar();
-  removerItem('fragmentos');
-  addItem('livro');
-  abrirPaginaLivro(true);
-  fala('Você restaurou o livro! Ouviu um clique vindo do armário embaixo da estante.');
-}
-
-/* Ainda faltam pedaços: mostra quantos já foram achados e onde procurar */
-function abrirProgressoPedacos() {
-  const tem = Pedacos.lista();
-  const casas = [0, 1, 2, 3].map(id => tem.includes(id)
-    ? '<div class="puzzle-vazia" style="padding:0;border:0">' + pecaHtml(id) + '</div>'
-    : '<div class="puzzle-vazia">?</div>').join('');
-  const locais = Pedacos.locais.map((nome, id) =>
-    '<li' + (tem.includes(id) ? ' class="ok"' : '') + '>' + nome + (tem.includes(id) ? ' ✓' : '') + '</li>').join('');
-  abrirModal('Livro de receitas rasgado', `
-    <p>Entre os livros da estante, um está com as páginas do meio arrancadas. Elas foram rasgadas em <strong>4 pedaços</strong>, escondidos pela cozinha. Você achou <strong>${tem.length} de ${Pedacos.total}</strong>.</p>
-    <div class="puzzle-area"><div class="puzzle-progresso" style="aspect-ratio:auto">${casas}</div></div>
-    <ul class="puzzle-lista">${locais}</ul>
-    <p class="dica-modal">Quando juntar os 4, clique de novo nos livros da estante para montar o quebra-cabeça. Dá para voltar às cenas anteriores pela barra do topo.</p>
-  `);
-}
-
-/* Tem os 4 pedaços: quebra-cabeça de trocar as peças de lugar */
-function abrirQuebraCabeca() {
-  selecionado = null;
-  renderInventario();
-  let ordem = embaralhar([0, 1, 2, 3]);
-  while (estaPronto(ordem)) ordem = embaralhar(ordem);
-  let escolhida = null;
-  let resolvido = false;
-
-  abrirModal('Restaurar o livro', `
-    <p>Você juntou os 4 pedaços! Clique em um pedaço e depois em outro para trocá-los de lugar, até remontar o livro.</p>
-    <div class="puzzle-area">
-      <div class="puzzle" id="puzzle"></div>
-      <div class="puzzle-modelo">MODELO<img src="../img/livro_quebra-cabeca.png" alt="Modelo: livro de capa vinho com uma estrela dourada"></div>
-    </div>
-    <p class="dica-modal" id="puzzle-msg">O modelo ao lado mostra como o livro deve ficar.</p>
-  `);
-
-  const desenhar = () => {
-    $('#puzzle').innerHTML = ordem.map((peca, pos) =>
-      '<button type="button" class="puzzle-peca' + (escolhida === pos ? ' escolhida' : '') + '" data-pos="' + pos + '"' +
-      (resolvido ? ' disabled' : '') + ' aria-label="Pedaço na posição ' + (pos + 1) + '">' + pecaHtml(peca) + '</button>').join('');
-  };
-  desenhar();
-
-  $('#puzzle').addEventListener('click', e => {
-    const b = e.target.closest('.puzzle-peca');
-    if (!b || resolvido) return;
-    const pos = Number(b.dataset.pos);
-    if (escolhida === null) { escolhida = pos; desenhar(); return; }
-    if (escolhida === pos) { escolhida = null; desenhar(); return; }
-    [ordem[escolhida], ordem[pos]] = [ordem[pos], ordem[escolhida]];
-    escolhida = null;
-    if (estaPronto(ordem)) {
-      resolvido = true;
-      $('#puzzle-msg').textContent = 'Encaixou! O livro está inteiro de novo.';
-      desenhar();
-      setTimeout(concluirLivro, 900);
-    } else {
-      desenhar();
-    }
-  });
-}
-
-function abrirLivro() {
-  if (estado.livroRestaurado) {
-    abrirPaginaLivro(false);
-  } else if (Pedacos.lista().length >= Pedacos.total) {
-    abrirQuebraCabeca();
-  } else {
-    abrirProgressoPedacos();
-  }
-}
-
-/* Armário embaixo da estante: guarda a chave mestra (só solta depois de restaurar o livro) */
-function abrirArmarioEstante() {
-  if (estado.chaveMestraPega) {
-    fala('O armário embaixo da estante está aberto e vazio. Você já pegou a chave mestra.');
-    return;
-  }
-  if (!estado.livroRestaurado) {
-    fala('O armário embaixo da estante está preso por uma trava. Um bilhete diz: "Só abre para quem restaurar o livro rasgado."');
-    return;
-  }
-  estado.chaveMestraPega = true;
-  estado.acertos++;
-  salvar();
-  addItem('chavemestra');
-  fala('A trava soltou! Dentro do armário havia uma chave mestra dourada. Ela abre a porta de saída.');
-}
-
-function abrirPorta() {
-  if (!estado.chaveMestraPega) {
-    fala('A porta está trancada por uma fechadura antiga. Só uma chave mestra abre. O quadro de avisos diz onde ela está.');
-    return;
-  }
-  abrirModal('Pista Principal', `
-    <p>A porta se abre e você vê a cozinha principal, com luzes intensas e a bancada de empratamento. A avaliação do Chef está para começar.</p>
-    <a class="btn-pixel" href="cena5.html">Entrar →</a>
-  `);
-}
-
-ligar('#no-quadro', 'Quadro', abrirQuadro);
-ligar('#no-notamaster', 'Bilhete', abrirNotaMaster);
-ligar('#no-esboco', 'Desenho', abrirEsboco);
-ligar('#no-barril', 'Barril', abrirBarril, { chavebarril: () => { selecionado = null; renderInventario(); abrirBarril(); } });
-ligar('#no-cartaz-barril', 'Cartaz do barril', abrirCartazBarril);
-ligar('#no-gaveta', 'Gaveta', abrirGaveta);
-ligar('#no-estante', 'Livros da estante', abrirLivro);
-ligar('#no-estante-baixo', 'Armário da estante', abrirArmarioEstante);
-ligar('#no-porta', 'Porta', abrirPorta, { chavemestra: abrirPorta });
-ligar('#no-fechadura', 'Fechadura', abrirPorta, { chavemestra: abrirPorta });
-
-ligar('#no-poster-esq', 'Cartaz', () => fala('Uma cópia do cartaz de charadas da Câmara Fria, toda manchada. O Chef decorou o escritório com os próprios enigmas.'));
-ligar('#no-poster-centro', 'Cartaz', () => fala('Outra cópia do cartaz da Câmara Fria. Nada de novo aqui, você já resolveu esse enigma.'));
-ligar('#no-mesa', 'Mesa', () => fala('Uma mesa de carvalho maciço. A gaveta do meio tem uma trava estranha, com encaixes de garrafa.'));
-ligar('#no-trofeus-chapeu', 'Troféus', () => fala('Troféus de chapéu de chef dourado. "Melhor Sobremesa do Ano", três anos seguidos.'));
-ligar('#no-trofeus-panela', 'Troféus', () => fala('Troféus de panela de cobre. Estão sem poeira: o Chef os limpa todo dia.'));
-ligar('#no-cupula', 'Redoma', () => fala('Uma redoma de vidro com uma planta verde estranha. A plaquinha diz: "Hortelã do Chef. Não tocar."'));
-ligar('#no-timer', 'Timer', () => fala('Um timer digital parado em 121. Parece uma temperatura que você já viu na Confeitaria.'));
-ligar('#no-baunilha', 'Garrafa', () => fala('Uma garrafa de extrato de baunilha rara, quase vazia. Ainda bem que você já pegou a sua.'));
-ligar('#no-chave-quadro', 'Chave', () => {
-  if (estado.chaveBarril || estado.inventario.includes('chavebarril') || estado.barrilAberto) {
-    fala('Você já pegou a chave que estava pendurada no quadro.');
-    return;
-  }
-  estado.chaveBarril = true;
-  salvar();
-  addItem('chavebarril');
-  fala('Você pegou a chave pendurada no quadro! Selecione-a no inventário e clique no barril, no canto esquerdo.');
-});
-ligar('#no-bilhetes', 'Bilhetes', () => fala('Vários bilhetes iguais: "176 °F = 80 °C". O Chef cansou de ver estagiário errar essa conversão.'));
-
-function formatar(seg) {
-  const m = String(Math.floor(seg / 60)).padStart(2, '0');
-  const s = String(seg % 60).padStart(2, '0');
-  return m + ':' + s;
-}
-function fimDeJogo() {
-  clearInterval(relogio);
-  travado = true;
-  try { sessionStorage.removeItem(CHAVE_ESTADO); } catch (e) {}
-  abrirModal('FORA DO TEMPO!', `
-    <p>O concurso começou sem você. O Chef abre a porta, furioso, e você está demitido antes de tocar na bancada.</p>
-    <a class="btn-pixel" href="../index.html">Voltar ao menu</a>
-  `);
-}
-function tick() {
-  const restante = Math.max(0, Math.ceil((estado.fim - Date.now()) / 1000));
-  const cron = $('#cronometro');
-  cron.textContent = formatar(restante);
-  cron.classList.toggle('urgente', restante <= 60);
-  if (restante <= 0) fimDeJogo();
-}
-const relogio = setInterval(tick, 1000);
-
-renderInventario();
-tick();
-fala('Escritório secreto do Chef. Restaure o livro da estante: o armário de baixo guarda a chave mestra.');

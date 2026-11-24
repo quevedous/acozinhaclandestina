@@ -1,18 +1,21 @@
-/* Capa do jogo (jogar.html): abas + botão JOGAR que começa uma partida nova. */
 (function () {
   'use strict';
 
-  const abas = window.HUD_ABAS || {};
-  const modal = document.getElementById('modal-aba');
-  const botoes = document.querySelectorAll('.aba[data-aba]');
+  var abas = window.HUD_ABAS || {};
+  var modal = document.getElementById('modal-aba');
+  var botoes = document.querySelectorAll('.aba[data-aba]');
 
-  const marcar = (id) => botoes.forEach((b) => b.classList.toggle('ativa', b.dataset.aba === id));
+  function marcar(id) {
+    for (var i = 0; i < botoes.length; i++) {
+      botoes[i].classList.toggle('ativa', botoes[i].dataset.aba === id);
+    }
+  }
 
   function abrir(id) {
-    const aba = abas[id];
+    var aba = abas[id];
     if (!aba) return;
     document.getElementById('aba-titulo').textContent = aba.titulo;
-    const corpo = document.getElementById('aba-corpo');
+    var corpo = document.getElementById('aba-corpo');
     corpo.innerHTML = aba.html;
     corpo.scrollTop = 0;
     modal.hidden = false;
@@ -24,19 +27,32 @@
     marcar(null);
   }
 
-  botoes.forEach((b) => b.addEventListener('click', () => {
-    if (!modal.hidden && b.classList.contains('ativa')) { fechar(); return; }
-    abrir(b.dataset.aba);
-  }));
-  document.getElementById('aba-fechar').addEventListener('click', fechar);
-  modal.addEventListener('click', (e) => { if (e.target === modal) fechar(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.hidden) fechar(); });
+  for (var i = 0; i < botoes.length; i++) {
+    botoes[i].onclick = function () {
+      if (!modal.hidden && this.classList.contains('ativa')) {
+        fechar();
+        return;
+      }
+      abrir(this.dataset.aba);
+    };
+  }
 
-  // JOGAR = partida nova: zera o cronômetro, o inventário e o diário
-  document.getElementById('btn-jogar').addEventListener('click', () => {
+  document.getElementById('aba-fechar').onclick = fechar;
+  modal.onclick = function (e) {
+    if (e.target === modal) fechar();
+  };
+  document.onkeydown = function (e) {
+    if (e.key === 'Escape' && !modal.hidden) fechar();
+  };
+
+  document.getElementById('btn-jogar').onclick = function () {
     try {
-      sessionStorage.removeItem('cozinha_estado');
-      sessionStorage.removeItem('cozinha_hud');
+      localStorage.removeItem('cozinha_estado');
+      localStorage.removeItem('cozinha_hud');
+      localStorage.removeItem('daniela_intro');
+      localStorage.removeItem('daniela_cena2');
+      localStorage.removeItem('daniela_cena3');
+      localStorage.removeItem('daniela_cena4');
     } catch (e) {}
-  });
+  };
 })();

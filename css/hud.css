@@ -13,7 +13,6 @@
   --slot: 38px;
 }
 
-/* ---------- LAYOUT DA CENA COM HUD ---------- */
 body.hud {
   grid-template-rows: var(--barra) minmax(0, 1fr) !important;
   background: #000 !important;
@@ -49,7 +48,6 @@ body.hud .escopo {
   box-shadow: none;
 }
 
-/* mensagem da cena vira aviso flutuante por cima do cenário */
 body.hud #mensagem {
   position: fixed;
   left: 50%;
@@ -71,7 +69,6 @@ body.hud #mensagem {
 body.hud #mensagem.visivel { opacity: 1; }
 body.hud #mensagem:empty { display: none; }
 
-/* ---------- ABAS (esquerda) ---------- */
 body.hud .abas {
   display: flex;
   align-items: center;
@@ -97,7 +94,6 @@ body.hud .abas {
 .aba.ativa { background: var(--latao); border-color: var(--latao); color: var(--escuro); }
 .aba-menu { color: var(--latao); margin-right: 6px; }
 
-/* ---------- CONTROLES (direita) ---------- */
 .hud-controles {
   display: flex;
   align-items: center;
@@ -125,7 +121,6 @@ body.hud #cronometro {
 }
 body.hud #cronometro.urgente { color: var(--tomate); border-color: var(--tomate); }
 
-/* ---------- INVENTÁRIO (centro da barra) ---------- */
 body.hud #inventory-bar {
   flex: 1 1 auto;
   min-width: 0;
@@ -177,11 +172,10 @@ body.hud #inventory-bar .slot.ativo {
   body.hud #cronometro { font-size: .7rem; padding: 6px 8px; }
 }
 
-/* ---------- JANELAS (Diário e abas) ---------- */
 #modal-diario, #modal-aba {
   position: fixed;
   inset: 0;
-  z-index: 60;   /* acima do botão DICA da Daniela (z-index 50) */
+  z-index: 60;
   display: grid;
   place-items: center;
   padding: 16px;

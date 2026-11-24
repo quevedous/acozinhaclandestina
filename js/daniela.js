@@ -1,99 +1,115 @@
 'use strict';
 
-(() => {
-  const CENA = Number(location.pathname.match(/cena(\d+)/)?.[1] ?? 0);
-  const IMG = '../img/daniela.png';
-  const $d = (seletor) => document.querySelector(seletor);
-  const jaAvisou = new Set();
+(function () {
+  var matchCena = location.pathname.match(/cena(\d+)/);
+  var CENA = Number(matchCena ? matchCena[1] : 0);
+  var IMG = '../img/daniela.png';
 
-  const INTRO = [
+  function $d(seletor) {
+    return document.querySelector(seletor);
+  }
+
+  var jaAvisou = {};
+
+  var INTRO = [
     'Oi! Eu sou a Daniela, a ratinha-chef desta cozinha. Você acordou trancado na despensa, e eu vou te ajudar a sair.',
     'Clique nos objetos do cenário para inspecionar. Alguns guardam pistas, outros guardam itens, e muitos são só enfeite.',
-    'Tudo que você pegar vai para o inventário, na barra lá embaixo. Clique no item para selecioná-lo e depois clique no objeto onde quer usá-lo.',
-    'Você tem 15 minutos. Primeiro objetivo: achar a senha da porta e o mapa do restaurante. E pegue tudo o que puder antes de sair, que eu vou te avisar se esquecer algo! Se precisar de uma dica, clique em DICA, mas ela custa 1 minuto.',
+    'Tudo que você pegar vai para o inventário, na barra lá em cima. Clique no item para selecioná-lo e depois clique no objeto onde quer usá-lo.',
+    'Você tem 15 minutos. Primeiro objetivo: achar a senha da porta e o mapa do restaurante. E pegue tudo o que puder antes de sair, que eu vou te avisar se esquecer algo! Se precisar de uma dica, clique em DICA, mas ela custa 1 minuto.'
   ];
 
-  const LEMBRETE_DICA = 'Lembrete: se precisar de ajuda, clique em DICA no canto da tela. Cada dica custa 1 minuto do seu tempo.';
+  var LEMBRETE_DICA = 'Lembrete: se precisar de ajuda, clique em DICA no canto da tela. Cada dica custa 1 minuto do seu tempo.';
 
-  const BOAS_VINDAS = {
+  var BOAS_VINDAS = {
     2: [
       'Estamos na Confeitaria! A porta da Câmara Fria só abre depois que o merengue sair do forno.',
-      LEMBRETE_DICA,
+      LEMBRETE_DICA
     ],
     3: [
       'Brrr, a Câmara Fria! Aqui estão duas coisas de que a Confeitaria precisa: um termômetro e a fruta de yuzu congelada. Leve os dois para lá e depois volte.',
-      LEMBRETE_DICA,
+      LEMBRETE_DICA
     ],
     4: [
-      'O Escritório do Chef! A chave mestra é o caminho da saída.',
-      LEMBRETE_DICA,
-    ],
+      'O Escritório do Chef! A chave mestra e o armário de especiarias são o caminho da saída.',
+      LEMBRETE_DICA
+    ]
   };
 
-  const faltaPedaco = (id) => Boolean(window.Pedacos) && !window.Pedacos.tem(id);
+  function faltaPedaco(id) {
+    return Boolean(window.Pedacos) && !window.Pedacos.tem(id);
+  }
 
-  const BAUNILHA = ['o Extrato de Baunilha Rara', 'fica nos potes trancados da Despensa e sem ele não dá para tirar a nota máxima'];
+  function temNoInventario(id) {
+    for (var i = 0; i < estado.inventario.length; i++) {
+      if (estado.inventario[i] === id) return true;
+    }
+    return false;
+  }
 
-  const FALTAS = {
-    1: () => [
-      !estado.chavePega && ['a Chave de Fenda de Confeiteiro', 'ela está escondida nos sacos de farinha'],
-      !estado.potesAbertos && BAUNILHA,
-      faltaPedaco(0) && ['um pedaço de papel rasgado do livro de receitas', 'está brilhando no chão da despensa'],
-    ],
-    2: () => [
-      faltaPedaco(1) && ['um pedaço de papel rasgado do livro de receitas', 'está em cima do barril, perto da bancada'],
-    ],
-    3: () => [
-      faltaPedaco(2) && ['um pedaço de papel rasgado do livro de receitas', 'está brilhando no chão gelado'],
-      !estado.emulsaoPronta && ['o creme em emulsão', 'faça no misturador de emulsão, porque ele será usado no prato final'],
-    ],
-    4: () => [
-      !estado.livroRestaurado && window.Pedacos && window.Pedacos.lista().length < window.Pedacos.total && ['os pedaços do livro de receitas', 'faltam alguns, e o último está no cofre do barril'],
-      !estado.potesAbertos && BAUNILHA,
-    ],
-  };
+  var BAUNILHA = ['o Extrato de Baunilha Rara', 'fica nos potes trancados da Despensa e sem ele não dá para tirar a nota máxima'];
 
-  const faltas = () => (FALTAS[CENA]?.() ?? []).filter(Boolean);
+  function faltas() {
+    var lista = [];
+    if (CENA === 1) {
+      if (!estado.chavePega) lista.push(['a Chave de Fenda de Confeiteiro', 'ela está escondida nos sacos de farinha']);
+      if (!estado.potesAbertos) lista.push(BAUNILHA);
+      if (faltaPedaco(0)) lista.push(['um pedaço de papel rasgado do livro de receitas', 'está brilhando no chão da despensa']);
+    } else if (CENA === 2) {
+      if (faltaPedaco(1)) lista.push(['um pedaço de papel rasgado do livro de receitas', 'está em cima do barril, perto da bancada']);
+    } else if (CENA === 3) {
+      if (faltaPedaco(2)) lista.push(['um pedaço de papel rasgado do livro de receitas', 'está brilhando no chão gelado']);
+      if (!estado.emulsaoPronta) lista.push(['o creme em emulsão', 'faça no misturador de emulsão, porque ele será usado no prato final']);
+    } else if (CENA === 4) {
+      if (!estado.livroRestaurado && window.Pedacos && window.Pedacos.lista().length < window.Pedacos.total) {
+        lista.push(['os pedaços do livro de receitas', 'faltam alguns, e um deles está na gaveta secreta da mesa']);
+      }
+      if (!estado.potesAbertos) lista.push(BAUNILHA);
+      if (!temNoInventario('especiarias')) lista.push(['as Especiarias Raras', 'ficam dentro do armário de especiarias']);
+    }
+    return lista;
+  }
 
-  const dicaAtual = () => {
-    const e = estado;
-    const dicas = {
+  function dicaAtual() {
+    var e = estado;
+    var dicas = {
       1: [
         [!e.portaAberta, 'O bilhete rasgado na parede tem duas contas, uma de farinha e uma de temperatura. A senha é as duas respostas juntas.'],
         [!e.mapaPego, 'Tem um papel dobrado dentro do caixote. Pode ser o mapa do restaurante.'],
         [!e.chavePega, 'Já mexeu nos sacos de farinha? Às vezes tem algo escondido.'],
         [!e.potesAbertos, 'Os potes trancados pedem uma ordem, do mais suave ao mais forte. O diário do caixote pode ajudar.'],
-        [faltaPedaco(0), 'Tem um pedaço de papel rasgado brilhando no chão da despensa. Ele é parte de um livro de receitas que você vai montar no Escritório do Chef.'],
+        [faltaPedaco(0), 'Tem um pedaço de papel rasgado brilhando no chão da despensa. Ele é parte de um livro de receitas que você vai montar no Escritório do Chef.']
       ],
       2: [
-        [e.fornoEtapa === 0, 'Clique no forno de cima e ajuste a cor da chama. A cor do Estágio 1 é uma charada no Cartaz da parede.'],
+        [e.fornoEtapa === 0, 'Clique no forno de cima. Leia o Cartaz da Confeitaria e o Guia de Chamas na parede para descobrir qual cor de chama usar na primeira etapa.'],
         [e.fornoEtapa === 1 || e.fornoEtapa === 3, 'O merengue ainda está assando. Espere alguns segundos e clique no forno de novo.'],
-        [e.fornoEtapa === 2, 'No Estágio 2 a cor da chama também é uma charada do Cartaz da parede. Pense em algo dourado, como mel ou caramelo.'],
+        [e.fornoEtapa === 2, 'Na segunda etapa, confira no Cartaz da Confeitaria e no Guia de Chamas qual cor de chama finaliza o merengue sem queimar.'],
         [e.fornoEtapa === 4, 'O merengue está pronto! Clique no forno para retirá-lo.'],
         [!e.merengue, 'A porta da Câmara Fria só abre quando o merengue sair do forno.'],
         [e.merengue && !e.caldaPronta, 'A calda precisa de um termômetro, e ele está na Câmara Fria. Depois selecione o termômetro e clique no frasco de calda.'],
         [e.merengue && !e.yuzuUsado, 'Quando tiver o yuzu congelado, deixe-o sobre a bancada de mármore para descongelar.'],
-        [faltaPedaco(1), 'Tem um pedaço de papel rasgado brilhando em cima do barril, ao lado da bancada. Ele é parte de um livro de receitas.'],
+        [faltaPedaco(1), 'Tem um pedaço de papel rasgado brilhando em cima do barril, ao lado da bancada. Ele é parte de um livro de receitas.']
       ],
       3: [
         [!e.termostatoAberto, 'O painel do termostato está preso por parafusos. Selecione a chave de fenda no inventário e clique no painel. Atrás dele tem algo que a Confeitaria precisa.'],
-        [!e.caixaAberta, 'O freezer de frutas tem uma trava de 4 dígitos: o número do recipiente da calda de yuzu e o do gelificante, 2 dígitos cada. Leia as etiquetas nas prateleiras.'],
-        [!e.segurancaAberta, 'O teclado de segurança pede 3 dígitos. A resposta está nas charadas do cartaz da parede.'],
+        [!e.caixaAberta, 'O freezer de frutas tem uma trava de balança com 4 dígitos: a massa de dois recipientes. Leia as etiquetas deles e use a fórmula do cartaz.'],
+        [!e.segurancaAberta, 'O teclado de segurança pede a temperatura do freezer em °C. O visor mostra 14 °F, e o cartaz da parede explica como converter.'],
         [!e.emulsaoPronta, 'O misturador de emulsão não é obrigatório para sair, mas o creme vai ser usado no prato final. Mantenha o indicador na zona verde.'],
         [!e.caldaPronta || !e.yuzuUsado, 'Volte à Confeitaria: use o termômetro no frasco de calda e deixe o yuzu descongelando no mármore. Só depois a porta do freezer abre.'],
-        [faltaPedaco(2), 'Tem um pedaço de papel rasgado brilhando no chão gelado, à direita. Ele é parte de um livro de receitas.'],
+        [faltaPedaco(2), 'Tem um pedaço de papel rasgado brilhando no chão gelado, à direita. Ele é parte de um livro de receitas.']
       ],
       4: [
-        [!e.gavetaAberta && !e.barrilAberto, 'O quadro de avisos explica a ordem das garrafas. Pegue a chave pendurada no quadro (ou resolva a gaveta da mesa) para abrir o barril.'],
-        [e.chaveBarril && !e.barrilAberto, 'Use a chavinha no barril, no canto esquerdo: dentro dele há um cofre. Gire o disco até os números do bilhete, no sentido das setas, e depois gire o timão.'],
-        [window.Pedacos && window.Pedacos.lista().length < window.Pedacos.total, 'Faltam pedaços do livro. Um veio de cada cena anterior (despensa, confeitaria, câmara fria) e o último está no cofre do barril. Se esqueceu algum, volte pela barra do topo.'],
-        [!e.livroRestaurado, 'Com os 4 pedaços, clique nos livros da estante e monte o quebra-cabeça do livro rasgado.'],
-        [!e.chaveMestraPega, 'Livro restaurado! A chave mestra está no armário embaixo da estante.'],
-      ],
+        [!e.chaveMestraPega && window.Pedacos && window.Pedacos.lista().length < window.Pedacos.total, 'Para restaurar o livro da estante você precisa dos 4 pedaços de papel: despensa, confeitaria, câmara fria e a gaveta secreta da mesa. Se esqueceu algum, volte pela barra do topo.'],
+        [!e.chaveMestraPega, 'O quadro de avisos diz onde está a chave mestra. Ela está no livro rasgado da estante: monte o quebra-cabeça com os 4 pedaços.'],
+        [!e.armarioAberto, 'Use a chave mestra no armário de especiarias antes de sair.']
+      ]
     };
-    return (dicas[CENA] ?? []).find(([precisa]) => precisa)?.[1]
-      ?? 'Parece que você já tem tudo por aqui. Vá para a porta de saída!';
-  };
+
+    var listaDicas = dicas[CENA] || [];
+    for (var i = 0; i < listaDicas.length; i++) {
+      if (listaDicas[i][0]) return listaDicas[i][1];
+    }
+    return 'Parece que você já tem tudo por aqui. Vá para a porta de saída!';
+  }
 
   document.body.insertAdjacentHTML('beforeend', `
     <dialog class="daniela" id="daniela-dlg" aria-labelledby="daniela-nome">
@@ -109,116 +125,162 @@
     </button>
   `);
 
-  const dlg = $d('#daniela-dlg');
-  let falas = [];
-  let finais = [];
-  let passo = 0;
-  let botoes = [];
-  let aoFechar = null;
+  var dlg = $d('#daniela-dlg');
+  var falas = [];
+  var finais = [];
+  var passo = 0;
+  var botoes = [];
+  var aoFechar = null;
 
-  const posicionar = () => {
-    const cena = $d('#cena')?.getBoundingClientRect();
-    const largura = cena ? cena.width * 0.94 : Math.min(720, innerWidth * 0.94);
-    const esquerda = cena ? cena.left + (cena.width - largura) / 2 : (innerWidth - largura) / 2;
-    const base = cena ? innerHeight - cena.bottom + 14 : 24;
-    dlg.style.setProperty('--d-larg', `${largura}px`);
-    dlg.style.setProperty('--d-esq', `${esquerda}px`);
-    dlg.style.setProperty('--d-base', `${base}px`);
-  };
+  function posicionar() {
+    var cenaEl = $d('#cena');
+    var cena = cenaEl ? cenaEl.getBoundingClientRect() : null;
+    var largura = cena ? cena.width * 0.94 : Math.min(720, innerWidth * 0.94);
+    var esquerda = cena ? cena.left + (cena.width - largura) / 2 : (innerWidth - largura) / 2;
+    var base = cena ? innerHeight - cena.bottom + 14 : 24;
+    dlg.style.setProperty('--d-larg', largura + 'px');
+    dlg.style.setProperty('--d-esq', esquerda + 'px');
+    dlg.style.setProperty('--d-base', base + 'px');
+  }
 
-  const mostrar = () => {
+  function mostrar() {
     $d('#daniela-fala').textContent = falas[passo];
-    const ultimo = passo === falas.length - 1;
-    botoes = ultimo ? finais : [{ texto: 'PRÓXIMO ▶', fn: () => { passo++; mostrar(); } }];
-    $d('#daniela-acoes').innerHTML = botoes
-      .map((b, i) => `<button type="button" data-i="${i}">${b.texto}</button>`)
-      .join('');
-    $d('#daniela-acoes button').focus();
-  };
+    var ultimo = passo === falas.length - 1;
+    botoes = ultimo ? finais : [{
+      texto: 'PRÓXIMO ▶',
+      fn: function () {
+        passo++;
+        mostrar();
+      }
+    }];
+    var htmlBotoes = '';
+    for (var i = 0; i < botoes.length; i++) {
+      htmlBotoes += `<button type="button" data-i="${i}">${botoes[i].texto}</button>`;
+    }
+    $d('#daniela-acoes').innerHTML = htmlBotoes;
+    var primeiroBtn = $d('#daniela-acoes button');
+    if (primeiroBtn) primeiroBtn.focus();
+  }
 
-  const dizer = (linhas, opcoes = {}) => {
+  function dizer(linhas, opcoes) {
+    opcoes = opcoes || {};
     falas = linhas;
     passo = 0;
-    aoFechar = opcoes.aoFechar ?? null;
-    finais = opcoes.botoes ?? [{ texto: 'ENTENDI!', fn: () => dlg.close() }];
+    aoFechar = opcoes.aoFechar || null;
+    finais = opcoes.botoes || [{
+      texto: 'ENTENDI!',
+      fn: function () {
+        dlg.close();
+      }
+    }];
     posicionar();
     if (!dlg.open) dlg.showModal();
     mostrar();
+  }
+
+  $d('#daniela-acoes').onclick = function (e) {
+    var idx = e.target.dataset.i;
+    if (idx !== undefined && botoes[idx]) botoes[idx].fn();
   };
 
-  $d('#daniela-acoes').addEventListener('click', ({ target }) => {
-    botoes[target.dataset.i]?.fn();
-  });
-
-  dlg.addEventListener('close', () => {
-    const fn = aoFechar;
+  dlg.onclose = function () {
+    var fn = aoFechar;
     aoFechar = null;
-    fn?.();
-  });
+    if (fn) fn();
+  };
 
-  window.addEventListener('resize', posicionar);
+  var prevResize = window.onresize;
+  window.onresize = function (e) {
+    if (prevResize) prevResize(e);
+    posicionar();
+  };
 
-  const CUSTO_DICA = 60;
+  var CUSTO_DICA = 60;
 
-  const pedirDica = () => {
-    const restante = Math.ceil((estado.fim - Date.now()) / 1000);
+  $d('#daniela-ajuda').onclick = function () {
+    var restante = Math.ceil((estado.fim - Date.now()) / 1000);
     if (restante <= CUSTO_DICA) {
-      return dizer(['Falta menos de 1 minuto no relógio, então você não tem tempo para pagar uma dica. Corra!']);
+      dizer(['Falta menos de 1 minuto no relógio, então você não tem tempo para pagar uma dica. Corra!']);
+      return;
     }
     dizer(['Atenção! Cada dica custa 1 minuto do seu tempo. Quer mesmo ver a dica?'], {
       botoes: [
         {
           texto: 'PROSSEGUIR',
-          fn: () => {
+          fn: function () {
             estado.fim -= CUSTO_DICA * 1000;
             salvar();
             tick();
             dizer([dicaAtual()]);
-          },
+          }
         },
-        { texto: 'CANCELAR', fn: () => dlg.close() },
-      ],
+        {
+          texto: 'CANCELAR',
+          fn: function () {
+            dlg.close();
+          }
+        }
+      ]
     });
   };
 
-  $d('#daniela-ajuda').addEventListener('click', pedirDica);
-
-  document.addEventListener('click', (evento) => {
-    const link = evento.target.closest('a.btn-pixel');
-    const destino = link?.getAttribute('href') ?? '';
+  var prevClick = document.onclick;
+  document.onclick = function (evento) {
+    if (prevClick) prevClick(evento);
+    var link = evento.target.closest('a.btn-pixel');
+    var destino = link ? (link.getAttribute('href') || '') : '';
     if (!/^cena\d+\.html$/.test(destino)) return;
-    if (Number(destino.match(/\d+/)[0]) <= CENA || jaAvisou.has(destino)) return;
-    const falta = faltas();
+    if (Number(destino.match(/\d+/)[0]) <= CENA || jaAvisou[destino]) return;
+    var falta = faltas();
     if (!falta.length) return;
 
     evento.preventDefault();
-    const lista = falta.map(([nome, onde]) => `${nome} (${onde})`).join('; ');
-    dizer([`Ei, espera! Você ainda não pegou: ${lista}.`], {
+    var partes = [];
+    for (var i = 0; i < falta.length; i++) {
+      partes.push(falta[i][0] + ' (' + falta[i][1] + ')');
+    }
+    dizer(['Ei, espera! Você ainda não pegou: ' + partes.join('; ') + '.'], {
       botoes: [
-        { texto: 'VOU PROCURAR', fn: () => dlg.close() },
-        { texto: 'SAIR MESMO ASSIM', fn: () => { jaAvisou.add(destino); location.href = destino; } },
-      ],
+        {
+          texto: 'VOU PROCURAR',
+          fn: function () {
+            dlg.close();
+          }
+        },
+        {
+          texto: 'SAIR MESMO ASSIM',
+          fn: function () {
+            jaAvisou[destino] = true;
+            location.href = destino;
+          }
+        }
+      ]
     });
-  }, true);
-
-  const umaVez = (chave) => {
-    try {
-      if (sessionStorage.getItem(chave)) return false;
-      sessionStorage.setItem(chave, '1');
-    } catch (erro) {}
-    return true;
   };
 
+  function umaVez(chave) {
+    try {
+      if (localStorage.getItem(chave)) return false;
+      localStorage.setItem(chave, '1');
+    } catch (erro) {}
+    return true;
+  }
+
   if (CENA === 1 && umaVez('daniela_intro')) {
-    const inicio = Date.now();
+    var inicio = Date.now();
     dizer(INTRO, {
-      botoes: [{ texto: 'VAMOS LÁ!', fn: () => dlg.close() }],
-      aoFechar: () => {
+      botoes: [{
+        texto: 'VAMOS LÁ!',
+        fn: function () {
+          dlg.close();
+        }
+      }],
+      aoFechar: function () {
         estado.fim += Date.now() - inicio;
         salvar();
-      },
+      }
     });
-  } else if (BOAS_VINDAS[CENA] && umaVez(`daniela_cena${CENA}`)) {
+  } else if (BOAS_VINDAS[CENA] && umaVez('daniela_cena' + CENA)) {
     dizer(BOAS_VINDAS[CENA]);
   }
 })();
