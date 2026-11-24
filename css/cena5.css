@@ -122,10 +122,10 @@ body {
   place-items: center;
   font-size: 2rem;
   border: 4px dashed var(--suave);
-  background: var(--madeira);
+  background: #fff;
   box-shadow: inset 4px 4px 0 0 rgba(0, 0, 0, .35);
 }
-.slot.cheio { border-style: solid; border-color: var(--latao); background: var(--madeira-escura); }
+.slot.cheio { border-style: solid; border-color: var(--latao); background: #fff; }
 
 #modal-overlay {
   position: fixed;

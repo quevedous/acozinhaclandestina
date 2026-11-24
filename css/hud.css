@@ -143,18 +143,21 @@ body.hud #inventory-bar .slot {
   display: grid;
   place-items: center;
   font-size: calc(var(--slot) * .55);
+  padding: 2px;
   border: 3px dashed var(--suave);
-  background: var(--madeira);
+  background: #fff;
   box-shadow: inset 3px 3px 0 0 rgba(0, 0, 0, .35);
 }
 body.hud #inventory-bar .slot.cheio {
   border-style: solid;
   border-color: var(--latao);
-  background: var(--madeira-escura);
+  background: #fff;
   cursor: pointer;
 }
 body.hud #inventory-bar .slot.ativo {
-  background: var(--latao);
+  background: #fff;
+  outline: 3px solid var(--latao);
+  outline-offset: 1px;
   transform: translate(-2px, -2px);
   box-shadow: 4px 4px 0 0 var(--escuro);
 }

@@ -52,7 +52,7 @@ window.HUD_ABAS = {
 
       <p>O relógio já começou a correr. Você tem 15 minutos para escapar, montar o bolo e provar que merece a receita.</p>
 
-      <p class="dica">Edite este texto em <strong>js/abas.js</strong> para contar a história do jeito que você quiser.</p>
+      <p class="dica"></p>
     `
   },
 
