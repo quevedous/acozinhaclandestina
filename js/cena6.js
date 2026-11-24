@@ -19,6 +19,8 @@ const ITENS = {
   chave_porta: { nome: 'Chave da Câmara Fria', icone: '🔑' }
 };
 
+ItensFoto.completar(ITENS);
+
 const PADRAO = {
   fim: Date.now() + DURACAO * 1000,
   inventario: [],
@@ -68,7 +70,7 @@ function renderInventario() {
   $('#inventory-bar').innerHTML = Array.from({ length: 8 }, (_, i) => {
     const item = ITENS[estado.inventario[i]];
     return item
-      ? `<div class="slot cheio" title="${item.nome}" role="img" aria-label="${item.nome}">${item.icone}</div>`
+      ? `<div class="slot cheio" title="${item.nome}" role="img" aria-label="${item.nome}">${ItensFoto.html(estado.inventario[i], item.icone)}</div>`
       : '<div class="slot"></div>';
   }).join('');
 }

@@ -15,6 +15,8 @@ const ITENS = {
   mapa:     { nome: 'Mapa do Restaurante', icone: '🗺️', desc: 'Mostra o caminho entre as cozinhas. Clique de novo para abrir.' },
   baunilha: { nome: 'Extrato de Baunilha Rara', icone: '🌿', desc: 'Ingrediente obrigatório para a nota máxima no prato final.' }
 };
+ItensFoto.completar(ITENS);
+
 
 function carregarEstado() {
   try { return JSON.parse(sessionStorage.getItem(CHAVE_ESTADO)); } catch (e) { return null; }
@@ -68,7 +70,7 @@ function renderInventario() {
       b.className = 'slot cheio' + (selecionado === id ? ' ativo' : '');
       b.title = ITENS[id].nome;
       b.setAttribute('aria-label', ITENS[id].nome);
-      b.textContent = ITENS[id].icone;
+      ItensFoto.aplicar(b, id, ITENS[id].icone);
       b.addEventListener('click', () => clicarItem(id));
       barra.appendChild(b);
     } else {

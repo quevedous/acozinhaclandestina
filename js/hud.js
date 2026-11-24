@@ -40,6 +40,8 @@
     chave_porta: { nome: 'Chave da Câmara Fria', icone: '🔑', desc: 'Abre a porta da despensa trancada.' }
   };
 
+  if (window.ItensFoto) ItensFoto.completar(ITENS);
+
   const HUD_PADRAO = {
     dicaAtual: 'Explore o cenário e clique nos objetos para investigar.',
     diario: ['Início da prova: 15 minutos para preparar e entregar o Bolo Clandestino.']
@@ -159,7 +161,7 @@
     const itens = inventario();
 
     const listaItens = itens.length
-      ? itens.map((id) => `<li>${ITENS[id] ? ITENS[id].icone : '📦'} <strong>${esc(ITENS[id] ? ITENS[id].nome : id)}:</strong> ${esc(ITENS[id] ? ITENS[id].desc : '')}</li>`).join('')
+      ? itens.map((id) => `<li>${window.ItensFoto ? ItensFoto.html(id, ITENS[id] ? ITENS[id].icone : '📦') : (ITENS[id] ? ITENS[id].icone : '📦')} <strong>${esc(ITENS[id] ? ITENS[id].nome : id)}:</strong> ${esc(ITENS[id] ? ITENS[id].desc : '')}</li>`).join('')
       : '<li>Nenhum item coletado ainda.</li>';
 
     const listaNotas = (hud.diario || []).slice().reverse().map((n) => `<li>• ${esc(n)}</li>`).join('');

@@ -51,15 +51,25 @@ window.HUD_ABAS = {
       <p>Para sair, será preciso decifrar bilhetes rasgados, dominar fornos, caldas e temperaturas, atravessar a câmara fria e chegar ao escritório do Chef. Só então a pista principal estará à sua espera, com os jurados já sentados à mesa.</p>
 
       <p>O relógio já começou a correr. Você tem 15 minutos para escapar, montar o bolo e provar que merece a receita.</p>
- <p class="dica">Edite este texto em <strong>js/abas.js</strong> para contar a história do jeito que você quiser.</p>
+
+      <p class="dica">Edite este texto em <strong>js/abas.js</strong> para contar a história do jeito que você quiser.</p>
     `
-      },
+  },
 
   'desenvolvedores': {
     titulo: 'DESENVOLVEDORES',
     html: `
+      <p class="intro">O Mistério da Cozinha Clandestina foi feito por:</p>
+
+      <ul class="equipe">
+        <li><strong>Nome do desenvolvedor 1</strong><br>Programação e game design</li>
+        <li><strong>Nome do desenvolvedor 2</strong><br>Arte e cenários</li>
+        <li><strong>Nome do desenvolvedor 3</strong><br>Enigmas e roteiro</li>
+      </ul>
 
       <p>Código-fonte: <a href="https://github.com/quevedous/acozinhaclandestina" target="_blank" rel="noopener">github.com/quevedous/acozinhaclandestina</a></p>
+
+      <p class="dica">Troque os nomes e funções em <strong>js/abas.js</strong>.</p>
     `
   }
 };

@@ -12,6 +12,8 @@ const ITENS = {
   }
 };
 
+ItensFoto.completar(ITENS);
+
 const PADRAO = {
   fim: Date.now() + DURACAO * 1000,
   inventario: [],
@@ -101,7 +103,7 @@ function renderInventario() {
       b.type = 'button';
       b.className = 'slot cheio' + (selecionado === id ? ' ativo' : '');
       b.title = ITENS[id].nome;
-      b.textContent = ITENS[id].icone;
+      ItensFoto.aplicar(b, id, ITENS[id].icone);
       b.addEventListener('click', () => clicarItem(id));
       barra.appendChild(b);
     } else {
